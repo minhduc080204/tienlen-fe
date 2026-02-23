@@ -1,0 +1,12 @@
+@import "tailwindcss";
+
+@theme {
+    --font-card: "TienLen", sans-serif;
+}
+
+@font-face {
+  font-family: "TienLen";
+  src: url("./fonts/CARDfont.TTF") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+}
