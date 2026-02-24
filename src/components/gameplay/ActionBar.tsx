@@ -1,8 +1,16 @@
+type ActionBarProps = {
+  onAttackCard: ()=>void,
+  onPassTurn: ()=>void,
+}
 
-export const ActionBar = () => {
+export const ActionBar = ({
+  onAttackCard,
+  onPassTurn
+}:ActionBarProps) => {
   return (
     <div className="flex gap-4">
       <button
+        onClick={onAttackCard}
         className="
           px-6 py-3
           rounded-xl
@@ -18,6 +26,7 @@ export const ActionBar = () => {
       </button>
 
       <button
+        onClick={onPassTurn}
         className="
           px-6 py-3
           rounded-xl
