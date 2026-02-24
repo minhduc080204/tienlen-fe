@@ -1,5 +1,5 @@
-import GameActions from "../components/GameActions";
 import HomeHeader from "../components/HomeHeader";
+import MenuActions from "../components/MenuActions";
 
 export default function HomePage() {
   return (
@@ -11,7 +11,7 @@ export default function HomePage() {
     >      
       <div className="flex flex-col min-h-screen">
         <HomeHeader />
-        <GameActions />
+        <MenuActions />
         <div>hiaisjk Lorem ipsum dolor sit, amet consectetur adipisicing elit. Optio eius impedit provident hic obcaecati blanditiis expedita atque? Debitis ipsam corrupti quisquam veniam magnam. Cum iusto facilis, odio quisquam harum exercitationem.</div>
       </div>
     </div>

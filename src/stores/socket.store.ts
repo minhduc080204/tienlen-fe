@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import type { ChatMessageType } from "../type/chat-message";
 import toast from "react-hot-toast";
+import { useAuthStore } from "./auth.store";
 
 type SocketStore = {
   socket: WebSocket | null;
@@ -25,7 +26,7 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
   connect: (roomId, wsUrl) => {
     set((state) => {
       if (state.socket) return state;
-      const token = localStorage.getItem("token");
+      const token = useAuthStore.getState().token;;
       const url = `${import.meta.env.VITE_WS_BASE_URL}${wsUrl}&token=${token}`;
       console.log("URL", url);
 
@@ -33,8 +34,13 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
 
       socket.onopen = () => {
         clearTimeout(reconnectTimer);
-        localStorage.setItem("roomId", roomId.toString());
-        localStorage.setItem("wsUrl", wsUrl);
+
+        set({
+          socket,
+          roomId,
+          wsUrl,
+          isConnected: true,
+        });
         console.log("🟢 WebSocket connected");
       };
 
@@ -64,6 +70,12 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
 
       socket.onclose = () => {
         console.log("🔴 WebSocket disconnected");
+          set({
+          socket: null,
+          isConnected: false,
+        });
+
+        get().reconnect();
       };
 
       return { socket };
@@ -75,6 +87,7 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
     set({ 
       socket: null, 
       roomId: null,
+      wsUrl: null,
       isConnected: false 
     });
   },

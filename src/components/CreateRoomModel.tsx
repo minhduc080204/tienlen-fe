@@ -1,0 +1,125 @@
+import { motion } from "framer-motion";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { useModalStore } from "../type/modal.store";
+import { useSocketStore } from "../stores/socket.store";
+import { ROUTES } from "../routes/routes";
+import { gameApi } from "../api/game.api";
+import { TokenIcon } from "../assets/icons/TokenIcon";
+import { formatNumber } from "../utils/formatNumber";
+
+const BET_OPTIONS = [10, 20, 50, 100, 200, 500, 1000];
+
+export default function CreateRoomModal() {
+  const close = useModalStore((s) => s.close);
+  const navigate = useNavigate();
+  const connectSocket = useSocketStore((s) => s.connect);
+  const setRoom = useSocketStore.setState;
+
+  const [selectedBet, setSelectedBet] = useState<number | null>(null);
+  const [loading, setLoading] = useState(false);
+
+  const handleCreateRoom = async () => {
+    if (!selectedBet) {
+      toast.error("Vui lòng chọn mức cược");
+      return;
+    }
+
+    // try {
+    //   setLoading(true);
+
+    //   const res = await gameApi.createRoom({ bet: selectedBet });
+
+    //   if (!res?.roomId || !res?.wsUrl) {
+    //     toast.error("Không thể tạo phòng");
+    //     return;
+    //   }
+
+    //   setRoom({ roomId: res.roomId });
+    //   connectSocket(res.roomId, res.wsUrl);
+
+    //   close();
+    //   navigate(ROUTES.ROOM);
+    // } catch (err) {
+    //   toast.error("Lỗi khi tạo phòng");
+    // } finally {
+    //   setLoading(false);
+    // }
+  };
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, scale: 0.85 }}
+      animate={{ opacity: 1, scale: 1 }}
+      exit={{ opacity: 0, scale: 0.85 }}
+      transition={{ duration: 0.25 }}
+      className="
+        fixed z-50
+        top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
+        w-[380px]
+        bg-zinc-900 border border-red-700
+        rounded-2xl p-6
+        shadow-2xl shadow-red-900/30
+      "
+    >
+      <h2 className="text-xl font-bold text-red-500 text-center mb-6">
+        🎲 Chọn Mức Cược
+      </h2>
+
+      {/* Bet Options */}
+      <div className="grid grid-cols-3 gap-3 mb-6">
+        {BET_OPTIONS.map((bet) => {
+          const active = selectedBet === bet;
+
+          return (
+            <button
+              key={bet}
+              onClick={() => setSelectedBet(bet)}
+              className={`
+                py-2 rounded-lg font-semibold transition
+                flex justify-center items-center border 
+                ${
+                  active
+                    ? "bg-red-600 border-red-500 text-white shadow-lg shadow-red-600/40"
+                    : "bg-zinc-800 border-zinc-700 text-gray-300 hover:bg-red-700/20 hover:border-red-600"
+                }
+              `}
+            >
+              {formatNumber(bet)} <TokenIcon className="w-7"/>
+            </button>
+          );
+        })}
+      </div>
+
+      {/* Create Button */}
+      <button
+        onClick={handleCreateRoom}
+        disabled={!selectedBet || loading}
+        className={`
+          w-full py-2 rounded-lg
+          font-semibold transition
+          ${
+            selectedBet
+              ? "bg-red-600 hover:bg-red-500 text-white"
+              : "bg-zinc-700 text-gray-400 cursor-not-allowed"
+          }
+        `}
+      >
+        {loading ? "Đang tạo..." : "🔥 Tạo Phòng"}
+      </button>
+
+      {/* Close */}
+      <button
+        onClick={close}
+        className="
+          w-full mt-3 py-2 rounded-lg
+          bg-zinc-800 hover:bg-zinc-700
+          text-gray-300 transition
+        "
+      >
+        Đóng
+      </button>
+    </motion.div>
+  );
+}

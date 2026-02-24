@@ -1,5 +1,6 @@
 // src/api/axiosClient.ts
 import axios from "axios";
+import { useAuthStore } from "../stores/auth.store";
 
 const axiosClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:8080/api",
@@ -9,25 +10,31 @@ const axiosClient = axios.create({
   },
 });
 
-// Request interceptor
+// ✅ Request interceptor
 axiosClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem("token");
+    const token = useAuthStore.getState().token;
+
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
-      console.log("Đã có token");
-      
     }
+
     return config;
   },
   (error) => Promise.reject(error)
 );
 
-// Response interceptor
+// ✅ Response interceptor
 axiosClient.interceptors.response.use(
   (response) => response,
   (error) => {
-    console.error("API ERROR:", error.response?.data || error.message);
+    if (error.response?.status === 401) {
+      // Token hết hạn hoặc không hợp lệ
+      useAuthStore.getState().logout();
+
+      window.location.href = "/login";
+    }
+
     return Promise.reject(error);
   }
 );

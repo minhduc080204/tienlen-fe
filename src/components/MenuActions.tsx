@@ -4,12 +4,13 @@ import { gameApi } from "../api/game.api";
 import toast from "react-hot-toast";
 import { ROUTES } from "../routes/routes";
 import { useSocketStore } from "../stores/socket.store";
+import { useModalStore } from "../type/modal.store";
 
-export default function GameActions() {
+export default function MenuActions() {
   const navigate = useNavigate();
   const connectSocket = useSocketStore((s) => s.connect);
   const setRoom = useSocketStore.setState;
-
+  const openModal = useModalStore((s) => s.open);
   const handlePlayNow = async () => {
     try {
       const res = await gameApi.quickJoin();
@@ -48,14 +49,14 @@ export default function GameActions() {
           text="Tạo Phòng"
           img="create-room.png"
           onClick={() => {
-
+            openModal("CREATE_ROOM")
           }}
         />
         <GameButton
           text="Tham Gia Phòng"
           img="join-room.png"
           onClick={() => {
-
+            openModal("JOIN_ROOM")
           }}
         />
       </div>

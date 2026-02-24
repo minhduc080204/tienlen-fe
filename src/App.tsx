@@ -5,6 +5,7 @@ import LoginPage from './page/Login'
 import RegisterPage from './page/Register'
 import { ROUTES } from './routes/routes'
 import GamePlay from './page/GamePlay'
+import ModalRoot from './ModalRoot'
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path={ROUTES.HOME} element={<HomePage />} />
           <Route path={ROUTES.ROOM} element={<GamePlay />} />
         </Routes>        
+        <ModalRoot />
       </AnimatePresence>
     </>
   )

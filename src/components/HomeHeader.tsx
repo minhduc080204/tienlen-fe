@@ -1,8 +1,12 @@
 import { MoneyIcon } from "../assets/icons/MoneyIcon";
 import { PlusIcon } from "../assets/icons/PlusIcon";
+import { TokenIcon } from "../assets/icons/TokenIcon";
+import { useAuthStore } from "../stores/auth.store";
+import { formatNumber } from "../utils/formatNumber";
 import SettingsButton from "./SettingsButton";
 
 export default function HomeHeader() {
+    const user = useAuthStore.getState().user
     return (
         <div className="w-full flex justify-center">
             <div className=" w-4/5 flex items-center justify-around">
@@ -20,10 +24,10 @@ export default function HomeHeader() {
                 </div>
 
                 <div className="relative">
-                    <MoneyIcon
+                    <TokenIcon
                         className="
                             absolute
-                            z-1 -left-4 -top-5
+                            z-1 -left-4 -top-3
                             w-16
                             drop-shadow-[0_6px_10px_rgba(0,0,0,0.6)]
                         "
@@ -41,7 +45,7 @@ export default function HomeHeader() {
                         "
                     >
                         <p className="font-semibold ml-20">
-                            100.000.000
+                            {formatNumber(user?.tokenBalance)}
                         </p>
 
                         <PlusIcon className="

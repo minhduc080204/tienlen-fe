@@ -9,12 +9,24 @@ type CardProps = {
 export const Card = ({card, isSelected, onSelected}:CardProps) => {
     const isRed = card.suit>=2
 
-    const suitIconMapping = [
-        "spade_ic.svg",
-        "club_ic.svg",
-        "diamond_ic.svg",
-        "heart_ic.svg",
-    ]
+    const SUITS = ["spade", "club", "diamond", "heart"] as const;
+    const RANKS = {
+        11: "jack",
+        12: "queen",
+        13: "king",
+    } as const;
+
+    const getCardImage = (rank: number, suit: number) => {
+        const suitName = SUITS[suit];
+        
+
+        if (RANKS[rank as keyof typeof RANKS]) {
+            return `./cards/${RANKS[rank as keyof typeof RANKS]}_${suitName}_ic.svg`;
+        }
+
+        return `./cards/${suitName}_ic.svg`;
+    };
+    
     const rankMapping = (rank: number) => {
         if(rank==11) return "J";
         if(rank==12) return "Q";
@@ -23,23 +35,26 @@ export const Card = ({card, isSelected, onSelected}:CardProps) => {
         if(rank==15) return "2";
         return rank;
     }
-
+    
   return (
     <button 
         className={`
             w-30 h-45 bg-white -ml-10 
-            rounded-lg p-2 border-1 border-black 
-            ${isRed?'text-red-700':'text-black'}
+            rounded-lg p-2 border-2 border-black/70 
+            flex flex-col overflow-hidden
+            ${isRed?'text-[#EC2000]':'text-black'}
             ${isSelected&&'mb-4'}
         `}
         onClick={()=>onSelected(card)}
     >
-        <div className="text-3xl flex items-center">
-            <b className="font-card">{rankMapping(card.rank)}</b>
-            <img className="w-6" src={`./cards/${suitIconMapping[card.suit]}`}/>
+        <div className="text-3xl flex flex-col items-start">
+            <div>
+                <b className="font-card">{rankMapping(card.rank)}</b>
+                <img className="w-6" src={`./cards/${SUITS[card.suit]}_m_ic.svg`}/>
+            </div>
         </div>
-        <div className="flex justify-center mt-5">
-            <img className="w-20" src={`./cards/${suitIconMapping[card.suit]}`}/>
+        <div className="flex justify-center mt-2 mb-2">
+            <img className="" src={getCardImage(card.rank, card.suit)}/>
         </div>
     </button>
   )

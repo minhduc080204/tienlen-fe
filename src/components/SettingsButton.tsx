@@ -1,20 +1,17 @@
-import { AnimatePresence } from "framer-motion";
-import { useState } from "react";
 import { SettingIcon } from "../assets/icons/SettingIcon";
 import { useSoundStore } from "../stores/sound.store";
-import SettingsModal from "./SettingsModal";
+import { useModalStore } from "../type/modal.store";
 
 export default function SettingsButton({isFixed=false}: {isFixed?:boolean}) {
-  const [open, setOpen] = useState(false);
   const playClick = useSoundStore((s) => s.playClick);
-
+  const openModal = useModalStore((s) => s.open);
   return (
     <>
       {/* Floating settings button */}
       <button
         onClick={() => {
           playClick();
-          setOpen(true);
+          openModal("SETTINGS")
         }}
         className={`
           ${isFixed?'fixed top-5 right-5':''}
@@ -29,10 +26,7 @@ export default function SettingsButton({isFixed=false}: {isFixed?:boolean}) {
         
         <SettingIcon className="w-10"/>
       </button>
-
-      <AnimatePresence>
-        {open && <SettingsModal onClose={() => setOpen(false)} />}
-      </AnimatePresence>
+      
     </>
   );
 }

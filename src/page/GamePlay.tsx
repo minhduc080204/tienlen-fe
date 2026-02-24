@@ -10,6 +10,7 @@ import type { CardType } from "../type/card";
 import toast from "react-hot-toast";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer'
 import { Hand } from "../components/gameplay/Hand";
+import { Table } from "../components/gameplay/Table";
 
 export default function GamePlay() {
   const navigate = useNavigate();
@@ -49,23 +50,33 @@ export default function GamePlay() {
     }
   }
   const hands: CardType[] = [
-      {id: "1", rank: 3, suit: 0},
-      {id: "12", rank: 4, suit: 1},
-      {id: "13", rank: 5, suit: 2},
-      {id: "14", rank: 6, suit: 3},
-      {id: "15", rank: 7, suit: 0},
-      {id: "16", rank: 8, suit: 1},
-      {id: "17", rank: 9, suit: 2},
-      {id: "18", rank: 10, suit: 3},
+        // {id: "1", rank: 3, suit: 0},
+        // {id: "12", rank: 4, suit: 1},
+        // {id: "13", rank: 5, suit: 2},
+        // {id: "14", rank: 6, suit: 3},
+        // {id: "15", rank: 7, suit: 0},
+        // {id: "16", rank: 8, suit: 1},
+        // {id: "17", rank: 9, suit: 2},
+        // {id: "18", rank: 10, suit: 3},
       {id: "19", rank: 11, suit: 0},
+      {id: "19", rank: 11, suit: 1},
+      {id: "19", rank: 11, suit: 2},
+      {id: "19", rank: 11, suit: 3},
       {id: "10", rank: 12, suit: 1},
+      {id: "10", rank: 12, suit: 2},
+      {id: "10", rank: 12, suit: 3},
+      {id: "10", rank: 12, suit: 0},
+      {id: "11", rank: 13, suit: 1},
       {id: "11", rank: 13, suit: 2},
-      {id: "111", rank: 14, suit: 3},
-      {id: "112", rank: 15, suit: 0},
+      {id: "11", rank: 13, suit: 3},
+      {id: "11", rank: 13, suit: 0},
+      {id: "112", rank: 10, suit: 0},
   ]
+
+  
   return (
     <div
-      className="w-full h-screen bg-cover bg-center relative"
+      className="w-full h-screen bg-cover bg-center relative overflow-hidden"
       style={{ backgroundImage: "url(/bg-room.png)" }}
     >
       <BackButton onClick={() => handleBackClick()} />
@@ -83,14 +94,12 @@ export default function GamePlay() {
       </div>
 
       {/* Table */}
-      {/* <div className="absolute inset-0 flex items-center justify-center">
-        <Table cards={[]} />
-      </div> */}
-
-      {/* Hand */}
-      <div className="absolute bottom-28 w-full">
-        
+            
+    
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+        <Table cards={[hands[0], hands[0], hands[0]]} />
       </div>
+
 
       {/* Actions */}
       <div className="absolute bottom-6 w-full flex justify-center items-center gap-4">
@@ -107,7 +116,7 @@ export default function GamePlay() {
             {({ remainingTime }) => (
               <div
                 style={{
-                  fontSize: "30px",     // 👈 số to hơn
+                  fontSize: "30px",    
                   fontWeight: 700,
                   color:
                     remainingTime <= 2

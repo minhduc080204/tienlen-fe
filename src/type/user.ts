@@ -2,5 +2,5 @@ export type UserType = {
   id: number;
   name: string;
   // avatar: string;
-  // token: number; //money
+  tokenBalance: number ; //money
 };

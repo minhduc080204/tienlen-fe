@@ -1,14 +1,12 @@
 import { motion } from "framer-motion";
 import { useSoundStore } from "../stores/sound.store";
+import { useModalStore } from "../type/modal.store";
 
-type Props = {
-  onClose: () => void;
-};
-
-export default function SettingsModal({ onClose }: Props) {
+export default function SettingsModal() {
   const { enabled, volume, toggleSound, setVolume, playClick } =
     useSoundStore();
-
+  
+  const close = useModalStore((s) => s.close);
   return (
     <>
       {/* Overlay */}
@@ -17,7 +15,7 @@ export default function SettingsModal({ onClose }: Props) {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
-        onClick={onClose}
+        onClick={close}
       />
 
       {/* Modal box */}
@@ -82,7 +80,7 @@ export default function SettingsModal({ onClose }: Props) {
         <button
           onClick={() => {
             playClick();
-            onClose();
+            close();
           }}
           className="
             w-full py-2 rounded-lg
