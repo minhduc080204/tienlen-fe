@@ -1,14 +1,15 @@
 import { create } from "zustand";
-import type { ChatMessageType } from "../type/chat-message";
 import toast from "react-hot-toast";
 import { useAuthStore } from "./auth.store";
+import type { SocketResponseType } from "../type/socket-response";
+import type { ChatType } from "../type/chat";
 
 type SocketStore = {
   socket: WebSocket | null;
   roomId: number | null;
   wsUrl: string | null;
   isConnected: boolean,
-  messages: ChatMessageType[];
+  messages: ChatType[];
   connect: (roomId: number, wsUrl: string) => void;
   disconnect: () => void;
   sendChat: (content: string) => void;
@@ -46,13 +47,13 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
 
       socket.onmessage = (e) => {
         try {
-          const data: ChatMessageType = JSON.parse(e.data);
-          console.log("T got", data);
+          const res: SocketResponseType<ChatType> = JSON.parse(e.data);
+          console.log("T got", res);
 
-          if (data.action === "CHAT") {
+          if (res.action === "CHAT") {
             set(
               (state): Partial<SocketStore> => ({
-                messages: [...state.messages, data],
+                messages: [...state.messages, res.data],
               }),
             );
           }
