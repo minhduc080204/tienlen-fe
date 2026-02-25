@@ -5,6 +5,7 @@ import toast from "react-hot-toast";
 import { ROUTES } from "../routes/routes";
 import { useSocketStore } from "../stores/socket.store";
 import { useModalStore } from "../type/modal.store";
+import axios from "axios";
 
 export default function MenuActions() {
   const navigate = useNavigate();
@@ -28,8 +29,27 @@ export default function MenuActions() {
       navigate(ROUTES.ROOM);
 
     } catch (err) {
-      toast.error("Không thể kết nối phòng");
-      console.error(err);
+      if (axios.isAxiosError(err)) {
+        const status = err.response?.status;
+
+        if (status === 400) {
+          const message =
+            err.response?.data?.message ||
+            err.response?.data?.messages ||
+            "Yêu cầu không hợp lệ";
+
+          toast.error(message);
+          return;
+        }
+
+        if (!err.response) {
+          toast.error("Không thể kết nối tới server");
+          return;
+        }
+      }
+
+    toast.error("Không thể kết nối phòng");
+    console.error(err);
     }
   };
   return (

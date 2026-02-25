@@ -1,19 +1,16 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
 import { useModalStore } from "../type/modal.store";
-import { useSocketStore } from "../stores/socket.store";
-import { gameApi } from "../api/game.api";
 
 export default function JoinRoomModal() {
   const close = useModalStore((s) => s.close);
-  const navigate = useNavigate();
-  const connectSocket = useSocketStore((s) => s.connect);
-  const setRoom = useSocketStore.setState;
+  // const navigate = useNavigate();
+  // const connectSocket = useSocketStore((s) => s.connect);
+  // const setRoom = useSocketStore.setState;
 
   const [roomId, setRoomId] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
   const handleJoinRoom = async () => {
     if (!roomId.trim()) {

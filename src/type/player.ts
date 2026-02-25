@@ -1,7 +1,10 @@
+import type { CardType } from "./card";
+import type { UserType } from "./user";
+
 export type PlayerType = {
-  id: number;
-  name: string;
-  avatar?: string;
-  cardsCount: number;
-  isMe?: boolean;
+  user: UserType
+  ready: boolean
+  handSize: number
+  handCards?: CardType[]
+  playerIndex: number
 };

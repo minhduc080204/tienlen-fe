@@ -3,11 +3,12 @@ import { useEffect, useRef, useState } from "react";
 import { useSocketStore } from "../stores/socket.store";
 import { useAuthStore } from "../stores/auth.store";
 import toast from "react-hot-toast";
+import { useChatStore } from "../stores/chat.store";
 
 export default function ChatTab() {
     const sendChatSocket = useSocketStore((s) => s.sendChat);
     const [input, setInput] = useState("");
-    const messages = useSocketStore((state) => state.messages)
+    const messages = useChatStore((state) => state.messages)
     
     const bottomRef = useRef<HTMLDivElement | null>(null);
     const user = useAuthStore.getState().user

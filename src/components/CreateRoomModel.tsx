@@ -1,24 +1,20 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useNavigate } from "react-router-dom";
-import { useModalStore } from "../type/modal.store";
-import { useSocketStore } from "../stores/socket.store";
-import { ROUTES } from "../routes/routes";
-import { gameApi } from "../api/game.api";
 import { TokenIcon } from "../assets/icons/TokenIcon";
+import { useModalStore } from "../type/modal.store";
 import { formatNumber } from "../utils/formatNumber";
 
 const BET_OPTIONS = [10, 20, 50, 100, 200, 500, 1000];
 
 export default function CreateRoomModal() {
   const close = useModalStore((s) => s.close);
-  const navigate = useNavigate();
-  const connectSocket = useSocketStore((s) => s.connect);
-  const setRoom = useSocketStore.setState;
+  // const navigate = useNavigate();
+  // const connectSocket = useSocketStore((s) => s.connect);
+  // const setRoom = useSocketStore.setState;
 
   const [selectedBet, setSelectedBet] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [loading] = useState(false);
 
   const handleCreateRoom = async () => {
     if (!selectedBet) {

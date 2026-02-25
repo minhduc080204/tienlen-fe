@@ -1,19 +1,22 @@
-import { create } from "zustand";
 import toast from "react-hot-toast";
+import { create } from "zustand";
+import type { ActionType } from "../type/action";
+import type { SocketRequestType } from "../type/socket-request";
 import { useAuthStore } from "./auth.store";
-import type { SocketResponseType } from "../type/socket-response";
-import type { ChatType } from "../type/chat";
+import { useChatStore } from "./chat.store";
+import { useRoomStore } from "./room.store";
 
 type SocketStore = {
   socket: WebSocket | null;
   roomId: number | null;
   wsUrl: string | null;
-  isConnected: boolean,
-  messages: ChatType[];
+  isConnected: boolean;
+
   connect: (roomId: number, wsUrl: string) => void;
   disconnect: () => void;
   sendChat: (content: string) => void;
-  reconnect: () => void,
+  sendReady: () => void;
+  reconnect: () => void;
 };
 
 let reconnectTimer: any = null;
@@ -47,16 +50,43 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
 
       socket.onmessage = (e) => {
         try {
-          const res: SocketResponseType<ChatType> = JSON.parse(e.data);
+          const res = JSON.parse(e.data);
+          const action = res.action as ActionType
           console.log("T got", res);
 
-          if (res.action === "CHAT") {
-            set(
-              (state): Partial<SocketStore> => ({
-                messages: [...state.messages, res.data],
-              }),
-            );
+          switch (action) {
+            case "CHAT":
+              useChatStore.getState().addMessage(res.data);
+              break;
+            // case "":
+            //   useRoomStore.getState().setRoomState(res.data);
+            //   break;
+
+            case "JOIN_ROOM":
+              console.log("JOIN_ROOM trigger");
+              
+              useRoomStore.getState().addPlayer(res.data);
+              break;
+
+            case "LEFT_ROOM":
+              useRoomStore.getState().removePlayer(res.data.userId);
+              break;
+
+            case "READY":
+              useRoomStore.getState().setReady(res.data.userId);
+              break;
+
+            case "SYNC_DATA":
+              useRoomStore.getState().setRoomType(res.data);
+              break;
+          
+            default:
+              break;
           }
+
+          
+
+
         } catch (e) {
           console.error("❌ Parse message error", e);
           toast.error("❌ Lỗi khi gửi tin nhắn");
@@ -96,10 +126,20 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
   sendChat: (content: string) => {
     const socket = get().socket;
     if (!socket || socket.readyState !== WebSocket.OPEN) return;
-    const message = {
+    const message: SocketRequestType<string> = {
       action: "CHAT",
-      content,
-      roomId: get().roomId,
+      data: content
+    };
+
+    socket.send(JSON.stringify(message));
+  },
+
+  sendReady: () => {
+    const socket = get().socket;
+    if (!socket || socket.readyState !== WebSocket.OPEN) return;
+    const message: SocketRequestType<null> = {
+      action: "READY",
+      data: null,
     };
 
     socket.send(JSON.stringify(message));
