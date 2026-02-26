@@ -16,6 +16,7 @@ type SocketStore = {
   disconnect: () => void;
   sendChat: (content: string) => void;
   sendReady: () => void;
+  sendUnReady: () => void;
   reconnect: () => void;
 };
 
@@ -57,10 +58,7 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
           switch (action) {
             case "CHAT":
               useChatStore.getState().addMessage(res.data);
-              break;
-            // case "":
-            //   useRoomStore.getState().setRoomState(res.data);
-            //   break;
+              break;            
 
             case "JOIN_ROOM":
               console.log("JOIN_ROOM trigger");
@@ -74,6 +72,22 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
 
             case "READY":
               useRoomStore.getState().setReady(res.data.userId);
+              break;
+
+            case "UNREADY":
+              useRoomStore.getState().setUnReady(res.data.userId);
+              break;
+
+            case "START_COUNTDOWN":
+              useRoomStore.getState().setStartCountdown();
+              break;
+
+            case "NEXT_TURN":
+              useRoomStore.getState().setNextTurn(res.data.playerId);
+              break;
+
+            case "START_GAME":
+              // useRoomStore.getState().setStartCountdown();
               break;
 
             case "SYNC_DATA":
@@ -112,17 +126,7 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
       return { socket };
     });
   },
-
-  disconnect: () => {
-    get().socket?.close();
-    set({ 
-      socket: null, 
-      roomId: null,
-      wsUrl: null,
-      isConnected: false 
-    });
-  },
-
+  
   sendChat: (content: string) => {
     const socket = get().socket;
     if (!socket || socket.readyState !== WebSocket.OPEN) return;
@@ -144,6 +148,27 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
 
     socket.send(JSON.stringify(message));
   },
+  sendUnReady: () => {
+    const socket = get().socket;
+    if (!socket || socket.readyState !== WebSocket.OPEN) return;
+    const message: SocketRequestType<null> = {
+      action: "UNREADY",
+      data: null,
+    };
+
+    socket.send(JSON.stringify(message));
+  },
+
+  disconnect: () => {
+    get().socket?.close();
+    set({ 
+      socket: null, 
+      roomId: null,
+      wsUrl: null,
+      isConnected: false 
+    });
+  },
+
   reconnect: () => {
     const { roomId, wsUrl } = get();
     

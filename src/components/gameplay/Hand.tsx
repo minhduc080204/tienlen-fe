@@ -12,13 +12,12 @@ export const Hand = ({
     selectedIds,
     onSelected
 }:HandProps) => {
-    
 
     const renderCards = () => {
         return(
             <div className="inline-flex items-end">
                 {hands.map((card)=><Card 
-                    key={card.id} 
+                    key={card.rank + ""+card.suit} 
                     card={card} 
                     isSelected={selectedIds.includes(card.id)}
                     onSelected={()=>onSelected(card)}

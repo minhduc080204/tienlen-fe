@@ -11,6 +11,9 @@ type RoomStore = {
   addPlayer: (player: PlayerType) => void;
   removePlayer: (userId: number) => void;
   setReady: (userId: number) => void;
+  setUnReady: (userId: number) => void;
+  setStartCountdown: () => void;
+  setNextTurn: (playerId: number) => void;
   resetRoom: () => void;
 };
 /* =========================
@@ -59,6 +62,7 @@ export const useRoomStore = create<RoomStore>((set) => ({
     set((state) => ({
       room: {
         ...state.room,
+        status: state.room.players.length==2?'WAITING':state.room.status,
         players: state.room.players.filter(
           (p) => p.user.id !== userId
         ),
@@ -84,6 +88,46 @@ export const useRoomStore = create<RoomStore>((set) => ({
         },
         };
     });
+  },
+
+  setUnReady: (userId: number) => {
+    set((state) => {
+        if (!state.room) return state;
+
+        return {
+        room: {
+            ...state.room,
+            status: "WAITING",
+            me:
+            state.room.me && state.room.me.user.id === userId
+                ? { ...state.room.me, ready: false }
+                : state.room.me,
+            players: state.room.players.map((p) =>
+            p.user.id === userId
+                ? { ...p, ready: false }
+                : p
+            ),
+        },
+        };
+    });
+  },
+
+  setNextTurn: (playerId: number) => {
+    set((state) => ({
+      room: {
+        ...state.room,
+        currentTurn: playerId
+      },
+    }))
+  },
+
+  setStartCountdown: () => {
+    set((state) => ({
+      room: {
+        ...state.room,
+        status: "READY"
+      },
+    }))
   },
 
   resetRoom: () =>

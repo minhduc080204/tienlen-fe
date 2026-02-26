@@ -4,11 +4,13 @@ export type ActionType =
 
   | "READY"
   | "UNREADY"
+  | "START_COUNTDOWN"
 
   | "START_GAME"
   | "PLAY_CARDS"
   | "PASS"
   | "TIMEOUT"
+  | "NEXT_TURN"
 
   | "CHAT"
   | "GAME_FINISHED"

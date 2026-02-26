@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
+import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
+import { TokenIcon } from "../assets/icons/TokenIcon";
 import { BackButton } from "../components/BackButton";
 import ChatTab from "../components/ChatTab";
 import { ActionBar } from "../components/gameplay/ActionBar";
+import { Hand } from "../components/gameplay/Hand";
 import { Player } from "../components/gameplay/Player";
 import { ROUTES } from "../routes/routes";
+import { useRoomStore } from "../stores/room.store";
 import { useSocketStore } from "../stores/socket.store";
 import type { CardType } from "../type/card";
-import toast from "react-hot-toast";
-import { CountdownCircleTimer } from 'react-countdown-circle-timer'
-import { Hand } from "../components/gameplay/Hand";
-import { Table } from "../components/gameplay/Table";
-import { useRoomStore } from "../stores/room.store";
-import { TokenIcon } from "../assets/icons/TokenIcon";
 
 export default function GamePlay() {
   const navigate = useNavigate();
   const sendReadySocket = useSocketStore((s) => s.sendReady);
+  const sendUnReadySocket = useSocketStore((s) => s.sendUnReady);
   const handleBackClick = () => {
     useSocketStore.getState().disconnect()
     navigate(ROUTES.HOME)
@@ -49,6 +49,8 @@ export default function GamePlay() {
       }
     })
   }
+  console.log(selectedIds, "SELECT");
+  
   const handlePassTurn = () => {
 
   }
@@ -57,29 +59,6 @@ export default function GamePlay() {
       return toast.error("Hay chon la");
     }
   }
-  const hands: CardType[] = [
-        {id: "1", rank: 3, suit: 0},
-        // {id: "12", rank: 4, suit: 1},
-        // {id: "13", rank: 5, suit: 2},
-        // {id: "14", rank: 6, suit: 3},
-        // {id: "15", rank: 7, suit: 0},
-        // {id: "16", rank: 8, suit: 1},
-        // {id: "17", rank: 9, suit: 2},
-        // {id: "18", rank: 10, suit: 3},
-      // {id: "19", rank: 11, suit: 0},
-      // {id: "19", rank: 11, suit: 1},
-      // {id: "19", rank: 11, suit: 2},
-      // {id: "19", rank: 11, suit: 3},
-      // {id: "10", rank: 12, suit: 1},
-      // {id: "10", rank: 12, suit: 2},
-      // {id: "10", rank: 12, suit: 3},
-      // {id: "10", rank: 12, suit: 0},
-      // {id: "11", rank: 13, suit: 1},
-      // {id: "11", rank: 13, suit: 2},
-      // {id: "11", rank: 13, suit: 3},
-      // {id: "11", rank: 13, suit: 0},
-      // {id: "112", rank: 10, suit: 0},
-  ]
 
   const getCuurrentDataRoom = () => {
     console.log(room);
@@ -96,7 +75,7 @@ export default function GamePlay() {
   const renderWhenWaiting = ()=> {
     return(
       <button
-        onClick={sendReadySocket}
+        onClick={room.me?.ready?sendUnReadySocket:sendReadySocket}
         className={`px-6 py-3
           rounded-xl
           text-white font-bold
@@ -118,42 +97,42 @@ export default function GamePlay() {
   const renderWhenPlaying = () => {
     return<>
       <div className="mr-10">
-          <CountdownCircleTimer
-            isPlaying
-            duration={10}
-            size={120}                 // 👈 nhỏ lại
-            strokeWidth={10}           // 👈 viền mảnh hơn
-            colors={["#00C9A7", "#FFC75F", "#FF4B5C"]}
-            colorsTime={[10, 5, 2]}
-            trailColor="#1e293b"      // màu nền vòng (dark mode đẹp)
-          >
-            {({ remainingTime }) => (
-              <div
-                style={{
-                  fontSize: "30px",    
-                  fontWeight: 700,
-                  color:
-                    remainingTime <= 2
-                      ? "#FF4B5C"
-                      : remainingTime <= 5
-                      ? "#FFC75F"
-                      : "#00C9A7",
-                }}
-              >
-                {remainingTime}
-              </div>
-            )}
-          </CountdownCircleTimer>
-        </div>
-        <Hand
-          hands={hands}
-          selectedIds={selectedIds}
-          onSelected={(card)=>handleSelectedCard(card)}
-        />
-        <ActionBar
-          onAttackCard={handleAttack}
-          onPassTurn={handlePassTurn}
-        />
+        {isMyTurn()&&(<CountdownCircleTimer
+          isPlaying
+          duration={15}
+          size={120}                 // 👈 nhỏ lại
+          strokeWidth={10}           // 👈 viền mảnh hơn
+          colors={["#00C9A7", "#FFC75F", "#FF4B5C"]}
+          colorsTime={[10, 5, 2]}
+          trailColor="#1e293b"      // màu nền vòng (dark mode đẹp)
+        >
+          {({ remainingTime }) => (
+            <div
+              style={{
+                fontSize: "30px",    
+                fontWeight: 700,
+                color:
+                  remainingTime <= 2
+                    ? "#FF4B5C"
+                    : remainingTime <= 5
+                    ? "#FFC75F"
+                    : "#00C9A7",
+              }}
+            >
+              {remainingTime}
+            </div>
+          )}
+        </CountdownCircleTimer>)}
+      </div>  
+      <Hand
+        hands={room.me?.handCards||[]}
+        selectedIds={selectedIds}
+        onSelected={(card)=>handleSelectedCard(card)}
+      />
+      <ActionBar
+        onAttackCard={handleAttack}
+        onPassTurn={handlePassTurn}
+      />
     </>
   }
 
@@ -162,47 +141,83 @@ export default function GamePlay() {
   }
 
   const renderPlayer = () => {
-  return room.players.map((player) => {
-    const relative = getRelativePosition(player.playerIndex);
+    return room.players.map((player) => {
+      const relative = getRelativePosition(player.playerIndex);
 
-    const basePlayer = (
-      <Player key={player.playerIndex} player={player} />
-    );
+      const basePlayer = (
+        <Player key={player.playerIndex} player={player} />
+      );
 
-    switch (relative) {
-      // case 0:
-      //   return (
-      //     <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
-      //       {basePlayer}
-      //     </div>
-      //   );
+      switch (relative) {
+        // case 0:
+        //   return (
+        //     <div className="absolute bottom-4 left-1/2 -translate-x-1/2">
+        //       {basePlayer}
+        //     </div>
+        //   );
 
-      case 1:
-        return (
-          <div className="absolute right-4 top-1/2 -translate-y-1/2">
-            {basePlayer}
+        case 1:
+          return (
+            <div className="absolute right-4 top-1/2 -translate-y-1/2">
+              {basePlayer}
+            </div>
+          );
+
+        case 2:
+          return (
+            <div className="absolute top-4 left-1/2 -translate-x-1/2">
+              {basePlayer}
+            </div>
+          );
+
+        case 3:
+          return (
+            <div className="absolute left-4 top-1/2 -translate-y-1/2">
+              {basePlayer}
+            </div>
+          );
+
+        default:
+          return null;
+      }
+    });
+  };
+
+  const isMyTurn = () => {
+    return room.me?.user.id === room.currentTurn
+  }
+
+  const renderCountDown = () => {
+    return(<div className="flex flex-col gap-3 items-center">
+      <CountdownCircleTimer
+        isPlaying
+        duration={5}
+        size={120}                 // 👈 nhỏ lại
+        strokeWidth={10}           // 👈 viền mảnh hơn
+        colors={["#00C9A7", "#FFC75F", "#FF4B5C"]}
+        colorsTime={[10, 5, 2]}
+        trailColor="#1e293b"      // màu nền vòng (dark mode đẹp)
+      >
+        {({ remainingTime }) => (
+          <div
+            style={{
+              fontSize: "30px",    
+              fontWeight: 700,
+              color:
+                remainingTime <= 2
+                  ? "#FF4B5C"
+                  : remainingTime <= 5
+                  ? "#FFC75F"
+                  : "#00C9A7",
+            }}
+          >
+            {remainingTime}
           </div>
-        );
-
-      case 2:
-        return (
-          <div className="absolute top-4 left-1/2 -translate-x-1/2">
-            {basePlayer}
-          </div>
-        );
-
-      case 3:
-        return (
-          <div className="absolute left-4 top-1/2 -translate-y-1/2">
-            {basePlayer}
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  });
-};
+        )}
+      </CountdownCircleTimer>
+      <h1 className="font-bold text-lg text-yellow-500">Trò chơi sắp bắt đầu </h1>
+    </div>)
+  }
   
   return (
     <div
@@ -226,7 +241,8 @@ export default function GamePlay() {
       {roomStore.room&&renderPlayer()}
     
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <Table cards={[hands[0], hands[0], hands[0]]} />
+        {/* <Table cards={[hands[0], hands[0], hands[0]]} /> */}
+        {room.status==='READY'&&renderCountDown()}
       </div>
 
       <button onClick={getCuurrentDataRoom}>
@@ -237,9 +253,8 @@ export default function GamePlay() {
       {/* Actions */}
       <div className="absolute bottom-6 w-full flex justify-center items-center gap-4">
         
-        {room.status==='WAITING'&&renderWhenWaiting()}
+        {room.status!=='PLAYING'&&renderWhenWaiting()}
         {room.status==='PLAYING'&&renderWhenPlaying()}
-        {room.status==='READY'&&renderWhenReady()}
       </div>
 
 

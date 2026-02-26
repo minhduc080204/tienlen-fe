@@ -50,11 +50,11 @@ export const Card = ({card, isSelected, onSelected}:CardProps) => {
         <div className="text-3xl flex flex-col items-start">
             <div>
                 <b className="font-card">{rankMapping(card.rank)}</b>
-                <img className="w-6" src={`./cards/${SUITS[card.suit]}_m_ic.svg`}/>
+                <img className="w-6" src={`./cards/${SUITS[card.suit-1]}_m_ic.svg`}/>
             </div>
         </div>
         <div className="flex justify-center mt-2 mb-2">
-            <img className="" src={getCardImage(card.rank, card.suit)}/>
+            <img className="" src={getCardImage(card.rank, card.suit-1)}/>
         </div>
     </button>
   )
