@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { TokenIcon } from "../assets/icons/TokenIcon";
-import { useModalStore } from "../type/modal.store";
-import { formatNumber } from "../utils/formatNumber";
+import { TokenIcon } from "../../assets/icons/TokenIcon";
+import { useModalStore } from "../../stores/modal.store";
+import { formatNumber } from "../../utils/formatNumber";
+import { Button } from "../ui/Button";
 
 const BET_OPTIONS = [10, 20, 50, 100, 200, 500, 1000];
 
@@ -69,44 +70,42 @@ export default function CreateRoomModal() {
           const active = selectedBet === bet;
 
           return (
-            <button
+            <Button
               key={bet}
               onClick={() => setSelectedBet(bet)}
               className={`
                 py-2 rounded-lg font-semibold transition
                 flex justify-center items-center border 
-                ${
-                  active
-                    ? "bg-red-600 border-red-500 text-white shadow-lg shadow-red-600/40"
-                    : "bg-zinc-800 border-zinc-700 text-gray-300 hover:bg-red-700/20 hover:border-red-600"
+                ${active
+                  ? "bg-red-600 border-red-500 text-white shadow-lg shadow-red-600/40"
+                  : "bg-zinc-800 border-zinc-700 text-gray-300 hover:bg-red-700/20 hover:border-red-600"
                 }
               `}
             >
-              {formatNumber(bet)} <TokenIcon className="w-7"/>
-            </button>
+              {formatNumber(bet)} <TokenIcon className="w-7" />
+            </Button>
           );
         })}
       </div>
 
       {/* Create Button */}
-      <button
+      <Button
         onClick={handleCreateRoom}
         disabled={!selectedBet || loading}
         className={`
           w-full py-2 rounded-lg
           font-semibold transition
-          ${
-            selectedBet
-              ? "bg-red-600 hover:bg-red-500 text-white"
-              : "bg-zinc-700 text-gray-400 cursor-not-allowed"
+          ${selectedBet
+            ? "bg-red-600 hover:bg-red-500 text-white"
+            : "bg-zinc-700 text-gray-400 cursor-not-allowed"
           }
         `}
       >
         {loading ? "Đang tạo..." : "🔥 Tạo Phòng"}
-      </button>
+      </Button>
 
       {/* Close */}
-      <button
+      <Button
         onClick={close}
         className="
           w-full mt-3 py-2 rounded-lg
@@ -115,7 +114,7 @@ export default function CreateRoomModal() {
         "
       >
         Đóng
-      </button>
+      </Button>
     </motion.div>
   );
 }

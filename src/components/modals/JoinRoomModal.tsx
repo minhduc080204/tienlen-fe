@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import toast from "react-hot-toast";
-import { useModalStore } from "../type/modal.store";
+import { useModalStore } from "../../stores/modal.store";
+import { Button } from "../ui/Button";
 
 export default function JoinRoomModal() {
   const close = useModalStore((s) => s.close);
@@ -89,24 +90,23 @@ export default function JoinRoomModal() {
       </div>
 
       {/* Join Button */}
-      <button
+      <Button
         onClick={handleJoinRoom}
         disabled={!roomId || loading}
         className={`
           w-full py-2 rounded-lg
           font-semibold transition
-          ${
-            roomId
-              ? "bg-red-600 hover:bg-red-500 text-white"
-              : "bg-zinc-700 text-gray-400 cursor-not-allowed"
+          ${roomId
+            ? "bg-red-600 hover:bg-red-500 text-white"
+            : "bg-zinc-700 text-gray-400 cursor-not-allowed"
           }
         `}
       >
         {loading ? "Đang tham gia..." : "🚀 Tham Gia"}
-      </button>
+      </Button>
 
       {/* Close */}
-      <button
+      <Button
         onClick={close}
         className="
           w-full mt-3 py-2 rounded-lg
@@ -115,7 +115,7 @@ export default function JoinRoomModal() {
         "
       >
         Đóng
-      </button>
+      </Button>
     </motion.div>
   );
 }

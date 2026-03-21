@@ -6,10 +6,12 @@ import RegisterPage from './page/Register'
 import { ROUTES } from './routes/routes'
 import GamePlay from './page/GamePlay'
 import ModalRoot from './ModalRoot'
+import DeviceOrientationWarning from './components/DeviceOrientationWarning'
 
 function App() {
   return (
     <>
+      <DeviceOrientationWarning />
       <AnimatePresence mode="wait">
         <Routes>
           <Route path="/" element={<Navigate to={ROUTES.LOGIN} replace />} />

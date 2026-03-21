@@ -16,7 +16,9 @@ type SocketStore = {
   disconnect: () => void;
   sendChat: (content: string) => void;
   sendReady: () => void;
-  sendUnReady: () => void;
+  sendAttack: (cardIds: string[]) => void;
+  sendPass: () => void;  
+  sendUnReady: () => void;  
   reconnect: () => void;
 };
 
@@ -26,7 +28,6 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
   roomId: null,
   wsUrl: null,
   isConnected: false,
-  messages: [],
 
   connect: (roomId, wsUrl) => {
     set((state) => {
@@ -54,6 +55,7 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
           const res = JSON.parse(e.data);
           const action = res.action as ActionType
           console.log("T got", res);
+          
 
           switch (action) {
             case "CHAT":
@@ -83,7 +85,11 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
               break;
 
             case "NEXT_TURN":
-              useRoomStore.getState().setNextTurn(res.data.playerId);
+              useRoomStore.getState().setNextTurn(res.data.currentTurn);
+              break;
+
+            case "ATTACK":
+              useRoomStore.getState().setTable(res.data.table);
               break;
 
             case "START_GAME":
@@ -93,13 +99,14 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
             case "SYNC_DATA":
               useRoomStore.getState().setRoomType(res.data);
               break;
+
+            case "GAME_MESSAGE":
+              useRoomStore.getState().setGameMessage(res.data);
+              break;
           
             default:
               break;
           }
-
-          
-
 
         } catch (e) {
           console.error("❌ Parse message error", e);
@@ -120,7 +127,7 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
           isConnected: false,
         });
 
-        get().reconnect();
+        // get().reconnect();
       };
 
       return { socket };
@@ -159,7 +166,29 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
     socket.send(JSON.stringify(message));
   },
 
+  sendAttack: (cardIds: string[]) => {
+    const socket = get().socket;
+    if (!socket || socket.readyState !== WebSocket.OPEN) return;
+    const message: SocketRequestType<string[]> = {
+      action: "ATTACK",
+      data: cardIds
+    };
+    socket.send(JSON.stringify(message));
+  },
+
+  sendPass: () => {
+    const socket = get().socket;
+    if (!socket || socket.readyState !== WebSocket.OPEN) return;
+    const message: SocketRequestType<null> = {
+      action: "PASS",
+      data: null,
+    };
+    socket.send(JSON.stringify(message)); 
+  },
+
   disconnect: () => {
+    console.log("JUST DISCONECT !!!!");
+    
     get().socket?.close();
     set({ 
       socket: null, 

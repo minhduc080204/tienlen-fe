@@ -7,7 +7,7 @@ export type ActionType =
   | "START_COUNTDOWN"
 
   | "START_GAME"
-  | "PLAY_CARDS"
+  | "ATTACK"
   | "PASS"
   | "TIMEOUT"
   | "NEXT_TURN"
@@ -16,4 +16,5 @@ export type ActionType =
   | "GAME_FINISHED"
 
   | "SYNC_DATA"
+  | "GAME_MESSAGE"
 

@@ -4,7 +4,7 @@ import { gameApi } from "../api/game.api";
 import toast from "react-hot-toast";
 import { ROUTES } from "../routes/routes";
 import { useSocketStore } from "../stores/socket.store";
-import { useModalStore } from "../type/modal.store";
+import { useModalStore } from "../stores/modal.store";
 import axios from "axios";
 
 export default function MenuActions() {
@@ -48,8 +48,8 @@ export default function MenuActions() {
         }
       }
 
-    toast.error("Không thể kết nối phòng");
-    console.error(err);
+      toast.error("Không thể kết nối phòng");
+      console.error(err);
     }
   };
   return (

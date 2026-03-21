@@ -9,6 +9,7 @@ import { gameToast } from "../components/ui/toast";
 import { authApi } from "../api/auth.api";
 import { Spinner } from "../components/ui/Spiner";
 import SettingsButton from "../components/SettingsButton";
+import { Button } from "../components/ui/Button";
 
 export default function RegisterPage() {
     const [isLoading, setIsLoading] = useState(false);
@@ -41,7 +42,7 @@ export default function RegisterPage() {
         } catch (err: any) {
             gameToast.dismiss(toastId);
             console.log(err);
-            
+
             gameToast.error(err.response?.data?.message || "Có lỗi xảy ra");
         } finally {
             setIsLoading(false);
@@ -51,17 +52,17 @@ export default function RegisterPage() {
     const validator = () => {
         if (!account || !password || !rePassword) {
             gameToast.error("Vui lòng nhập đầy đủ thông tin");
-            return ;
+            return;
         }
 
-        if(account.length<6 || password.length<6){
+        if (account.length < 6 || password.length < 6) {
             gameToast.error("Tài khoản và mật khẩu phải dài hơn 6 ký tự");
-            return ;
+            return;
         }
 
-        if(password!=rePassword){
+        if (password != rePassword) {
             gameToast.error("Mật khẩu chưa khớp");
-            return ;
+            return;
         }
 
         return true;
@@ -142,7 +143,7 @@ export default function RegisterPage() {
                         />
 
                         {/* Register */}
-                        <button
+                        <Button
                             onClick={handleRegister}
                             className="
               mt-2 py-2.5 rounded-lg
@@ -153,10 +154,10 @@ export default function RegisterPage() {
             "
                         >
                             Đăng ký
-                        </button>
+                        </Button>
 
                         {/* Back to Login */}
-                        <button
+                        <Button
                             onClick={handleLogin}
                             className="
               py-2 rounded-lg
@@ -168,7 +169,7 @@ export default function RegisterPage() {
             "
                         >
                             Quay lại đăng nhập
-                        </button>
+                        </Button>
 
                         {/* Divider */}
                         <div className="flex items-center gap-3 my-2">

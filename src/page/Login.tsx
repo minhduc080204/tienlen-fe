@@ -10,6 +10,7 @@ import { authApi } from "../api/auth.api";
 import { Spinner } from "../components/ui/Spiner";
 import { useAuthStore } from "../stores/auth.store";
 import SettingsButton from "../components/SettingsButton";
+import { Button } from "../components/ui/Button";
 
 export default function LoginPage() {
   const loginStore = useAuthStore();
@@ -107,7 +108,7 @@ export default function LoginPage() {
             />
 
             {/* Login */}
-            <button
+            <Button
               onClick={handleLogin}
               className="
               mt-2 py-2.5 rounded-lg
@@ -118,10 +119,10 @@ export default function LoginPage() {
             "
             >
               Đăng nhập
-            </button>
+            </Button>
 
             {/* Register */}
-            <button
+            <Button
               onClick={handleRegister}
               className="
               py-2 rounded-lg
@@ -133,7 +134,7 @@ export default function LoginPage() {
             "
             >
               Đăng ký tài khoản
-            </button>
+            </Button>
 
             {/* Divider */}
             <div className="flex items-center gap-3 my-2">

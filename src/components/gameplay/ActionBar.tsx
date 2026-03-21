@@ -1,15 +1,17 @@
+import { Button } from "../ui/Button";
+
 type ActionBarProps = {
-  onAttackCard: ()=>void,
-  onPassTurn: ()=>void,
+  onAttackCard: () => void,
+  onPassTurn: () => void,
 }
 
 export const ActionBar = ({
   onAttackCard,
   onPassTurn
-}:ActionBarProps) => {
+}: ActionBarProps) => {
   return (
     <div className="flex gap-4">
-      <button
+      <Button
         onClick={onAttackCard}
         className="
           px-6 py-3
@@ -23,9 +25,9 @@ export const ActionBar = ({
         "
       >
         Đánh
-      </button>
+      </Button>
 
-      <button
+      <Button
         onClick={onPassTurn}
         className="
           px-6 py-3
@@ -39,7 +41,7 @@ export const ActionBar = ({
         "
       >
         Bỏ lượt
-      </button>
+      </Button>
     </div>
   );
 };

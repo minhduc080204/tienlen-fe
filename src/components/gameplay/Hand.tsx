@@ -4,31 +4,31 @@ import { Card } from "./Card"
 type HandProps = {
     hands: CardType[],
     selectedIds: string[],
-    onSelected: (card: CardType)=>void,
+    onSelected: (card: CardType) => void,
 }
 
 export const Hand = ({
     hands,
     selectedIds,
     onSelected
-}:HandProps) => {
+}: HandProps) => {
 
     const renderCards = () => {
-        return(
+        return (
             <div className="inline-flex items-end">
-                {hands.map((card)=><Card 
-                    key={card.rank + ""+card.suit} 
-                    card={card} 
+                {hands.map((card) => <Card
+                    key={card.rank + "" + card.suit}
+                    card={card}
                     isSelected={selectedIds.includes(card.id)}
-                    onSelected={()=>onSelected(card)}
+                    onSelected={() => onSelected(card)}
                 />)}
             </div>
         )
     }
 
-    return(
+    return (
         <div>
-            {hands&&renderCards()}
+            {hands && renderCards()}
         </div>
     )
 }

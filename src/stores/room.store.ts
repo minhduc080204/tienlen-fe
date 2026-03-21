@@ -1,4 +1,6 @@
+import toast from "react-hot-toast";
 import { create } from "zustand";
+import type { GameMessageType } from "../type/game-message";
 import type { PlayerType } from "../type/player";
 import type { RoomType } from "../type/room";
 
@@ -12,9 +14,11 @@ type RoomStore = {
   removePlayer: (userId: number) => void;
   setReady: (userId: number) => void;
   setUnReady: (userId: number) => void;
-  setStartCountdown: () => void;
-  setNextTurn: (playerId: number) => void;
+  setStartCountdown: () => void;  
+  setNextTurn: (currentTurn: number) => void;
   resetRoom: () => void;
+  setTable: (cardIds: string[]) => void;
+  setGameMessage: (gameMessage: GameMessageType) => void;
 };
 /* =========================
    Store
@@ -22,8 +26,8 @@ type RoomStore = {
 
 
 const initialState: RoomType = {
-  currentTurn: 0,
   status: "WAITING",
+  table: [],
   players: [],
 };
 
@@ -112,11 +116,22 @@ export const useRoomStore = create<RoomStore>((set) => ({
     });
   },
 
-  setNextTurn: (playerId: number) => {
+  setNextTurn: (currentTurn: number) => {
     set((state) => ({
       room: {
         ...state.room,
-        currentTurn: playerId
+        currentTurn: currentTurn
+      },
+    }))
+  },
+
+  setTable: (cards: string[]) => {
+    console.log("settb OK", cards);
+    
+    set((state) => ({
+      room: {
+        ...state.room,
+        table: cards
       },
     }))
   },
@@ -128,6 +143,14 @@ export const useRoomStore = create<RoomStore>((set) => ({
         status: "READY"
       },
     }))
+  },
+
+  setGameMessage: (gameMessage: GameMessageType) => {
+    if(gameMessage.type === "ERROR") {
+      toast.error(gameMessage.message)
+    } else if(gameMessage.type === "SUCCESS") {
+      toast.success(gameMessage.message)
+    }
   },
 
   resetRoom: () =>

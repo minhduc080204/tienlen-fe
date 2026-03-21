@@ -1,11 +1,12 @@
 import { motion } from "framer-motion";
-import { useSoundStore } from "../stores/sound.store";
-import { useModalStore } from "../type/modal.store";
+import { useSoundStore } from "../../stores/sound.store";
+import { useModalStore } from "../../stores/modal.store";
+import { Button } from "../ui/Button";
 
 export default function SettingsModal() {
-  const { enabled, volume, toggleSound, setVolume, playClick } =
+  const { enabled, volume, toggleSound, setVolume } =
     useSoundStore();
-  
+
   const close = useModalStore((s) => s.close);
   return (
     <>
@@ -40,9 +41,8 @@ export default function SettingsModal() {
         {/* Toggle sound */}
         <div className="flex items-center justify-between mb-4">
           <span className="text-gray-300">Âm thanh</span>
-          <button
+          <Button
             onClick={() => {
-              playClick();
               toggleSound();
             }}
             className={`
@@ -56,7 +56,7 @@ export default function SettingsModal() {
                 ${enabled ? "translate-x-5" : ""}
               `}
             />
-          </button>
+          </Button>
         </div>
 
         {/* Volume */}
@@ -77,9 +77,8 @@ export default function SettingsModal() {
         </div>
 
         {/* Close */}
-        <button
+        <Button
           onClick={() => {
-            playClick();
             close();
           }}
           className="
@@ -90,7 +89,7 @@ export default function SettingsModal() {
           "
         >
           Đóng
-        </button>
+        </Button>
       </motion.div>
     </>
   );

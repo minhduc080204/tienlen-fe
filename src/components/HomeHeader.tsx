@@ -19,7 +19,7 @@ export default function HomeHeader() {
 
                     <div className="text-white bg-stone-700/20 rounded-full backdrop-blur-md p-2 pr-6">
                         <p className="text-lg font-semibold">minhduc82</p>
-                        <p>🟢<label  className="text-md text-white/80">Online</label></p>
+                        <p>🟢<label className="text-md text-white/80">Online</label></p>
                     </div>
                 </div>
 
@@ -119,7 +119,7 @@ export default function HomeHeader() {
 
                 </div>
 
-                <SettingsButton/>
+                <SettingsButton />
             </div>
         </div>
     );

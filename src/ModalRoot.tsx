@@ -1,8 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useModalStore } from "./type/modal.store";
-import CreateRoomModal from "./components/CreateRoomModel";
-import SettingsModal from "./components/SettingsModal";
-import JoinRoomModal from "./components/JoinRoomModal";
+import { useModalStore } from "./stores/modal.store";
+import CreateRoomModal from "./components/modals/CreateRoomModel";
+import SettingsModal from "./components/modals/SettingsModal";
+import JoinRoomModal from "./components/modals/JoinRoomModal";
+import ChatTab from "./components/ChatTab";
 
 export default function ModalRoot() {
   const { modal, close } = useModalStore();
@@ -31,6 +32,7 @@ export default function ModalRoot() {
             {modal === "SETTINGS" && <SettingsModal />}
             {modal === "CREATE_ROOM" && <CreateRoomModal />}
             {modal === "JOIN_ROOM" && <JoinRoomModal />}
+            {modal === "CHAT_ROOM" && <ChatTab />}
           </motion.div>
         </>
       )}

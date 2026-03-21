@@ -35,7 +35,7 @@ export default function GameButton({ text, img, isPlaynow = false, onClick }: Pr
       onClick={onClick}
     >
       <img className={`
-          ${!isPlaynow&&'w-40'}
+          ${!isPlaynow && 'w-40'}
         `}
         src={`./images/${img}`}
       />

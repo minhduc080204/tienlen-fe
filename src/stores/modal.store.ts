@@ -1,10 +1,11 @@
 import { create } from "zustand";
 
 export type ModalType = 
-    "SETTINGS" | 
-    "CREATE_ROOM" | 
-    "JOIN_ROOM" | 
-    null;
+  "SETTINGS" | 
+  "CREATE_ROOM" | 
+  "CHAT_ROOM" |
+  "JOIN_ROOM" | 
+  null;
 
 type ModalStore = {
   modal: ModalType;

@@ -5,8 +5,9 @@ export type RoomStatus = "WAITING" | "PLAYING" | "READY";
 export type RoomType = {
     roomId?: number
     me?: PlayerType
+    table: string[]
     players: PlayerType[]
     status: RoomStatus
-    currentTurn: number
+    currentTurn?: number
     betToken?: number
 }
