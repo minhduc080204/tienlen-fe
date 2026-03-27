@@ -25,7 +25,7 @@ export default function MenuActions() {
 
       setRoom({ roomId: res.roomId });
       connectSocket(res.roomId, res.wsUrl);
-      navigate(ROUTES.ROOM);
+      navigate(ROUTES.ROOM, { state: { fromButton: true } });
     } catch (err) {
       if (axios.isAxiosError(err)) {
         const status = err.response?.status;

@@ -40,22 +40,31 @@ export const Card = ({ card, isSelected, onSelected }: CardProps) => {
     return (
         <Button
             className={`
-            w-30 h-45 bg-white -ml-10 
-            rounded-lg p-2 border-2 border-black/70 
+            w-[45px] h-[65px] -ml-[20px]
+            sm:w-[60px] sm:h-[87px] sm:-ml-[26px]
+            lg:w-[90px] lg:h-[135px] lg:-ml-[38px]
+            xl:w-[120px] xl:h-[180px] xl:-ml-[50px]
+            first:ml-0
+            bg-white rounded-md lg:rounded-lg
+            p-[2px] sm:p-1 lg:p-1.5 xl:p-2
+            border border-black/70 lg:border-2
             flex flex-col overflow-hidden
             ${isRed ? 'text-[#EC2000]' : 'text-black'}
-            ${isSelected && 'mb-4'}
+            ${isSelected && 'mb-2 sm:mb-3 lg:mb-4'}
         `}
             onClick={() => onSelected(card)}
         >
-            <div className="text-3xl flex flex-col items-start">
+            <div className="text-[10px] sm:text-sm lg:text-xl xl:text-3xl flex flex-col items-start leading-none">
                 <div>
                     <b className="font-card">{rankMapping(card.rank)}</b>
-                    <img className="w-6" src={`./cards/${SUITS[card.suit - 1]}_m_ic.svg`} />
+                    <img className="w-2 sm:w-3 lg:w-4 xl:w-6" src={`./cards/${SUITS[card.suit - 1]}_m_ic.svg`} />
                 </div>
             </div>
-            <div className="flex justify-center mt-2 mb-2">
-                <img className="" src={getCardImage(card.rank, card.suit - 1)} />
+            <div className="flex justify-center flex-1 items-center">
+                <img
+                    className="w-[24px] sm:w-[32px] lg:w-[38px] xl:w-auto object-contain max-h-full"
+                    src={getCardImage(card.rank, card.suit - 1)}
+                />
             </div>
         </Button>
     )

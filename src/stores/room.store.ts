@@ -24,7 +24,6 @@ type RoomStore = {
    Store
 ========================= */
 
-
 const initialState: RoomType = {
   status: "WAITING",
   table: [],
@@ -126,8 +125,6 @@ export const useRoomStore = create<RoomStore>((set) => ({
   },
 
   setTable: (cards: string[]) => {
-    console.log("settb OK", cards);
-    
     set((state) => ({
       room: {
         ...state.room,

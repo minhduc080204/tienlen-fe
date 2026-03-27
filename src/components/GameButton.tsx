@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useSoundStore } from "../stores/sound.store";
 
 interface Props {
   text: string;
@@ -8,6 +9,11 @@ interface Props {
 }
 
 export default function GameButton({ text, img, isPlaynow = false, onClick }: Props) {
+  const playClick = useSoundStore((s) => s.playClick);
+  const handleClick = () => {
+    playClick();
+    onClick();
+  }
   return (
     <motion.button
       className={`
@@ -33,7 +39,7 @@ export default function GameButton({ text, img, isPlaynow = false, onClick }: Pr
       transition={{ duration: 2.5, repeat: Infinity }}
       whileHover={{ scale: 1.08 }}
       whileTap={{ scale: 0.95 }}
-      onClick={onClick}
+      onClick={handleClick}
     >
       <img
         className={`

@@ -2,12 +2,14 @@ import type { CardType } from "../../type/card"
 import { Card } from "./Card"
 
 type HandProps = {
+    classes?: string,
     hands: CardType[],
     selectedIds: string[],
     onSelected: (card: CardType) => void,
 }
 
 export const Hand = ({
+    classes,
     hands,
     selectedIds,
     onSelected
@@ -15,7 +17,7 @@ export const Hand = ({
 
     const renderCards = () => {
         return (
-            <div className="inline-flex items-end">
+            <div className="inline-flex items-end pb-0">
                 {hands.map((card) => <Card
                     key={card.rank + "" + card.suit}
                     card={card}
@@ -27,7 +29,7 @@ export const Hand = ({
     }
 
     return (
-        <div>
+        <div className={classes}>
             {hands && renderCards()}
         </div>
     )

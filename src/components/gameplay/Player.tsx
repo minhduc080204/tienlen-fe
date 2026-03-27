@@ -10,10 +10,10 @@ export const Player = ({ player }: Props) => {
     <div className="flex flex-col items-center text-white">
       <img
         src={player.user.avatar || "https://i.pravatar.cc/100"}
-        className="w-14 h-14 rounded-full border-2 border-yellow-400"
+        className="w-8 h-8 sm:w-10 sm:h-10 lg:w-14 lg:h-14 rounded-full border-2 border-yellow-400"
       />
-      <p className="text-sm mt-1">{player.user.name}</p>
-      <span className="text-xs opacity-80">{player.handSize} lá</span>
+      <p className="text-[10px] sm:text-xs lg:text-sm mt-0.5 sm:mt-1">{player.user.name}</p>
+      <span className="text-[9px] sm:text-xs opacity-80">{player.handSize} lá</span>
     </div>
   );
 };

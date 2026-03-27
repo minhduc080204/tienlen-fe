@@ -5,6 +5,7 @@ import type { SocketRequestType } from "../type/socket-request";
 import { useAuthStore } from "./auth.store";
 import { useChatStore } from "./chat.store";
 import { useRoomStore } from "./room.store";
+import { useSoundStore } from "./sound.store";
 
 type SocketStore = {
   socket: WebSocket | null;
@@ -59,16 +60,17 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
 
           switch (action) {
             case "CHAT":
+              useSoundStore.getState().chattingReceived();
               useChatStore.getState().addMessage(res.data);
               break;            
 
             case "JOIN_ROOM":
-              console.log("JOIN_ROOM trigger");
-              
+              useSoundStore.getState().joinRoom();
               useRoomStore.getState().addPlayer(res.data);
               break;
 
             case "LEFT_ROOM":
+              useSoundStore.getState().leftRoom();
               useRoomStore.getState().removePlayer(res.data.userId);
               break;
 
@@ -89,10 +91,14 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
               break;
 
             case "ATTACK":
+              if (res.data.table.length > 0) {
+                useSoundStore.getState().playCard();
+              }
               useRoomStore.getState().setTable(res.data.table);
               break;
 
             case "START_GAME":
+              useSoundStore.getState().dealingCard();
               // useRoomStore.getState().setStartCountdown();
               break;
 

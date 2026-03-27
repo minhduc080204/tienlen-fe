@@ -1,17 +1,20 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { gameApi } from "../../api/game.api";
+import { ROUTES } from "../../routes/routes";
 import { useModalStore } from "../../stores/modal.store";
+import { useSocketStore } from "../../stores/socket.store";
 import { Button } from "../ui/Button";
 
 export default function JoinRoomModal() {
   const close = useModalStore((s) => s.close);
-  // const navigate = useNavigate();
-  // const connectSocket = useSocketStore((s) => s.connect);
-  // const setRoom = useSocketStore.setState;
+  const navigate = useNavigate();
+  const setRoom = useSocketStore.setState;
 
   const [roomId, setRoomId] = useState("");
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleJoinRoom = async () => {
     if (!roomId.trim()) {
@@ -24,26 +27,27 @@ export default function JoinRoomModal() {
       return;
     }
 
-    // try {
-    //   setLoading(true);
+    try {
+      setLoading(true);
 
-    //   const res = await gameApi.joinRoom({ roomId: Number(roomId) });
+      const res = await gameApi.joinRoom(Number(roomId));
+      const data = res.data;
 
-    //   if (!res?.roomId || !res?.wsUrl) {
-    //     toast.error("Không thể tham gia phòng");
-    //     return;
-    //   }
+      if (!data?.roomId) {
+        toast.error("Không thể tham gia phòng");
+        return;
+      }
 
-    //   setRoom({ roomId: res.roomId });
-    //   connectSocket(res.roomId, res.wsUrl);
+      setRoom({ roomId: data.roomId });
+      // connectSocket(data.roomId, data.wsUrl);
 
-    //   close();
-    //   navigate(ROUTES.ROOM);
-    // } catch (err) {
-    //   toast.error("Không thể tham gia phòng");
-    // } finally {
-    //   setLoading(false);
-    // }
+      close();
+      navigate(ROUTES.ROOM, { state: { fromButton: true } });
+    } catch (err) {
+      toast.error("Không thể tham gia phòng");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (

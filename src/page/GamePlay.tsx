@@ -17,10 +17,24 @@ import { useModalStore } from "../stores/modal.store";
 import { useRoomStore } from "../stores/room.store";
 import { useSocketStore } from "../stores/socket.store";
 import type { CardType } from "../type/card";
+import { useSoundStore } from "../stores/sound.store";
+
 
 export default function GamePlay() {
   const user = useAuthStore.getState().user
   const openModal = useModalStore((s) => s.open);
+  const playCard = useSoundStore((s) => s.playCard);
+  // Responsive timer size: 60px mobile, 80px sm, 120px lg+
+  const [timerSize, setTimerSize] = useState(() =>
+    window.innerWidth >= 1024 ? 120 : window.innerWidth >= 640 ? 60 : 40
+  );
+  useEffect(() => {
+    const update = () =>
+      setTimerSize(window.innerWidth >= 1024 ? 120 : window.innerWidth >= 640 ? 60 : 40);
+    window.addEventListener('resize', update);
+    return () => window.removeEventListener('resize', update);
+  }, []);
+
   const navigate = useNavigate();
   const handleBackClick = () => {
     useSocketStore.getState().disconnect()
@@ -72,12 +86,8 @@ export default function GamePlay() {
     }
 
     useSocketStore.getState().sendAttack(selectedIds);
+    playCard()
     setSelectedIds([])
-  }
-
-  const getCuurrentDataRoom = () => {
-    console.log(room);
-
   }
 
   const getRelativePosition = (playerSeat: number) => {
@@ -91,8 +101,8 @@ export default function GamePlay() {
     return (
       <Button
         onClick={room.me?.ready ? useSocketStore.getState().sendUnReady : useSocketStore.getState().sendReady}
-        className={`px-6 py-3
-          rounded-xl
+        className={`px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm lg:px-6 lg:py-3 lg:text-base
+          rounded-lg lg:rounded-xl
           text-white font-bold
           shadow-lg shadow-red-900/50
           hover:scale-110            
@@ -111,20 +121,23 @@ export default function GamePlay() {
 
   const renderWhenPlaying = () => {
     return <>
-      <div className="mr-10">
+      <div
+        className="flex items-center justify-center shrink-0"
+        style={{ width: timerSize, height: timerSize }}
+      >
         {isMyTurn() && (<CountdownCircleTimer
           isPlaying
           duration={15}
-          size={120}                 // 👈 nhỏ lại
-          strokeWidth={10}           // 👈 viền mảnh hơn
+          size={timerSize}
+          strokeWidth={timerSize >= 120 ? 10 : timerSize >= 80 ? 7 : 5}
           colors={["#00C9A7", "#FFC75F", "#FF4B5C"]}
           colorsTime={[10, 5, 2]}
-          trailColor="#1e293b"      // màu nền vòng (dark mode đẹp)
+          trailColor="#1e293b"
         >
           {({ remainingTime }) => (
             <div
               style={{
-                fontSize: "30px",
+                fontSize: timerSize >= 120 ? "30px" : timerSize >= 80 ? "20px" : "14px",
                 fontWeight: 700,
                 color:
                   remainingTime <= 2
@@ -169,21 +182,21 @@ export default function GamePlay() {
 
         case 1:
           return (
-            <div className="absolute right-4 top-1/2 -translate-y-1/2">
+            <div key={player.playerIndex} className="absolute right-2 sm:right-4 top-1/2 -translate-y-1/2">
               {basePlayer}
             </div>
           );
 
         case 2:
           return (
-            <div className="absolute top-4 left-1/2 -translate-x-1/2">
+            <div key={player.playerIndex} className="absolute top-2 sm:top-4 left-1/2 -translate-x-1/2">
               {basePlayer}
             </div>
           );
 
         case 3:
           return (
-            <div className="absolute left-4 top-1/2 -translate-y-1/2">
+            <div key={player.playerIndex} className="absolute left-2 sm:left-4 top-1/2 -translate-y-1/2">
               {basePlayer}
             </div>
           );
@@ -199,20 +212,20 @@ export default function GamePlay() {
   }
 
   const renderCountDown = () => {
-    return (<div className="flex flex-col gap-3 items-center">
+    return (<div className="flex flex-col gap-1 sm:gap-3 items-center">
       <CountdownCircleTimer
         isPlaying
         duration={5}
-        size={120}                 // 👈 nhỏ lại
-        strokeWidth={10}           // 👈 viền mảnh hơn
+        size={timerSize}
+        strokeWidth={timerSize >= 120 ? 10 : timerSize >= 80 ? 7 : 5}
         colors={["#00C9A7", "#FFC75F", "#FF4B5C"]}
         colorsTime={[10, 5, 2]}
-        trailColor="#1e293b"      // màu nền vòng (dark mode đẹp)
+        trailColor="#1e293b"
       >
         {({ remainingTime }) => (
           <div
             style={{
-              fontSize: "30px",
+              fontSize: timerSize >= 120 ? "30px" : timerSize >= 80 ? "20px" : "14px",
               fontWeight: 700,
               color:
                 remainingTime <= 2
@@ -226,7 +239,7 @@ export default function GamePlay() {
           </div>
         )}
       </CountdownCircleTimer>
-      <h1 className="font-bold text-lg text-yellow-500">Trò chơi sắp bắt đầu </h1>
+      <h1 className="font-bold text-xs sm:text-base lg:text-lg text-yellow-500">Trò chơi sắp bắt đầu</h1>
     </div>)
   }
 
@@ -235,16 +248,16 @@ export default function GamePlay() {
       className="w-full h-screen bg-cover bg-center relative overflow-hidden"
       style={{ backgroundImage: "url(/bg-room.png)" }}
     >
-      <div className="flex gap-5">
+      <div className="flex gap-2 sm:gap-3 lg:gap-5">
         <BackButton onClick={() => handleBackClick()} />
-        <div className="p-2 w-40 rounded-2xl bg-amber-50/20 shadow-lg shadow-red-900/40">
+        <div className="p-1.5 sm:p-2 w-28 sm:w-32 lg:w-40 rounded-xl sm:rounded-2xl bg-amber-50/20 shadow-lg shadow-red-900/40">
           <div className="flex justify-between">
-            <h1 className="font-bold text-md">Room ID: </h1>
-            <h1 className="font-bold text-md text-yellow-500">{room.roomId}</h1>
+            <h1 className="font-bold text-[10px] lg:text-lg">Room ID: </h1>
+            <h1 className="font-bold text-[10px] lg:text-lg text-yellow-500">{room.roomId}</h1>
           </div>
           <div className="flex justify-between">
-            <h1 className="font-bold text-md">Cược:</h1>
-            <h1 className="font-bold text-md text-yellow-500 flex">{room.betToken} <TokenIcon className="w-6" /></h1>
+            <h1 className="font-bold text-[10px] lg:text-lg">Đặt cược:</h1>
+            <h1 className="font-bold text-[10px] lg:text-lg text-yellow-500 flex items-center">{room.betToken} <TokenIcon className="w-4 sm:w-5 lg:w-6" /></h1>
           </div>
         </div>
       </div>
@@ -256,30 +269,23 @@ export default function GamePlay() {
         {room.status === 'READY' && renderCountDown()}
       </div>
 
-      <Button onClick={getCuurrentDataRoom}>
-        GetData
-      </Button>
-
-
       {/* Actions */}
-      <div className="absolute bottom-6 w-full flex justify-center items-center gap-4">
-
+      <div className="absolute bottom-2 sm:bottom-4 lg:bottom-6 w-full flex justify-center items-center gap-2 sm:gap-3 lg:gap-4 px-2">
         {room.status !== 'PLAYING' && renderWhenWaiting()}
         {room.status === 'PLAYING' && renderWhenPlaying()}
       </div>
 
-
-      <div className="w-1/8 h-min bg-gray-700/40 overflow-auto flex justify-between items-center absolute top-0 right-0 rounded-2xl px-2">
+      <div className="w-fit max-w-[40%] sm:max-w-[30%] lg:max-w-[15%] h-min bg-gray-700/40 overflow-auto flex justify-between items-center absolute top-0 right-0 rounded-bl-2xl px-2 py-1">
         <Button onClick={() => openModal("CHAT_ROOM")}>
-          <ChatIcon className="w-17" />
+          <ChatIcon className="w-6 sm:w-10 lg:w-16" />
         </Button>
         {message && (
           <div
-            className={`max-w-[80%] w-fit px-3 py-1 rounded-xl text-sm break-words $
+            className={`max-w-[80%] w-fit px-2 py-0.5 sm:px-3 sm:py-1 rounded-xl text-[10px] sm:text-xs lg:text-sm overflow-hidden 
               ${message.user.id === user?.id ? "ml-auto bg-blue-600/80 text-white" : "bg-gray-200 text-gray-900"}`}
           >
-            <div className="font-semibold text-xs opacity-80 mb-0.5">
-              <b>#{message.user.id} - {message.user.name}:</b> {message.content}
+            <div className="font-semibold text-[9px] sm:text-xs opacity-80 mb-0.5 truncate whitespace-nowrap">
+              <b>#{String(message.user.id).slice(0, 4)} - {message.user.name}:</b> {message.content}
             </div>
           </div>
         )}

@@ -3,7 +3,7 @@ import { Card } from "./Card";
 
 export const Table = ({ cards }: { cards: string[] }) => {
   return (
-    <div className="flex gap-3 justify-center">
+    <div className="flex gap-1 sm:gap-2 lg:gap-3 justify-center">
       {cards.map((c, i) => <Card key={i} card={cardIdToCard(c)} isSelected={false} onSelected={() => { }} />)}
     </div>
   );

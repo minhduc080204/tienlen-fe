@@ -1,8 +1,12 @@
 import { motion } from "framer-motion";
 import { useState } from "react";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
+import { gameApi } from "../../api/game.api";
 import { TokenIcon } from "../../assets/icons/TokenIcon";
+import { ROUTES } from "../../routes/routes";
 import { useModalStore } from "../../stores/modal.store";
+import { useSocketStore } from "../../stores/socket.store";
 import { formatNumber } from "../../utils/formatNumber";
 import { Button } from "../ui/Button";
 
@@ -10,12 +14,11 @@ const BET_OPTIONS = [10, 20, 50, 100, 200, 500, 1000];
 
 export default function CreateRoomModal() {
   const close = useModalStore((s) => s.close);
-  // const navigate = useNavigate();
-  // const connectSocket = useSocketStore((s) => s.connect);
-  // const setRoom = useSocketStore.setState;
+  const navigate = useNavigate();
+  const setRoom = useSocketStore.setState;
 
   const [selectedBet, setSelectedBet] = useState<number | null>(null);
-  const [loading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleCreateRoom = async () => {
     if (!selectedBet) {
@@ -23,26 +26,26 @@ export default function CreateRoomModal() {
       return;
     }
 
-    // try {
-    //   setLoading(true);
+    try {
+      setLoading(true);
 
-    //   const res = await gameApi.createRoom({ bet: selectedBet });
+      const res = await gameApi.createRoom();
 
-    //   if (!res?.roomId || !res?.wsUrl) {
-    //     toast.error("Không thể tạo phòng");
-    //     return;
-    //   }
+      if (!res?.roomId) {
+        toast.error("Không thể tạo phòng");
+        return;
+      }
 
-    //   setRoom({ roomId: res.roomId });
-    //   connectSocket(res.roomId, res.wsUrl);
+      setRoom({ roomId: res.roomId });
+      // connectSocket(res.roomId, res.wsUrl); // wsUrl is missing in current createRoom API
 
-    //   close();
-    //   navigate(ROUTES.ROOM);
-    // } catch (err) {
-    //   toast.error("Lỗi khi tạo phòng");
-    // } finally {
-    //   setLoading(false);
-    // }
+      close();
+      navigate(ROUTES.ROOM, { state: { fromButton: true } });
+    } catch (err) {
+      toast.error("Lỗi khi tạo phòng");
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
