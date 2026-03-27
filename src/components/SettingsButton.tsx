@@ -12,8 +12,8 @@ export default function SettingsButton({ isFixed = false }: { isFixed?: boolean 
           openModal("SETTINGS")
         }}
         className={`
-          ${isFixed ? 'fixed top-5 right-5' : ''}
-          w-12 h-12 rounded-full
+          ${isFixed ? 'fixed top-3 right-3 lg:top-5 lg:right-5' : ''}
+          w-9 h-9 lg:w-12 lg:h-12 rounded-full
           backdrop-blur-md
           bg-amber-50/20
           shadow-lg shadow-red-900/40
@@ -22,7 +22,7 @@ export default function SettingsButton({ isFixed = false }: { isFixed?: boolean 
         `}
       >
 
-        <SettingIcon className="w-10" />
+        <SettingIcon className="w-7 lg:w-10" />
       </Button>
 
     </>

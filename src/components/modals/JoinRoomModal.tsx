@@ -55,19 +55,19 @@ export default function JoinRoomModal() {
       className="
         fixed z-50
         top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-        w-[380px]
+        w-[92vw] max-w-[380px]
         bg-zinc-900 border border-red-700
-        rounded-2xl p-6
+        rounded-2xl p-4 lg:p-6
         shadow-2xl shadow-red-900/30
       "
     >
-      <h2 className="text-xl font-bold text-red-500 text-center mb-6">
+      <h2 className="text-lg lg:text-xl font-bold text-red-500 text-center mb-4 lg:mb-6">
         🔑 Tham Gia Phòng
       </h2>
 
       {/* Input Room ID */}
-      <div className="mb-6">
-        <label className="block text-sm text-gray-400 mb-2">
+      <div className="mb-4 lg:mb-6">
+        <label className="block text-xs lg:text-sm text-gray-400 mb-1.5 lg:mb-2">
           Nhập ID phòng
         </label>
 
@@ -77,12 +77,11 @@ export default function JoinRoomModal() {
           onChange={(e) => setRoomId(e.target.value)}
           placeholder="Ví dụ: 12345"
           className="
-            w-full px-4 py-2
+            w-full px-3 py-2 lg:px-4
             bg-zinc-800 border border-zinc-700
-            rounded-lg
+            rounded-lg text-sm lg:text-base
             text-white
-            focus:outline-none
-            focus:border-red-600
+            focus:outline-none focus:border-red-600
             focus:ring-1 focus:ring-red-600
             transition
           "
@@ -94,7 +93,7 @@ export default function JoinRoomModal() {
         onClick={handleJoinRoom}
         disabled={!roomId || loading}
         className={`
-          w-full py-2 rounded-lg
+          w-full py-2 text-sm lg:text-base rounded-lg
           font-semibold transition
           ${roomId
             ? "bg-red-600 hover:bg-red-500 text-white"
@@ -109,7 +108,7 @@ export default function JoinRoomModal() {
       <Button
         onClick={close}
         className="
-          w-full mt-3 py-2 rounded-lg
+          w-full mt-2 lg:mt-3 py-2 rounded-lg text-sm lg:text-base
           bg-zinc-800 hover:bg-zinc-700
           text-gray-300 transition
         "

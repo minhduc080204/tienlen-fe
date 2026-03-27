@@ -4,6 +4,10 @@ type Props = {
   value: string;
   placeholder: string;
   onChange: (v: string) => void;
+  onEnter?: () => void;
+  className?: string;
+  inputClassName?: string;
+  labelClassName?: string;
 };
 
 export default function Input({
@@ -12,21 +16,31 @@ export default function Input({
   value,
   placeholder,
   onChange,
+  className = "",
+  inputClassName = "",
+  labelClassName = "",
+  onEnter,
 }: Props) {
   return (
-    <div className="flex flex-col gap-1">
-      <label className="text-sm text-gray-300">{label}</label>
+    <div className={`flex flex-col gap-0.5 ${className}`}>
+      <label className={`text-xs text-gray-400 font-medium tracking-wide ${labelClassName}`}>
+        {label}
+      </label>
       <input
         type={type}
         value={value}
         placeholder={placeholder}
         onChange={(e) => onChange(e.target.value)}
-        className="
-          bg-zinc-800 border border-zinc-700 rounded-lg
-          px-4 py-2 text-white
-          focus:outline-none
-          focus:ring-2 focus:ring-red-600
-        "
+        onKeyDown={(e) => e.key === "Enter" && onEnter?.()}
+        className={`
+          bg-zinc-800/80 border border-zinc-700 rounded-lg
+          px-3 py-2 text-white text-sm
+          placeholder:text-zinc-500
+          focus:outline-none focus:border-red-600/70
+          focus:ring-1 focus:ring-red-600/50
+          transition-colors
+          ${inputClassName}
+        `}
       />
     </div>
   );

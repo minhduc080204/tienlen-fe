@@ -12,6 +12,7 @@ export default function MenuActions() {
   const connectSocket = useSocketStore((s) => s.connect);
   const setRoom = useSocketStore.setState;
   const openModal = useModalStore((s) => s.open);
+
   const handlePlayNow = async () => {
     try {
       const res = await gameApi.quickJoin();
@@ -23,11 +24,8 @@ export default function MenuActions() {
       }
 
       setRoom({ roomId: res.roomId });
-
       connectSocket(res.roomId, res.wsUrl);
-
       navigate(ROUTES.ROOM);
-
     } catch (err) {
       if (axios.isAxiosError(err)) {
         const status = err.response?.status;
@@ -37,7 +35,6 @@ export default function MenuActions() {
             err.response?.data?.message ||
             err.response?.data?.messages ||
             "Yêu cầu không hợp lệ";
-
           toast.error(message);
           return;
         }
@@ -52,12 +49,22 @@ export default function MenuActions() {
       console.error(err);
     }
   };
+
   return (
-    <div className="w-full flex justify-end items-center grow">
-      <div className="w-3/5 grid 
-        grid-cols-[max-content_max-content]
-        grid-rows-[max-content_max-content]
-        items-center place-items-center gap-10
+    <div className="w-full flex justify-center items-center grow px-4">
+      <div className="
+        grid
+        grid-cols-2 grid-rows-2
+        gap-3
+        sm:gap-6
+        lg:grid-cols-[max-content_max-content]
+        lg:grid-rows-[max-content_max-content]
+        lg:gap-10
+        items-center place-items-center
+        w-full max-w-xs
+        sm:max-w-sm
+        lg:max-w-none lg:w-3/5
+        lg:ml-auto
       ">
         <GameButton
           text="Chơi Ngay"
@@ -68,16 +75,12 @@ export default function MenuActions() {
         <GameButton
           text="Tạo Phòng"
           img="create-room.png"
-          onClick={() => {
-            openModal("CREATE_ROOM")
-          }}
+          onClick={() => openModal("CREATE_ROOM")}
         />
         <GameButton
           text="Tham Gia Phòng"
           img="join-room.png"
-          onClick={() => {
-            openModal("JOIN_ROOM")
-          }}
+          onClick={() => openModal("JOIN_ROOM")}
         />
       </div>
     </div>

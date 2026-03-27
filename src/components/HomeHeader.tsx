@@ -6,117 +6,76 @@ import { formatNumber } from "../utils/formatNumber";
 import SettingsButton from "./SettingsButton";
 
 export default function HomeHeader() {
-    const user = useAuthStore.getState().user
+    const user = useAuthStore.getState().user;
     return (
-        <div className="w-full flex justify-center">
-            <div className=" w-4/5 flex items-center justify-around">
+        <div className="w-full flex justify-center px-3 py-2 lg:py-0">
+            <div className="w-full lg:w-4/5 flex items-center justify-between lg:justify-around gap-2 lg:gap-0">
 
-                <div className=" flex items-center gap-4px-4 py-2">
+                {/* Avatar + Name */}
+                <div className="flex items-center gap-2">
                     <img
                         src="https://i.pravatar.cc/100"
-                        className="w-12 h-12 rounded-full border-2 border-red-500/80 "
+                        className="w-9 h-9 lg:w-12 lg:h-12 rounded-full border-2 border-red-500/80 shrink-0"
                     />
-
-                    <div className="text-white bg-stone-700/20 rounded-full backdrop-blur-md p-2 pr-6">
-                        <p className="text-lg font-semibold">minhduc82</p>
-                        <p>🟢<label className="text-md text-white/80">Online</label></p>
+                    <div className="text-white bg-stone-700/20 rounded-full backdrop-blur-md px-3 py-1 lg:p-2 lg:pr-6">
+                        <p className="text-sm lg:text-lg font-semibold leading-tight">
+                            {user?.name ?? "minhduc82"}
+                        </p>
+                        <p className="text-xs lg:text-sm leading-tight">
+                            🟢<label className="text-white/80">Online</label>
+                        </p>
                     </div>
                 </div>
 
-                <div className="relative">
-                    <TokenIcon
-                        className="
-                            absolute
-                            z-1 -left-4 -top-3
-                            w-16
-                            drop-shadow-[0_6px_10px_rgba(0,0,0,0.6)]
-                        "
-                    />
-                    <div className="
-                            backdrop-blur-md
-                            bg-amber-50/10
-                            text-2xl text-white/90                            
-                            rounded-full
-                            px-1 py-0.5
-                            flex items-center gap-10
-                            shadow-lg
-                            border-1 border-yellow-500/60
-
-                        "
-                    >
-                        <p className="font-semibold ml-20">
-                            {formatNumber(user?.tokenBalance)}
-                        </p>
-
-                        <PlusIcon className="
-                                w-7 h-7 cursor-pointer hover:scale-130 transition
-                            "
-                        />
-                    </div>
-
-                </div>
-
-                <div className="relative">
-                    <MoneyIcon
-                        className="
-                            absolute
-                            z-1 -left-4 -top-5
-                            w-16
-                            drop-shadow-[0_6px_10px_rgba(0,0,0,0.6)]
-                        "
-                    />
-                    <div className="
-                            backdrop-blur-md
-                            bg-amber-50/10
-                            text-2xl text-white/90                            
-                            rounded-full
-                            px-1 py-0.5
-                            flex items-center gap-10
-                            shadow-lg
-                        "
-                    >
-                        <p className="font-semibold ml-20">
-                            100.000.000
-                        </p>
-
-                        <PlusIcon
+                {/* Balances */}
+                <div className="flex items-center gap-2 lg:gap-6">
+                    {/* Token */}
+                    <div className="relative">
+                        <TokenIcon
                             className="
-                                w-7 h-7
+                                absolute z-1 -left-3 -top-2.5
+                                w-10 lg:w-16
+                                drop-shadow-[0_6px_10px_rgba(0,0,0,0.6)]
                             "
                         />
-                    </div>
-
-                </div>
-                <div className="relative">
-                    <MoneyIcon
-                        className="
-                            absolute
-                            z-1 -left-4 -top-5
-                            w-16
-                            drop-shadow-[0_6px_10px_rgba(0,0,0,0.6)]
-                        "
-                    />
-                    <div className="
-                            backdrop-blur-md
-                            bg-amber-50/10
-                            text-2xl text-white/90                            
+                        <div className="
+                            backdrop-blur-md bg-amber-50/10
+                            text-white/90
                             rounded-full
                             px-1 py-0.5
-                            flex items-center gap-10
-                            shadow-lg
-                        "
-                    >
-                        <p className="font-semibold ml-20">
-                            100.000.000
-                        </p>
-
-                        <PlusIcon
-                            className="
-                                w-7 h-7
-                            "
-                        />
+                            flex items-center gap-3 lg:gap-10
+                            shadow-lg border border-yellow-500/60
+                        ">
+                            <p className="font-semibold ml-9 lg:ml-20 pr-1 lg:pr-0 text-sm lg:text-2xl">
+                                {formatNumber(user?.tokenBalance)}
+                            </p>
+                            <PlusIcon className="w-5 h-5 lg:w-7 lg:h-7 cursor-pointer hover:scale-125 transition" />
+                        </div>
                     </div>
 
+                    {/* Money — ẩn trên mobile nhỏ, hiện từ sm+ */}
+                    <div className="relative hidden sm:block">
+                        <MoneyIcon
+                            className="
+                                absolute z-1 -left-3 -top-3.5
+                                w-10 lg:w-16
+                                drop-shadow-[0_6px_10px_rgba(0,0,0,0.6)]
+                            "
+                        />
+                        <div className="
+                            backdrop-blur-md bg-amber-50/10
+                            text-white/90
+                            rounded-full
+                            px-1 py-0.5
+                            flex items-center gap-3 lg:gap-10
+                            shadow-lg
+                        ">
+                            <p className="font-semibold ml-9 lg:ml-20 pr-1 lg:pr-0 text-sm lg:text-2xl">
+                                100.000.000
+                            </p>
+                            <PlusIcon className="w-5 h-5 lg:w-7 lg:h-7" />
+                        </div>
+                    </div>
                 </div>
 
                 <SettingsButton />

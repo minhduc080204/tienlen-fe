@@ -54,18 +54,18 @@ export default function CreateRoomModal() {
       className="
         fixed z-50
         top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-        w-[380px]
+        w-[92vw] max-w-[380px]
         bg-zinc-900 border border-red-700
-        rounded-2xl p-6
+        rounded-2xl p-4 lg:p-6
         shadow-2xl shadow-red-900/30
       "
     >
-      <h2 className="text-xl font-bold text-red-500 text-center mb-6">
+      <h2 className="text-lg lg:text-xl font-bold text-red-500 text-center mb-4 lg:mb-6">
         🎲 Chọn Mức Cược
       </h2>
 
       {/* Bet Options */}
-      <div className="grid grid-cols-3 gap-3 mb-6">
+      <div className="grid grid-cols-3 gap-2 lg:gap-3 mb-4 lg:mb-6">
         {BET_OPTIONS.map((bet) => {
           const active = selectedBet === bet;
 
@@ -74,15 +74,15 @@ export default function CreateRoomModal() {
               key={bet}
               onClick={() => setSelectedBet(bet)}
               className={`
-                py-2 rounded-lg font-semibold transition
-                flex justify-center items-center border 
+                py-1.5 lg:py-2 rounded-lg text-xs lg:text-sm font-semibold transition
+                flex justify-center items-center gap-1 border 
                 ${active
                   ? "bg-red-600 border-red-500 text-white shadow-lg shadow-red-600/40"
                   : "bg-zinc-800 border-zinc-700 text-gray-300 hover:bg-red-700/20 hover:border-red-600"
                 }
               `}
             >
-              {formatNumber(bet)} <TokenIcon className="w-7" />
+              {formatNumber(bet)} <TokenIcon className="w-5 lg:w-7" />
             </Button>
           );
         })}
@@ -93,7 +93,7 @@ export default function CreateRoomModal() {
         onClick={handleCreateRoom}
         disabled={!selectedBet || loading}
         className={`
-          w-full py-2 rounded-lg
+          w-full py-2 text-sm lg:text-base rounded-lg
           font-semibold transition
           ${selectedBet
             ? "bg-red-600 hover:bg-red-500 text-white"
@@ -108,7 +108,7 @@ export default function CreateRoomModal() {
       <Button
         onClick={close}
         className="
-          w-full mt-3 py-2 rounded-lg
+          w-full mt-2 lg:mt-3 py-2 rounded-lg text-sm lg:text-base
           bg-zinc-800 hover:bg-zinc-700
           text-gray-300 transition
         "
