@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import Input from "../components/ui/Input";
-import GoogleLoginButton from "../components/GoogleLoginButton";
 import { useSoundStore } from "../stores/sound.store";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../routes/routes";
@@ -11,6 +10,7 @@ import { Spinner } from "../components/ui/Spiner";
 import { useAuthStore } from "../stores/auth.store";
 import SettingsButton from "../components/SettingsButton";
 import { Button } from "../components/ui/Button";
+import { GoogleLogin } from "@react-oauth/google";
 
 export default function LoginPage() {
   const loginStore = useAuthStore();
@@ -34,7 +34,6 @@ export default function LoginPage() {
 
     try {
       const res = await authApi.login({ account, password });
-      console.log(res);
       loginStore.login(res.token, res.user);
 
       gameToast.dismiss(toastId);
@@ -43,6 +42,30 @@ export default function LoginPage() {
     } catch (err) {
       gameToast.dismiss(toastId);
       gameToast.error("Sai tài khoản hoặc mật khẩu");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleGoogleLogin = async (token?: string) => {
+    if (isLoading) return;
+    if (!token) return gameToast.error("Có lỗi xảy ra");
+
+    playClick();
+    setIsLoading(true);
+    const toastId = gameToast.loading("Đang đăng nhập...");
+
+    try {
+      const res = await authApi.loginWithGoogle(token);
+
+      loginStore.login(res.token, res.user);
+
+      gameToast.dismiss(toastId);
+      gameToast.success("Đăng nhập thành công");
+      navigate("/home");
+    } catch (err) {
+      gameToast.dismiss(toastId);
+      gameToast.error("Có lỗi xảy ra");
     } finally {
       setIsLoading(false);
     }
@@ -174,7 +197,16 @@ export default function LoginPage() {
             </div>
 
             {/* Google */}
-            <GoogleLoginButton />
+            <div className="w-full flex justify-center">
+              <GoogleLogin
+                onSuccess={(res) => {
+                  handleGoogleLogin(res.credential);
+                }}
+                onError={() => {
+                  console.log("Google Login Failed");
+                }}
+              />
+            </div>
           </div>
         </motion.div>
       )}

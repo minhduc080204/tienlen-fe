@@ -1,3 +1,4 @@
+import axios from "axios";
 import { motion } from "framer-motion";
 import { useState } from "react";
 import toast from "react-hot-toast";
@@ -16,6 +17,7 @@ export default function CreateRoomModal() {
   const close = useModalStore((s) => s.close);
   const navigate = useNavigate();
   const setRoom = useSocketStore.setState;
+  const connectSocket = useSocketStore((s) => s.connect);
 
   const [selectedBet, setSelectedBet] = useState<number | null>(null);
   const [loading, setLoading] = useState(false);
@@ -29,7 +31,7 @@ export default function CreateRoomModal() {
     try {
       setLoading(true);
 
-      const res = await gameApi.createRoom();
+      const res = await gameApi.createRoom(selectedBet);
 
       if (!res?.roomId) {
         toast.error("Không thể tạo phòng");
@@ -37,12 +39,30 @@ export default function CreateRoomModal() {
       }
 
       setRoom({ roomId: res.roomId });
-      // connectSocket(res.roomId, res.wsUrl); // wsUrl is missing in current createRoom API
-
+      connectSocket(res.roomId, res.wsUrl);
       close();
       navigate(ROUTES.ROOM, { state: { fromButton: true } });
     } catch (err) {
-      toast.error("Lỗi khi tạo phòng");
+      if (axios.isAxiosError(err)) {
+        const status = err.response?.status;
+
+        if (status === 400) {
+          const message =
+            err.response?.data?.message ||
+            err.response?.data?.messages ||
+            "Yêu cầu không hợp lệ";
+          toast.error(message);
+          return;
+        }
+
+        if (!err.response) {
+          toast.error("Không thể kết nối tới server");
+          return;
+        }
+
+        toast.error("Không thể kết nối phòng. Hãy đăng nhập lại");
+        console.error(err);
+      }
     } finally {
       setLoading(false);
     }

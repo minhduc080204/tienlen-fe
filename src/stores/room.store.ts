@@ -51,7 +51,6 @@ export const useRoomStore = create<RoomStore>((set) => ({
       );
 
       if (exists) return state;
-      console.log("add success", player);
       
       return {
         room: {

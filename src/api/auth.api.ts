@@ -24,5 +24,6 @@ export const authApi = {
     axiosClient.post(API_ENDPOINTS.AUTH.REGISTER, data),
 
   loginWithGoogle: (token: string) =>
-    axiosClient.post(API_ENDPOINTS.AUTH.GOOGLE, { token }),
+    axiosClient.post(API_ENDPOINTS.AUTH.GOOGLE, { token })
+    .then(res=>res.data),
 };

@@ -2,12 +2,15 @@ import { motion } from "framer-motion";
 import { useSoundStore } from "../../stores/sound.store";
 import { useModalStore } from "../../stores/modal.store";
 import { Button } from "../ui/Button";
+import { useAuthStore } from "../../stores/auth.store";
 
 export default function SettingsModal() {
   const { enabled, volume, toggleSound, setVolume } =
     useSoundStore();
 
   const close = useModalStore((s) => s.close);
+  const logout = useAuthStore((s) => s.logout);
+
   return (
     <>
       {/* Overlay */}
@@ -75,6 +78,22 @@ export default function SettingsModal() {
             className="w-full accent-red-600"
           />
         </div>
+
+        {/* Logout */}
+        <Button
+          onClick={() => {
+            logout();
+            close();
+          }}
+          className="
+            w-full py-2 rounded-lg mb-3
+            bg-zinc-700 hover:bg-zinc-600
+            transition
+            text-white font-semibold
+          "
+        >
+          Đăng xuất
+        </Button>
 
         {/* Close */}
         <Button

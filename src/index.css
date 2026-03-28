@@ -10,3 +10,13 @@
   font-weight: normal;
   font-style: normal;
 }
+
+html, body, #root {
+  width: 100vw;
+  height: 100dvh;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  overscroll-behavior: none;
+  background-color: #1a1a1a;
+}

@@ -22,6 +22,7 @@ import { useSoundStore } from "../stores/sound.store";
 
 export default function GamePlay() {
   const user = useAuthStore.getState().user
+  const isConnected = useSocketStore((s) => s.isConnected)
   const openModal = useModalStore((s) => s.open);
   const playCard = useSoundStore((s) => s.playCard);
   // Responsive timer size: 60px mobile, 80px sm, 120px lg+
@@ -42,15 +43,13 @@ export default function GamePlay() {
     useChatStore.setState({ messages: [] })
     setSelectedIds([])
   }
-  useEffect(() => {
-    const roomId = localStorage.getItem("roomId");
-    const wsUrl = localStorage.getItem("wsUrl");
-    if (roomId && wsUrl) {
-      useSocketStore.getState().connect(Number(roomId), wsUrl);
-      console.log("STORE OK");
-
-    }
-  }, []);
+  // useEffect(() => {
+  //   const roomId = localStorage.getItem("roomId");
+  //   const wsUrl = localStorage.getItem("wsUrl");
+  //   if (roomId && wsUrl) {
+  //     useSocketStore.getState().connect(Number(roomId), wsUrl);
+  //   }
+  // }, []);
 
   const message = useChatStore((state) => state.messages[state.messages.length - 1])
 
@@ -245,12 +244,12 @@ export default function GamePlay() {
 
   return (
     <div
-      className="w-full h-screen bg-cover bg-center relative overflow-hidden"
+      className="w-full h-screen bg-cover bg-center relative overflow-hidden p-1"
       style={{ backgroundImage: "url(/bg-room.png)" }}
     >
       <div className="flex gap-2 sm:gap-3 lg:gap-5">
         <BackButton onClick={() => handleBackClick()} />
-        <div className="p-1.5 sm:p-2 w-28 sm:w-32 lg:w-40 rounded-xl sm:rounded-2xl bg-amber-50/20 shadow-lg shadow-red-900/40">
+        <div className="p-1.5 sm:px-2 lg:w-40 rounded-xl sm:rounded-2xl bg-amber-50/20 shadow-lg shadow-red-900/40">
           <div className="flex justify-between">
             <h1 className="font-bold text-[10px] lg:text-lg">Room ID: </h1>
             <h1 className="font-bold text-[10px] lg:text-lg text-yellow-500">{room.roomId}</h1>
@@ -274,6 +273,10 @@ export default function GamePlay() {
         {room.status !== 'PLAYING' && renderWhenWaiting()}
         {room.status === 'PLAYING' && renderWhenPlaying()}
       </div>
+
+      {!isConnected && (<div className="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-red-900/80 px-3 py-1 rounded-xl">
+        <h1 className="font-bold text-xs sm:text-base lg:text-lg text-yellow-500">Bạn bị mất kết nối! Hãy thoát Room</h1>
+      </div>)}
 
       <div className="w-fit max-w-[40%] sm:max-w-[30%] lg:max-w-[15%] h-min bg-gray-700/40 overflow-auto flex justify-between items-center absolute top-0 right-0 rounded-bl-2xl px-2 py-1">
         <Button onClick={() => openModal("CHAT_ROOM")}>

@@ -16,7 +16,6 @@ export default function MenuActions() {
   const handlePlayNow = async () => {
     try {
       const res = await gameApi.quickJoin();
-      console.log("CREATE", res);
 
       if (!res?.roomId || !res?.wsUrl) {
         toast.error("Có lỗi xảy ra khi vào phòng");
@@ -45,7 +44,7 @@ export default function MenuActions() {
         }
       }
 
-      toast.error("Không thể kết nối phòng");
+      toast.error("Không thể kết nối phòng. Hãy đăng nhập lại");
       console.error(err);
     }
   };

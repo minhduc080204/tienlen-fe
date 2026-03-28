@@ -11,9 +11,9 @@ export const API_ENDPOINTS = {
   },
 
   ROOM: {
-    CREATE: "/rooms/create",
-    JOIN: "/rooms/join",
-    LEAVE: "/rooms/leave",
-    QUICK_JOIN: "/rooms/quick-join",
+    CREATE: "/room/create",
+    JOIN: "/room/join",
+    LEAVE: "/room/leave",
+    QUICK_JOIN: "/room/quick-join",
   },
 };

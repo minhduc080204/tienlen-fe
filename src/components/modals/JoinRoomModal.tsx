@@ -7,23 +7,20 @@ import { ROUTES } from "../../routes/routes";
 import { useModalStore } from "../../stores/modal.store";
 import { useSocketStore } from "../../stores/socket.store";
 import { Button } from "../ui/Button";
+import axios from "axios";
 
 export default function JoinRoomModal() {
   const close = useModalStore((s) => s.close);
   const navigate = useNavigate();
   const setRoom = useSocketStore.setState;
+  const connectSocket = useSocketStore((s) => s.connect);
 
   const [roomId, setRoomId] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleJoinRoom = async () => {
-    if (!roomId.trim()) {
+    if (!roomId) {
       toast.error("Vui lòng nhập ID phòng");
-      return;
-    }
-
-    if (isNaN(Number(roomId))) {
-      toast.error("ID phòng không hợp lệ");
       return;
     }
 
@@ -31,20 +28,37 @@ export default function JoinRoomModal() {
       setLoading(true);
 
       const res = await gameApi.joinRoom(Number(roomId));
-      const data = res.data;
 
-      if (!data?.roomId) {
+      if (!res?.roomId) {
         toast.error("Không thể tham gia phòng");
         return;
       }
 
-      setRoom({ roomId: data.roomId });
-      // connectSocket(data.roomId, data.wsUrl);
-
+      setRoom({ roomId: res.roomId });
+      connectSocket(res.roomId, res.wsUrl);
       close();
       navigate(ROUTES.ROOM, { state: { fromButton: true } });
     } catch (err) {
-      toast.error("Không thể tham gia phòng");
+      if (axios.isAxiosError(err)) {
+        const status = err.response?.status;
+
+        if (status === 400) {
+          const message =
+            err.response?.data?.message ||
+            err.response?.data?.messages ||
+            "Yêu cầu không hợp lệ";
+          toast.error(message);
+          return;
+        }
+
+        if (!err.response) {
+          toast.error("Không thể kết nối tới server");
+          return;
+        }
+
+        toast.error("Không thể kết nối phòng. Hãy đăng nhập lại");
+        console.error(err);
+      }
     } finally {
       setLoading(false);
     }

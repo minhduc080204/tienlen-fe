@@ -14,7 +14,7 @@ export default function HomeHeader() {
                 {/* Avatar + Name */}
                 <div className="flex items-center gap-2">
                     <img
-                        src="https://i.pravatar.cc/100"
+                        src={user?.avatarUrl || import.meta.env.VITE_BASE_AVATAR_URL}
                         className="w-9 h-9 lg:w-12 lg:h-12 rounded-full border-2 border-red-500/80 shrink-0"
                     />
                     <div className="text-white bg-stone-700/20 rounded-full backdrop-blur-md px-3 py-1 lg:p-2 lg:pr-6">
@@ -28,7 +28,7 @@ export default function HomeHeader() {
                 </div>
 
                 {/* Balances */}
-                <div className="flex items-center gap-2 lg:gap-6">
+                <div className="flex items-center gap-6">
                     {/* Token */}
                     <div className="relative">
                         <TokenIcon

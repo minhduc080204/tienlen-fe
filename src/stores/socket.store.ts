@@ -35,7 +35,6 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
       if (state.socket) return state;
       const token = useAuthStore.getState().token;;
       const url = `${import.meta.env.VITE_WS_BASE_URL}${wsUrl}&token=${token}`;
-      console.log("URL", url);
 
       const socket = new WebSocket(url);
 
@@ -55,7 +54,7 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
         try {
           const res = JSON.parse(e.data);
           const action = res.action as ActionType
-          console.log("T got", res);
+          // console.log("T got", res);
           
 
           switch (action) {

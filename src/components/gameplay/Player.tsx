@@ -9,7 +9,7 @@ export const Player = ({ player }: Props) => {
   return (
     <div className="flex flex-col items-center text-white">
       <img
-        src={player.user.avatar || "https://i.pravatar.cc/100"}
+        src={player.user.avatarUrl || import.meta.env.VITE_BASE_AVATAR_URL}
         className="w-8 h-8 sm:w-10 sm:h-10 lg:w-14 lg:h-14 rounded-full border-2 border-yellow-400"
       />
       <p className="text-[10px] sm:text-xs lg:text-sm mt-0.5 sm:mt-1">{player.user.name}</p>

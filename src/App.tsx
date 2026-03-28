@@ -10,25 +10,27 @@ import DeviceOrientationWarning from './components/DeviceOrientationWarning'
 
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { RoomGuard } from './components/RoomGuard'
+import PWABadge from './components/PWABadge'
 
 function App() {
   return (
     <>
+      <PWABadge />
       <DeviceOrientationWarning />
       <AnimatePresence mode="wait">
         <Routes>
           <Route path="/" element={<Navigate to={ROUTES.LOGIN} replace />} />
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
           <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
-          
+
           <Route element={<ProtectedRoute />}>
             <Route path={ROUTES.HOME} element={<HomePage />} />
-            
+
             <Route element={<RoomGuard />}>
               <Route path={ROUTES.ROOM} element={<GamePlay />} />
             </Route>
           </Route>
-        </Routes>        
+        </Routes>
         <ModalRoot />
       </AnimatePresence>
     </>

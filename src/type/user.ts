@@ -1,6 +1,6 @@
 export type UserType = {
   id: number;
   name: string;
-  avatar: string;
+  avatarUrl: string;
   tokenBalance: number ; //money
 };

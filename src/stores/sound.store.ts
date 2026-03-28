@@ -2,6 +2,10 @@ import { create } from "zustand";
 import { Howl } from "howler";
 
 const BASE_VOLUME = 0.5
+const BASE_BG_URL = [
+  "/sounds/giao_huong_thank_do.mp3",
+  "/sounds/cam_on_anh_do.mp3",
+]
 
 const clickSound = new Howl({ src: ["/sounds/click.mp3"], volume: BASE_VOLUME, preload: true });
 const chattingSound = new Howl({ src: ["/sounds/chatting.mp3"], volume: BASE_VOLUME, preload: true });
@@ -9,7 +13,33 @@ const playCardSound = new Howl({ src: ["/sounds/play_card.mp3"], volume: BASE_VO
 const dealingCardSound = new Howl({ src: ["/sounds/dealing_card.mp3"], volume: BASE_VOLUME, preload: true });
 const joinRoomSound = new Howl({ src: ["/sounds/join_room.mp3"], volume: BASE_VOLUME, preload: true });
 const leftRoomSound = new Howl({ src: ["/sounds/left_room.mp3"], volume: BASE_VOLUME, preload: true });
-const bgSound = new Howl({ src: ["/sounds/bg_sound.mp3"], volume: 0.3, loop: true, preload: true });
+// const bgSound = new Howl({ src: ["/sounds/bg_sound.mp3"], volume: 0.3, loop: true, preload: true });
+const bgSounds = BASE_BG_URL.map(
+  (url) =>
+    new Howl({
+      src: [import.meta.env.VITE_BASE_URL + url],
+      volume: 0.5,
+      loop: false,
+      preload: true,
+    })
+);
+
+let currentBGM: Howl | null = null;
+let currentBGMIndex = 0;
+
+const playSequentialBGM = () => {
+  if (bgSounds.length === 0) return;
+
+  const sound = bgSounds[currentBGMIndex];
+  currentBGM = sound;
+
+  sound.once("end", () => {
+    currentBGMIndex = (currentBGMIndex + 1) % bgSounds.length;
+    playSequentialBGM();
+  });
+
+  sound.play();
+};
 
 type SoundStore = {
   enabled: boolean;
@@ -44,12 +74,13 @@ export const useSoundStore = create<SoundStore>((set, get) => ({
 
   playBGM: () => {
     if (!get().enabled) return;
-    if (bgSound.playing()) return;
-    bgSound.play();
+    if (currentBGM?.playing()) return;
+
+    playSequentialBGM();
   },
 
   stopBGM: () => {
-    bgSound.stop();
+    currentBGM?.stop();
   },
 
   playClick: () => {
