@@ -5,6 +5,7 @@ export type ModalType =
   "CREATE_ROOM" | 
   "CHAT_ROOM" |
   "JOIN_ROOM" | 
+  "BOT_PLAY" |
   null;
 
 type ModalStore = {

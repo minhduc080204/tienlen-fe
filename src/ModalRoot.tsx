@@ -3,6 +3,7 @@ import { useModalStore } from "./stores/modal.store";
 import CreateRoomModal from "./components/modals/CreateRoomModel";
 import SettingsModal from "./components/modals/SettingsModal";
 import JoinRoomModal from "./components/modals/JoinRoomModal";
+import BotPlayModal from "./components/modals/BotPlayModal";
 import ChatTab from "./components/ChatTab";
 
 export default function ModalRoot() {
@@ -33,6 +34,7 @@ export default function ModalRoot() {
             {modal === "CREATE_ROOM" && <CreateRoomModal />}
             {modal === "JOIN_ROOM" && <JoinRoomModal />}
             {modal === "CHAT_ROOM" && <ChatTab />}
+            {modal === "BOT_PLAY" && <BotPlayModal />}
           </motion.div>
         </>
       )}

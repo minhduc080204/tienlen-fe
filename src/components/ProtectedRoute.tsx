@@ -4,8 +4,9 @@ import { ROUTES } from "../routes/routes";
 
 export const ProtectedRoute = () => {
     const token = useAuthStore((s) => s.token);
+    const isOfflineMode = useAuthStore((s) => s.isOfflineMode);
 
-    if (!token) {
+    if (!token && !isOfflineMode) {
         return <Navigate to={ROUTES.LOGIN} replace />;
     }
 

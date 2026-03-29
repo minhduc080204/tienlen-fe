@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { CountdownCircleTimer } from 'react-countdown-circle-timer';
-import toast from "react-hot-toast";
 import { useNavigate } from "react-router-dom";
 import { ChatIcon } from "../assets/icons/Chatcon";
 import { TokenIcon } from "../assets/icons/TokenIcon";
@@ -10,6 +9,7 @@ import { Hand } from "../components/gameplay/Hand";
 import { Player } from "../components/gameplay/Player";
 import { Table } from "../components/gameplay/Table";
 import { Button } from "../components/ui/Button";
+import { gameToast } from "../components/ui/toast";
 import { ROUTES } from "../routes/routes";
 import { useAuthStore } from "../stores/auth.store";
 import { useChatStore } from "../stores/chat.store";
@@ -17,14 +17,12 @@ import { useModalStore } from "../stores/modal.store";
 import { useRoomStore } from "../stores/room.store";
 import { useSocketStore } from "../stores/socket.store";
 import type { CardType } from "../type/card";
-import { useSoundStore } from "../stores/sound.store";
 
 
 export default function GamePlay() {
   const user = useAuthStore.getState().user
   const isConnected = useSocketStore((s) => s.isConnected)
   const openModal = useModalStore((s) => s.open);
-  const playCard = useSoundStore((s) => s.playCard);
   // Responsive timer size: 60px mobile, 80px sm, 120px lg+
   const [timerSize, setTimerSize] = useState(() =>
     window.innerWidth >= 1024 ? 120 : window.innerWidth >= 640 ? 60 : 40
@@ -77,15 +75,14 @@ export default function GamePlay() {
   }
   const handleAttack = () => {
     if (!isMyTurn()) {
-      return toast.error("Chưa tới lượt");
+      return gameToast.error("Chưa tới lượt");
     }
 
     if (selectedIds.length == 0) {
-      return toast.error("Hay chon la");
+      return gameToast.error("Hay chon la");
     }
 
     useSocketStore.getState().sendAttack(selectedIds);
-    playCard()
     setSelectedIds([])
   }
 

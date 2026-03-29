@@ -1,4 +1,3 @@
-import toast from "react-hot-toast";
 import { create } from "zustand";
 import type { ActionType } from "../type/action";
 import type { SocketRequestType } from "../type/socket-request";
@@ -6,6 +5,7 @@ import { useAuthStore } from "./auth.store";
 import { useChatStore } from "./chat.store";
 import { useRoomStore } from "./room.store";
 import { useSoundStore } from "./sound.store";
+import { gameToast } from "../components/ui/toast";
 
 type SocketStore = {
   socket: WebSocket | null;
@@ -101,6 +101,12 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
               // useRoomStore.getState().setStartCountdown();
               break;
 
+            case "GAME_FINISHED":
+              gameToast.success("Game finished");
+              console.log("finish", res.data);
+              
+              break;
+
             case "SYNC_DATA":
               useRoomStore.getState().setRoomType(res.data);
               break;
@@ -115,7 +121,7 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
 
         } catch (e) {
           console.error("❌ Parse message error", e);
-          toast.error("❌ Lỗi khi gửi tin nhắn");
+          gameToast.error("❌ Lỗi khi gửi tin nhắn");
         }
       };
 

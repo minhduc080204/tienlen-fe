@@ -18,13 +18,14 @@ const bgSounds = BASE_BG_URL.map(
   (url) =>
     new Howl({
       src: [import.meta.env.VITE_BASE_URL + url],
-      volume: 0.5,
+      volume: 0.1,
       loop: false,
       preload: true,
     })
 );
 
 let currentBGM: Howl | null = null;
+let isBGMPlaying = false;
 let currentBGMIndex = 0;
 
 const playSequentialBGM = () => {
@@ -74,13 +75,15 @@ export const useSoundStore = create<SoundStore>((set, get) => ({
 
   playBGM: () => {
     if (!get().enabled) return;
-    if (currentBGM?.playing()) return;
+    if (isBGMPlaying) return;
 
+    isBGMPlaying = true;
     playSequentialBGM();
   },
 
   stopBGM: () => {
     currentBGM?.stop();
+    isBGMPlaying = false;
   },
 
   playClick: () => {

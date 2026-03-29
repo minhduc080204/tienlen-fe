@@ -1,8 +1,8 @@
-import toast from "react-hot-toast";
 import { create } from "zustand";
 import type { GameMessageType } from "../type/game-message";
 import type { PlayerType } from "../type/player";
 import type { RoomType } from "../type/room";
+import { gameToast } from "../components/ui/toast";
 
 type RoomStore = {
   room: RoomType;
@@ -143,9 +143,9 @@ export const useRoomStore = create<RoomStore>((set) => ({
 
   setGameMessage: (gameMessage: GameMessageType) => {
     if(gameMessage.type === "ERROR") {
-      toast.error(gameMessage.message)
+      gameToast.error(gameMessage.message)
     } else if(gameMessage.type === "SUCCESS") {
-      toast.success(gameMessage.message)
+      gameToast.success(gameMessage.message)
     }
   },
 

@@ -3,10 +3,10 @@ import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useSocketStore } from "../stores/socket.store";
 import { useAuthStore } from "../stores/auth.store";
-import toast from "react-hot-toast";
 import { useChatStore } from "../stores/chat.store";
 import { Button } from "./ui/Button";
 import { useModalStore } from "../stores/modal.store";
+import { gameToast } from "./ui/toast";
 
 export default function ChatTab() {
     const close = useModalStore((s) => s.close);
@@ -21,7 +21,7 @@ export default function ChatTab() {
     }, [messages.length]);
 
     const handleSend = () => {
-        if (!input.trim()) return toast.error("Hãy nhập tin nhắn");
+        if (!input.trim()) return gameToast.error("Hãy nhập tin nhắn");
         sendChatSocket(input)
         setInput("");
     };

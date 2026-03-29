@@ -1,33 +1,34 @@
 import { motion } from "framer-motion";
 import { useSoundStore } from "../stores/sound.store";
+import { gameToast } from "./ui/toast";
 
 interface Props {
   text: string;
   img: string;
-  isPlaynow?: boolean;
+  isOfflineMode?: boolean;
   onClick: () => void;
 }
 
-export default function GameButton({ text, img, isPlaynow = false, onClick }: Props) {
+export default function GameButton({ text, img, isOfflineMode = false, onClick }: Props) {
   const playClick = useSoundStore((s) => s.playClick);
   const handleClick = () => {
     playClick();
+    if (isOfflineMode) {
+      return gameToast.error("Bạn đang Offline")
+    }
     onClick();
   }
   return (
     <motion.button
       className={`
-        ${isPlaynow ? 'row-span-2' : ''}
         w-24 py-3
-        sm:w-48 sm:py-5
+        sm:w-38 sm:py-3
         lg:w-72 lg:py-6
         rounded-2xl
         flex flex-col items-center gap-1 lg:gap-2
         backdrop-blur-md
         bg-gradient-to-br
-        from-red-900/40
-        via-red-700/40
-        to-rose-800/40
+        ${isOfflineMode ? 'bg-gray-800/60' : 'from-red-900/40 via-red-700/40 to-rose-800/40'}
         border border-red-300/20
         shadow-[0_0_20px_rgba(185,28,28,0.5)]
         lg:shadow-[0_0_30px_rgba(185,28,28,0.6)]
@@ -42,9 +43,7 @@ export default function GameButton({ text, img, isPlaynow = false, onClick }: Pr
       onClick={handleClick}
     >
       <img
-        className={`
-          ${!isPlaynow ? 'w-12 sm:w-24 lg:w-40' : 'w-16 sm:w-32'}
-        `}
+        className="w-16 sm:w-20 lg:w-40"
         src={`./images/${img}`}
       />
       <p

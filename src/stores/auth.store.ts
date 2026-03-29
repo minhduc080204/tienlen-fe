@@ -7,13 +7,18 @@ export const useAuthStore = create<AuthStore>()(
     (set) => ({
       token: null,
       user: null,
+      isOfflineMode: false,
 
       login: (token, user) => {
-        set({ token, user });
+        set({ token, user, isOfflineMode: false });
       },
 
       logout: () => {
-        set({ token: null, user: null });
+        set({ token: null, user: null, isOfflineMode: false });
+      },
+
+      setOfflineMode: (offline) => {
+        set({ isOfflineMode: offline, token: null, user: null });
       },
     }),
     {

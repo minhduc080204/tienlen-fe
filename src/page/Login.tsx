@@ -207,6 +207,23 @@ export default function LoginPage() {
                 }}
               />
             </div>
+
+            {/* Offline Mode */}
+            <Button
+              onClick={() => {
+                loginStore.setOfflineMode(true);
+                navigate("/home");
+              }}
+              className="
+                py-1.5 text-sm rounded-lg
+                border border-zinc-700/50
+                text-zinc-400 hover:bg-white/5 hover:text-white
+                transition
+                lg:py-2
+              "
+            >
+              Chơi Offline
+            </Button>
           </div>
         </motion.div>
       )}

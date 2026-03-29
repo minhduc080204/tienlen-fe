@@ -1,24 +1,26 @@
 import { useNavigate } from "react-router-dom";
 import GameButton from "./GameButton";
 import { gameApi } from "../api/game.api";
-import toast from "react-hot-toast";
 import { ROUTES } from "../routes/routes";
 import { useSocketStore } from "../stores/socket.store";
 import { useModalStore } from "../stores/modal.store";
 import axios from "axios";
+import { gameToast } from "./ui/toast";
+import { useAuthStore } from "../stores/auth.store";
 
 export default function MenuActions() {
   const navigate = useNavigate();
   const connectSocket = useSocketStore((s) => s.connect);
   const setRoom = useSocketStore.setState;
   const openModal = useModalStore((s) => s.open);
+  const isOfflineMode = useAuthStore((s) => s.isOfflineMode);
 
   const handlePlayNow = async () => {
     try {
       const res = await gameApi.quickJoin();
 
       if (!res?.roomId || !res?.wsUrl) {
-        toast.error("Có lỗi xảy ra khi vào phòng");
+        gameToast.error("Có lỗi xảy ra khi vào phòng");
         return;
       }
 
@@ -34,17 +36,17 @@ export default function MenuActions() {
             err.response?.data?.message ||
             err.response?.data?.messages ||
             "Yêu cầu không hợp lệ";
-          toast.error(message);
+          gameToast.error(message);
           return;
         }
 
         if (!err.response) {
-          toast.error("Không thể kết nối tới server");
+          gameToast.error("Không thể kết nối tới server");
           return;
         }
       }
 
-      toast.error("Không thể kết nối phòng. Hãy đăng nhập lại");
+      gameToast.error("Không thể kết nối phòng. Hãy đăng nhập lại");
       console.error(err);
     }
   };
@@ -54,31 +56,37 @@ export default function MenuActions() {
       <div className="
         grid
         grid-cols-2 grid-rows-2
-        gap-3
-        sm:gap-6
+        items-center place-items-center
+        sm:gap-4
         lg:grid-cols-[max-content_max-content]
         lg:grid-rows-[max-content_max-content]
-        lg:gap-10
-        items-center place-items-center
+        lg:gap-8
         w-full max-w-xs
-        sm:max-w-sm
         lg:max-w-none lg:w-3/5
-        lg:ml-auto
+        ml-auto
+        sm:mr-4
       ">
         <GameButton
           text="Chơi Ngay"
           img="play-now.png"
-          isPlaynow={true}
+          isOfflineMode={isOfflineMode}
           onClick={handlePlayNow}
+        />
+        <GameButton
+          text="Chơi Với Bot"
+          img="play-now.png"
+          onClick={() => openModal("BOT_PLAY")}
         />
         <GameButton
           text="Tạo Phòng"
           img="create-room.png"
+          isOfflineMode={isOfflineMode}
           onClick={() => openModal("CREATE_ROOM")}
         />
         <GameButton
           text="Tham Gia Phòng"
           img="join-room.png"
+          isOfflineMode={isOfflineMode}
           onClick={() => openModal("JOIN_ROOM")}
         />
       </div>
