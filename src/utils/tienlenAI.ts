@@ -183,7 +183,7 @@ export const isValidMove = (tableCards: CardType[], handCards: CardType[]): bool
 export const chooseMove = (
     hand: CardType[],
     table: CardType[],
-    level: "EASY" | "MEDIUM",
+    level: "EASY" | "MEDIUM" | "HARD",
     opponentsHandSizes: number[] = []
 ): CardType[] => {
     const analysis = analyzeHand(hand);

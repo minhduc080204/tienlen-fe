@@ -6,4 +6,5 @@ export const ROUTES = {
 
   HOME: "/home",
   ROOM: "/room",
+  GAME_PLAY_BOT: "/room-bot",
 };
