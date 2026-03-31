@@ -223,7 +223,7 @@ export const chooseMove = (
     const isLateGame = opponentsHandSizes.some(size => size <= 4);
     if (isLateGame) {
         // Find EVERYTHING possible (including breaking sets)
-        const bruteForceMoves: Combination[] = [];
+        // const bruteForceMoves: Combination[] = [];
         // Note: For simplicity, we prioritize existing sets but don't strictly forbid breaking them in implementation logic
         // If the bot really wanted to "break" a triple to make a pair, we'd need more complex combinatorics here.
         // For now, "Medium" will prioritize "Chops" and high cards more aggressively.
