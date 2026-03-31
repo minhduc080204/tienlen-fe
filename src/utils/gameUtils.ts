@@ -8,7 +8,7 @@ export const createDeck = (): CardType[] => {
   for (const rank of ranks) {
     for (const suit of suits) {
       deck.push({
-        id: (rank*4+suit).toString(),
+        id: (rank*10+suit).toString(),
         rank,
         suit,
       });
