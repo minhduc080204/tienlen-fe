@@ -104,7 +104,7 @@ export default function GamePlay() {
           hover:scale-110            
           transition 
           ${room.me?.ready ? `
-            bg-gradient-to-r from-red-600 to-red-800
+            bg-linear-to-r from-red-600 to-red-800
           hover:from-red-500 hover:to-red-700`: `
             bg-zinc-700
           text-white font-semibold

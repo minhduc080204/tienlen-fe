@@ -5,6 +5,8 @@ import { useModalStore } from "../../stores/modal.store";
 import { formatNumber } from "../../utils/formatNumber";
 import { Button } from "../ui/Button";
 import { gameToast } from "../ui/toast";
+import { useNavigate } from "react-router-dom";
+import { ROUTES } from "../../routes/routes";
 
 const BET_OPTIONS = [10, 50, 100, 200, 500, 1000];
 const DIFFICULTY_LEVELS = [
@@ -15,7 +17,7 @@ const DIFFICULTY_LEVELS = [
 
 export default function BotPlayModal() {
   const close = useModalStore((s) => s.close);
-
+  const navigate = useNavigate();
   const [selectedBet, setSelectedBet] = useState<number | null>(null);
   const [difficulty, setDifficulty] = useState<number | null>(null);
 
@@ -30,12 +32,10 @@ export default function BotPlayModal() {
     }
 
     // Gửi thông báo tính năng chuẩn bị sẵn sàng hoặc route tới GamePlayOffline
-    gameToast.info(`Bắt đầu chơi Bot mức độ: ${difficulty}, cược: ${selectedBet} (Đang phát triển)`);
+    gameToast.info(`Bắt đầu chơi Bot mức độ: ${difficulty}, cược: ${selectedBet}`);
     close();
-
-    // TODO: Mở comment khi có endpoint hoặc trang chơi offline nhé
-    // navigate(ROUTES.ROOM, { state: { botMode: true, bet: selectedBet, difficulty } });
-  };
+    navigate(ROUTES.GAME_PLAY_BOT, { state: { botMode: true, bet: selectedBet, difficulty } });
+    };
 
   return (
     <>
@@ -75,7 +75,7 @@ export default function BotPlayModal() {
                 onClick={() => setDifficulty(level.id)}
                 className={`
                   flex-1 py-1 lg:py-2 rounded-lg text-xs lg:text-sm font-semibold transition
-                  border 
+                  border
                   ${active
                     ? "bg-blue-600 border-blue-500 text-white shadow-lg shadow-blue-600/40"
                     : "bg-zinc-800 border-zinc-700 text-gray-300 hover:bg-blue-700/20 hover:border-blue-600"
