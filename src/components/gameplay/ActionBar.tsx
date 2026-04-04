@@ -14,9 +14,9 @@ export const ActionBar = ({
       <Button
         onClick={onAttackCard}
         className="
-          px-5 py-1.5 text-xs
-          sm:px-6 sm:py-2 sm:text-sm
-          lg:px-8 lg:py-3 lg:text-base
+          px-5 py-3.5 text-xs
+          sm:px-6 sm:py-4 sm:text-sm
+          lg:px-8 lg:py-6 lg:text-base
           rounded-lg lg:rounded-xl
           bg-gradient-to-r from-red-600 to-red-800
           text-white font-bold

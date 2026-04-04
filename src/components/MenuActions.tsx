@@ -64,7 +64,8 @@ export default function MenuActions() {
         w-full max-w-xs
         lg:max-w-none lg:w-3/5
         ml-auto
-        sm:mr-4
+        mr-20
+        lg:mr-0
       ">
         <GameButton
           text="Chơi Ngay"

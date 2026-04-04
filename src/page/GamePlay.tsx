@@ -246,12 +246,12 @@ export default function GamePlay() {
     >
       <div className="flex gap-2 sm:gap-3 lg:gap-5">
         <BackButton onClick={() => handleBackClick()} />
-        <div className="p-1.5 sm:px-2 lg:w-40 rounded-xl sm:rounded-2xl bg-amber-50/20 shadow-lg shadow-red-900/40">
+        <div className="p-1.5 rounded-xl sm:rounded-2xl bg-amber-50/20 shadow-lg shadow-red-900/40">
           <div className="flex justify-between">
             <h1 className="font-bold text-[10px] lg:text-lg">Room ID: </h1>
             <h1 className="font-bold text-[10px] lg:text-lg text-yellow-500">{room.roomId}</h1>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between gap-1">
             <h1 className="font-bold text-[10px] lg:text-lg">Đặt cược:</h1>
             <h1 className="font-bold text-[10px] lg:text-lg text-yellow-500 flex items-center">{room.betToken} <TokenIcon className="w-4 sm:w-5 lg:w-6" /></h1>
           </div>
