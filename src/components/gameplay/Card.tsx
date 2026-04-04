@@ -40,10 +40,10 @@ export const Card = ({ card, isSelected, onSelected }: CardProps) => {
     return (
         <Button
             className={`
-            w-[70px] h-[100px] -ml-[30px]
-            sm:w-[70px] sm:h-[100px] sm:-ml-[30px]
-            lg:w-[100px] lg:h-[145px] lg:-ml-[40px]
-            xl:w-[120px] xl:h-[180px] xl:-ml-[50px]
+            w-[70px] h-[100px] -ml-[70px]
+            sm:w-[70px] sm:h-[100px] sm:-ml-[60px]
+            lg:w-[100px] lg:h-[145px] lg:-ml-[50px]
+            xl:w-[120px] xl:h-[180px] xl:-ml-[40px]
             first:ml-0
             bg-white rounded-md lg:rounded-lg
             p-[2px] sm:p-1 lg:p-1.5 xl:p-2
