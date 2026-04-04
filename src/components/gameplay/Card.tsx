@@ -40,10 +40,9 @@ export const Card = ({ card, isSelected, onSelected }: CardProps) => {
     return (
         <Button
             className={`
-            w-[70px] h-[100px] -ml-[70px]
-            sm:w-[70px] sm:h-[100px] sm:-ml-[60px]
-            lg:w-[100px] lg:h-[145px] lg:-ml-[50px]
-            xl:w-[120px] xl:h-[180px] xl:-ml-[40px]
+            w-[65px] h-[100px] -ml-[28px]
+            md:w-[75px] md:h-[110px] md:-ml-[30px]
+            xl:w-[120px] xl:h-[180px] xl:-ml-[35px]
             first:ml-0
             bg-white rounded-md lg:rounded-lg
             p-[2px] sm:p-1 lg:p-1.5 xl:p-2
@@ -54,10 +53,10 @@ export const Card = ({ card, isSelected, onSelected }: CardProps) => {
         `}
             onClick={() => onSelected(card)}
         >
-            <div className="text-[10px] sm:text-xl lg:text-2xl xl:text-3xl flex flex-col items-start leading-none">
+            <div className="text-xl lg:text-2xl xl:text-3xl flex flex-col items-start leading-none">
                 <div>
                     <b className="font-card ">{rankMapping(card.rank)}</b>
-                    <img className="w-2 sm:w-4 lg:w-5 xl:w-6" src={`./cards/${SUITS[card.suit - 1]}_m_ic.svg`} />
+                    <img className="w-4 lg:w-5 xl:w-6" src={`./cards/${SUITS[card.suit - 1]}_m_ic.svg`} />
                 </div>
             </div>
             <div className="flex justify-center flex-1 items-center">
