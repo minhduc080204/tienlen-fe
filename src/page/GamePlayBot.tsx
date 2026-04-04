@@ -27,6 +27,7 @@ export default function GamePlayBot() {
     const { bet, difficulty } = location.state || { bet: 10, difficulty: 1 };
     const user = useAuthStore((s) => s.user);
     const navigate = useNavigate();
+    const [isPlayerWin, setIsPlayerWin] = useState(true);
 
     const [room, setRoom] = useState<RoomType>({
         roomId: 8888,
@@ -112,7 +113,7 @@ export default function GamePlayBot() {
                 me: newMe,
                 players: [newMe, newBot],
                 table: [],
-                currentTurn: 0 // Player goes first
+                currentTurn: isPlayerWin ? 0 : 1
             };
         });
         gameToast.success("Trò chơi bắt đầu!");
@@ -147,6 +148,7 @@ export default function GamePlayBot() {
             if (newHand.length === 0) {
                 gameToast.success("Bạn đã thắng!");
                 setIsReady(false);
+                setIsPlayerWin(true);
                 return { ...prev, status: "WAITING", table: selectedIds, me: newMe, players: [newMe, prev.players[1]] };
             }
 
@@ -194,6 +196,7 @@ export default function GamePlayBot() {
                         if (newBotHand.length === 0) {
                             gameToast.error("Bot đã thắng!");
                             setIsReady(false);
+                            setIsPlayerWin(false);
                             return { ...prev, status: "WAITING", table: moveIds, players: [prev.me!, newBot] };
                         }
 
