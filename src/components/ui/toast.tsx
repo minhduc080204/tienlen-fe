@@ -11,7 +11,7 @@ const baseStyle = {
 
 export const gameToast = {
   success: (message: string) =>
-    toast.success(`${message}`, {
+    toast.success(message, {
       style: {
         ...baseStyle,
         borderColor: "rgb(34 197 94)",
@@ -21,7 +21,7 @@ export const gameToast = {
     }),
 
   error: (message: string) =>
-    toast.error(`${message}`, {
+    toast.error(message, {
       style: {
         ...baseStyle,
         borderColor: "rgb(239 68 68)",
