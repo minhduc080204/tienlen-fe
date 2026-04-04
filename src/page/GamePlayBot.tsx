@@ -129,32 +129,34 @@ export default function GamePlayBot() {
 
     const isMyTurn = () => room.status === "PLAYING" && room.currentTurn === 0;
 
-    const handleAttack = () => {
+    const handleAttack = (isAutoAttack: boolean = false) => {
         if (!isMyTurn()) return gameToast.error("Chưa tới lượt");
-        if (selectedIds.length === 0) return gameToast.error("Hãy chọn lá bài");
 
-        const selectedCards = selectedIds.map(cardIdToCard);
+        const currentSelectedIds = isAutoAttack ? [room.me?.handCards![0].id!] : selectedIds;
+        if (currentSelectedIds.length === 0) return gameToast.error("Hãy chọn lá bài");
+
+        const selectedCards = currentSelectedIds.map(cardIdToCard);
         const tableCards = room.table.map(cardIdToCard);
-
+        console.log(selectedCards, tableCards, isAutoAttack);
         if (!isValidMove(tableCards, selectedCards)) {
             return gameToast.error("Nước đi không hợp lệ!");
         }
 
         // Apply attack
         setRoom(prev => {
-            const newHand = prev.me!.handCards!.filter(c => !selectedIds.includes(c.id));
+            const newHand = prev.me!.handCards!.filter(c => !currentSelectedIds.includes(c.id));
             const newMe = { ...prev.me!, handCards: newHand, handSize: newHand.length };
 
             if (newHand.length === 0) {
                 gameToast.success("Bạn đã thắng!");
                 setIsReady(false);
                 setIsPlayerWin(true);
-                return { ...prev, status: "WAITING", table: selectedIds, me: newMe, players: [newMe, prev.players[1]] };
+                return { ...prev, status: "WAITING", table: currentSelectedIds, me: newMe, players: [newMe, prev.players[1]] };
             }
 
             return {
                 ...prev,
-                table: selectedIds,
+                table: currentSelectedIds,
                 me: newMe,
                 players: [newMe, prev.players[1]],
                 currentTurn: 1
@@ -164,9 +166,13 @@ export default function GamePlayBot() {
         setSelectedIds([]);
     };
 
-    const handlePassTurn = () => {
+    const handlePassTurn = (isUserClick: boolean = true) => {
         if (!isMyTurn()) return;
-        if (room.table.length === 0) return gameToast.error("Bạn không thể bỏ lượt khi đang cầm cái");
+        if (room.table.length === 0 && isUserClick) return gameToast.error("Bạn không thể bỏ lượt khi đang cầm cái");
+        if (room.table.length === 0) {
+            handleAttack(true);
+            return;
+        }
 
         setRoom(prev => ({ ...prev, table: [], currentTurn: 1 }));
         gameToast.info("Bạn đã bỏ lượt");
@@ -257,7 +263,7 @@ export default function GamePlayBot() {
                     colorsTime={[10, 5, 2]}
                     trailColor="#1e293b"
                     onComplete={() => {
-                        handlePassTurn();
+                        handlePassTurn(false);
                         return { shouldRepeat: false };
                     }}
                 >
@@ -285,8 +291,8 @@ export default function GamePlayBot() {
                 onSelected={(card) => handleSelectedCard(card)}
             />
             <ActionBar
-                onAttackCard={handleAttack}
-                onPassTurn={handlePassTurn}
+                onAttackCard={() => handleAttack()}
+                onPassTurn={() => handlePassTurn()}
             />
         </>;
     };
