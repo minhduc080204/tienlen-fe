@@ -1,9 +1,9 @@
-import { useEffect, useState } from "react";
-import { CountdownCircleTimer } from 'react-countdown-circle-timer';
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChatIcon } from "../assets/icons/Chatcon";
 import { TokenIcon } from "../assets/icons/TokenIcon";
 import { BackButton } from "../components/BackButton";
+import { CustomCountDownCircle } from "../components/CustomCountDownCircle";
 import { ActionBar } from "../components/gameplay/ActionBar";
 import { Hand } from "../components/gameplay/Hand";
 import { Player } from "../components/gameplay/Player";
@@ -17,22 +17,14 @@ import { useModalStore } from "../stores/modal.store";
 import { useRoomStore } from "../stores/room.store";
 import { useSocketStore } from "../stores/socket.store";
 import type { CardType } from "../type/card";
+import { DURATION_READY_TIME, DURATION_TURN_TIME } from "../type/socket-response";
 
 
 export default function GamePlay() {
   const user = useAuthStore.getState().user
   const isConnected = useSocketStore((s) => s.isConnected)
   const openModal = useModalStore((s) => s.open);
-  // Responsive timer size: 60px mobile, 80px sm, 120px lg+
-  const [timerSize, setTimerSize] = useState(() =>
-    window.innerWidth >= 1024 ? 120 : window.innerWidth >= 640 ? 60 : 40
-  );
-  useEffect(() => {
-    const update = () =>
-      setTimerSize(window.innerWidth >= 1024 ? 120 : window.innerWidth >= 640 ? 60 : 40);
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
-  }, []);
+
 
   const navigate = useNavigate();
   const handleBackClick = () => {
@@ -74,7 +66,7 @@ export default function GamePlay() {
     useSocketStore.getState().sendPass();
   }
   const handleAttack = () => {
-    if (!isMyTurn()) {
+    if (!isMyTurn(room.me?.playerIndex!)) {
       return gameToast.error("Chưa tới lượt");
     }
 
@@ -117,36 +109,8 @@ export default function GamePlay() {
 
   const renderWhenPlaying = () => {
     return <>
-      <div
-        className="flex items-center justify-center shrink-0"
-        style={{ width: timerSize, height: timerSize }}
-      >
-        {isMyTurn() && (<CountdownCircleTimer
-          isPlaying
-          duration={15}
-          size={timerSize}
-          strokeWidth={timerSize >= 120 ? 10 : timerSize >= 80 ? 7 : 5}
-          colors={["#00C9A7", "#FFC75F", "#FF4B5C"]}
-          colorsTime={[10, 5, 2]}
-          trailColor="#1e293b"
-        >
-          {({ remainingTime }) => (
-            <div
-              style={{
-                fontSize: timerSize >= 120 ? "30px" : timerSize >= 80 ? "20px" : "14px",
-                fontWeight: 700,
-                color:
-                  remainingTime <= 2
-                    ? "#FF4B5C"
-                    : remainingTime <= 5
-                      ? "#FFC75F"
-                      : "#00C9A7",
-              }}
-            >
-              {remainingTime}
-            </div>
-          )}
-        </CountdownCircleTimer>)}
+      <div className="flex items-center justify-center shrink-0" >
+        {isMyTurn(room.me?.playerIndex!) && <CustomCountDownCircle duration={DURATION_TURN_TIME} />}
       </div>
       <Hand
         hands={room.me?.handCards || []}
@@ -165,7 +129,7 @@ export default function GamePlay() {
       const relative = getRelativePosition(player.playerIndex);
 
       const basePlayer = (
-        <Player key={player.playerIndex} player={player} />
+        <Player key={player.playerIndex} player={player} isMyTurn={isMyTurn(player.playerIndex)} />
       );
 
       switch (relative) {
@@ -203,38 +167,13 @@ export default function GamePlay() {
     });
   };
 
-  const isMyTurn = () => {
-    return room.me?.playerIndex === room.currentTurn
+  const isMyTurn = (myIndex: number) => {
+    return myIndex === room.currentTurn && room.status === 'PLAYING'
   }
 
   const renderCountDown = () => {
     return (<div className="flex flex-col gap-1 sm:gap-3 items-center">
-      <CountdownCircleTimer
-        isPlaying
-        duration={5}
-        size={timerSize}
-        strokeWidth={timerSize >= 120 ? 10 : timerSize >= 80 ? 7 : 5}
-        colors={["#00C9A7", "#FFC75F", "#FF4B5C"]}
-        colorsTime={[10, 5, 2]}
-        trailColor="#1e293b"
-      >
-        {({ remainingTime }) => (
-          <div
-            style={{
-              fontSize: timerSize >= 120 ? "30px" : timerSize >= 80 ? "20px" : "14px",
-              fontWeight: 700,
-              color:
-                remainingTime <= 2
-                  ? "#FF4B5C"
-                  : remainingTime <= 5
-                    ? "#FFC75F"
-                    : "#00C9A7",
-            }}
-          >
-            {remainingTime}
-          </div>
-        )}
-      </CountdownCircleTimer>
+      <CustomCountDownCircle duration={DURATION_READY_TIME} />
       <h1 className="font-bold text-xs sm:text-base lg:text-lg text-yellow-500">Trò chơi sắp bắt đầu</h1>
     </div>)
   }
