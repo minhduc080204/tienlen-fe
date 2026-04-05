@@ -29,6 +29,7 @@ export default function GamePlay() {
   const navigate = useNavigate();
   const handleBackClick = () => {
     useSocketStore.getState().disconnect()
+    useRoomStore.getState().resetRoom()
     navigate(ROUTES.HOME)
     useChatStore.setState({ messages: [] })
     setSelectedIds([])

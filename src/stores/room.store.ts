@@ -136,6 +136,7 @@ export const useRoomStore = create<RoomStore>((set) => ({
     set((state) => ({
       room: {
         ...state.room,
+        table: [],
         status: "READY"
       },
     }))
