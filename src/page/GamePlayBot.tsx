@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
-import { CountdownCircleTimer } from 'react-countdown-circle-timer';
 import { useLocation, useNavigate } from "react-router-dom";
 import { TokenIcon } from "../assets/icons/TokenIcon";
 import { BackButton } from "../components/BackButton";
+import { CustomCountDownCircle } from "../components/CustomCountDownCircle";
 import { ActionBar } from "../components/gameplay/ActionBar";
 import { Hand } from "../components/gameplay/Hand";
 import { Player } from "../components/gameplay/Player";
@@ -11,17 +11,17 @@ import { Button } from "../components/ui/Button";
 import { gameToast } from "../components/ui/toast";
 import { ROUTES } from "../routes/routes";
 import { useAuthStore } from "../stores/auth.store";
+import { useSoundStore } from "../stores/sound.store";
 import type { CardType } from "../type/card";
+import { BOT_DIFFICULTY_MAP } from "../type/game-ai";
+import type { PlayerType } from "../type/player";
 import type { RoomType } from "../type/room";
+import { DURATION_READY_TIME, DURATION_TURN_TIME } from "../type/socket-response";
 import { cardIdToCard } from "../utils/cardIdToCard";
 import { createDeck, shuffleDeck } from "../utils/gameUtils";
 import { chooseMove, isValidMove } from "../utils/tienlenAI";
-import type { PlayerType } from "../type/player";
-import { BOT_DIFFICULTY_MAP } from "../type/game-ai";
-import { useSoundStore } from "../stores/sound.store";
 
 export default function GamePlayBot() {
-    const TURN_COUNT = 20;
     const location = useLocation();
     const soundStore = useSoundStore();
     const { bet, difficulty } = location.state || { bet: 10, difficulty: 1 };
@@ -40,9 +40,6 @@ export default function GamePlayBot() {
 
     const [isReady, setIsReady] = useState(false);
     const [selectedIds, setSelectedIds] = useState<string[]>([]);
-    const [timerSize, setTimerSize] = useState(() =>
-        window.innerWidth >= 1024 ? 120 : window.innerWidth >= 640 ? 60 : 40
-    );
 
     // Initial Setup: Me and Bot
     useEffect(() => {
@@ -72,13 +69,6 @@ export default function GamePlayBot() {
         };
         setRoom(prev => ({ ...prev, me, players: [me, bot] }));
     }, [user, difficulty]);
-
-    useEffect(() => {
-        const update = () =>
-            setTimerSize(window.innerWidth >= 1024 ? 120 : window.innerWidth >= 640 ? 60 : 40);
-        window.addEventListener('resize', update);
-        return () => window.removeEventListener('resize', update);
-    }, []);
 
     const handleBackClick = () => {
         navigate(ROUTES.HOME);
@@ -249,41 +239,8 @@ export default function GamePlayBot() {
 
     const renderWhenPlaying = () => {
         return <>
-            <div
-                className="flex items-center justify-center shrink-0"
-                style={{ width: timerSize, height: timerSize }}
-            >
-                {isMyTurn() && (<CountdownCircleTimer
-                    key={room.currentTurn}
-                    isPlaying
-                    duration={TURN_COUNT}
-                    size={timerSize}
-                    strokeWidth={timerSize >= 120 ? 10 : timerSize >= 80 ? 7 : 5}
-                    colors={["#00C9A7", "#FFC75F", "#FF4B5C"]}
-                    colorsTime={[10, 5, 2]}
-                    trailColor="#1e293b"
-                    onComplete={() => {
-                        handlePassTurn(false);
-                        return { shouldRepeat: false };
-                    }}
-                >
-                    {({ remainingTime }) => (
-                        <div
-                            style={{
-                                fontSize: timerSize >= 120 ? "30px" : timerSize >= 80 ? "20px" : "14px",
-                                fontWeight: 700,
-                                color:
-                                    remainingTime <= 2
-                                        ? "#FF4B5C"
-                                        : remainingTime <= 5
-                                            ? "#FFC75F"
-                                            : "#00C9A7",
-                            }}
-                        >
-                            {remainingTime}
-                        </div>
-                    )}
-                </CountdownCircleTimer>)}
+            <div className="flex items-center justify-center shrink-0">
+                {isMyTurn() && <CustomCountDownCircle duration={DURATION_TURN_TIME} />}
             </div>
             <Hand
                 hands={room.me?.handCards || []}
@@ -299,32 +256,7 @@ export default function GamePlayBot() {
 
     const renderCountDown = () => {
         return (<div className="flex flex-col gap-1 sm:gap-3 items-center">
-            <CountdownCircleTimer
-                isPlaying
-                duration={3}
-                size={timerSize}
-                strokeWidth={timerSize >= 120 ? 10 : timerSize >= 80 ? 7 : 5}
-                colors={["#00C9A7", "#FFC75F", "#FF4B5C"]}
-                colorsTime={[3, 2, 1]}
-                trailColor="#1e293b"
-            >
-                {({ remainingTime }) => (
-                    <div
-                        style={{
-                            fontSize: timerSize >= 120 ? "30px" : timerSize >= 80 ? "20px" : "14px",
-                            fontWeight: 700,
-                            color:
-                                remainingTime <= 1
-                                    ? "#FF4B5C"
-                                    : remainingTime <= 2
-                                        ? "#FFC75F"
-                                        : "#00C9A7",
-                        }}
-                    >
-                        {remainingTime}
-                    </div>
-                )}
-            </CountdownCircleTimer>
+            <CustomCountDownCircle duration={DURATION_READY_TIME} />
             <h1 className="font-bold text-xs sm:text-base lg:text-lg text-yellow-500">Trò chơi sắp bắt đầu</h1>
         </div>);
     };
@@ -350,43 +282,7 @@ export default function GamePlayBot() {
 
             {/* Render Bot */}
             <div className="absolute top-2 sm:top-4 left-1/2 -translate-x-1/2">
-                {/* {room.players[1] && <div
-                    className="flex items-center justify-center shrink-0"
-                    style={{ width: timerSize, height: timerSize }}
-                >
-                    {isMyTurn() && (<CountdownCircleTimer
-                        key={room.currentTurn}
-                        isPlaying
-                        duration={TURN_COUNT}
-                        size={timerSize}
-                        strokeWidth={timerSize >= 120 ? 10 : timerSize >= 80 ? 7 : 5}
-                        colors={["#00C9A7", "#FFC75F", "#FF4B5C"]}
-                        colorsTime={[10, 5, 2]}
-                        trailColor="#1e293b"
-                        onComplete={() => {
-                            handlePassTurn();
-                            return { shouldRepeat: false };
-                        }}
-                    >
-                        {({ remainingTime }) => (
-                            <div
-                                style={{
-                                    fontSize: timerSize >= 120 ? "30px" : timerSize >= 80 ? "20px" : "14px",
-                                    fontWeight: 700,
-                                    color:
-                                        remainingTime <= 2
-                                            ? "#FF4B5C"
-                                            : remainingTime <= 5
-                                                ? "#FFC75F"
-                                                : "#00C9A7",
-                                }}
-                            >
-                                {remainingTime}
-                            </div>
-                        )}
-                    </CountdownCircleTimer>)}
-                </div>} */}
-                {room.players[1] && <Player player={room.players[1]} />}
+                {room.players[1] && <Player player={room.players[1]} isMyTurn={room.currentTurn === 1} />}
             </div>
 
             <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
