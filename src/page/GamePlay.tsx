@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChatIcon } from "../assets/icons/Chatcon";
 import { TokenIcon } from "../assets/icons/TokenIcon";
@@ -27,6 +27,13 @@ export default function GamePlay() {
 
 
   const navigate = useNavigate();
+  const isKicked = useRoomStore((s) => s.room.isKicked)
+  useEffect(() => {
+    if (isKicked) {
+      handleBackClick()
+    }
+  }, [isKicked]);
+
   const handleBackClick = () => {
     useSocketStore.getState().disconnect()
     useRoomStore.getState().resetRoom()
@@ -64,9 +71,11 @@ export default function GamePlay() {
   }
 
   const handlePassTurn = () => {
+    setSelectedIds([])
     useSocketStore.getState().sendPass();
   }
   const handleAttack = () => {
+    setSelectedIds([])
     if (!isMyTurn(room.me?.playerIndex!)) {
       return gameToast.error("Chưa tới lượt");
     }
@@ -76,7 +85,6 @@ export default function GamePlay() {
     }
 
     useSocketStore.getState().sendAttack(selectedIds);
-    setSelectedIds([])
   }
 
   const getRelativePosition = (playerSeat: number) => {

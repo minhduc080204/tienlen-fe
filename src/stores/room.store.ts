@@ -3,6 +3,7 @@ import type { GameMessageType } from "../type/game-message";
 import type { PlayerType } from "../type/player";
 import type { RoomType } from "../type/room";
 import { gameToast } from "../components/ui/toast";
+import { useAuthStore } from "./auth.store";
 
 type RoomStore = {
   room: RoomType;
@@ -12,6 +13,7 @@ type RoomStore = {
   // events (delta)
   addPlayer: (player: PlayerType) => void;
   removePlayer: (userId: number) => void;
+  setKicked: () => void;
   setReady: (userId: number) => void;
   setUnReady: (userId: number) => void;
   setStartCountdown: () => void;  
@@ -28,6 +30,8 @@ const initialState: RoomType = {
   status: "WAITING",
   table: [],
   players: [],
+
+  isKicked: false,
 };
 
 export const useRoomStore = create<RoomStore>((set) => ({
@@ -36,10 +40,15 @@ export const useRoomStore = create<RoomStore>((set) => ({
   /* =========================
      SNAPSHOT (overwrite full)
   ========================= */
-  setRoomType: (payload) =>
+  setRoomType: (payload) => {
+    console.log("SYNC SPAPSHOT TO: ", payload);
+    
+    useAuthStore.getState().setBalanceToken(payload.me?.user.tokenBalance);
     set({
       room: payload,
-    }),
+    })
+  }
+    ,
 
   /* =========================
      EVENT HANDLERS
@@ -68,6 +77,14 @@ export const useRoomStore = create<RoomStore>((set) => ({
         players: state.room.players.filter(
           (p) => p.user.id !== userId
         ),
+      },
+    })),
+
+  setKicked: () =>
+    set(() => ({
+      room: {
+        ...initialState,
+        isKicked: true,
       },
     })),
 

@@ -7,4 +7,5 @@ export type AuthStore = {
   login: (token: string, user: UserType) => void;
   logout: () => void;
   setOfflineMode: (offline: boolean) => void;
+  setBalanceToken: (balanceToken?: number) => void;
 };

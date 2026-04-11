@@ -1,6 +1,7 @@
 export type ActionType =
   "JOIN_ROOM"
   | "LEFT_ROOM"
+  | "KICKED"
 
   | "READY"
   | "UNREADY"

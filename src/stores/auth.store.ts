@@ -20,6 +20,14 @@ export const useAuthStore = create<AuthStore>()(
       setOfflineMode: (offline) => {
         set({ isOfflineMode: offline, token: null, user: null });
       },
+
+      setBalanceToken: (balanceToken?: number) => {
+        if (!balanceToken && balanceToken !== 0) return;
+
+        set((state) => ({
+          user: state.user ? { ...state.user, tokenBalance: balanceToken } : null,
+        }));
+      }
     }),
     {
       name: "auth-storage",

@@ -73,6 +73,11 @@ export const useSocketStore = create<SocketStore>((set, get) => ({
               useRoomStore.getState().removePlayer(res.data.userId);
               break;
 
+            case "KICKED":
+              useRoomStore.getState().setGameMessage(res.data);
+              useRoomStore.getState().setKicked();
+              break;
+
             case "READY":
               useRoomStore.getState().setReady(res.data.userId);
               break;

@@ -10,4 +10,6 @@ export type RoomType = {
     status: RoomStatus
     currentTurn?: number
     betToken?: number
+
+    isKicked?: boolean
 }
