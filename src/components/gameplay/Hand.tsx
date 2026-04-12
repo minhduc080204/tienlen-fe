@@ -2,14 +2,14 @@ import type { CardType } from "../../type/card"
 import { Card } from "./Card"
 
 type HandProps = {
-    classes?: string,
+    className?: string,
     hands: CardType[],
     selectedIds: string[],
     onSelected: (card: CardType) => void,
 }
 
 export const Hand = ({
-    classes,
+    className,
     hands,
     selectedIds,
     onSelected
@@ -29,7 +29,7 @@ export const Hand = ({
     }
 
     return (
-        <div className={classes}>
+        <div className={className}>
             {hands && renderCards()}
         </div>
     )

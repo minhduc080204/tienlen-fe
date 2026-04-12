@@ -253,11 +253,12 @@ export default function GamePlayOfflineBot() {
     };
 
     const renderWhenPlaying = () => {
-        return <>
+        return <div className="w-full flex items-center justify-between shrink-0">
             <div className="flex items-center justify-center shrink-0">
                 {isMyTurn() && <CustomCountDownCircle duration={DURATION_TURN_TIME} />}
             </div>
             <Hand
+                className="absolute bottom-0 left-1/2 -translate-x-1/2"
                 hands={room.me?.handCards || []}
                 selectedIds={selectedIds}
                 onSelected={(card) => handleSelectedCard(card)}
@@ -266,7 +267,7 @@ export default function GamePlayOfflineBot() {
                 onAttackCard={() => handleAttack()}
                 onPassTurn={() => handlePassTurn()}
             />
-        </>;
+        </div>;
     };
 
     const renderCountDown = () => {
@@ -306,7 +307,7 @@ export default function GamePlayOfflineBot() {
             </div>
 
             {/* Actions */}
-            <div className="absolute bottom-2 sm:bottom-4 lg:bottom-6 w-full flex justify-center items-center gap-2 sm:gap-3 lg:gap-4 px-2">
+            <div className="absolute bottom-2 sm:bottom-4 lg:bottom-6 w-full flex justify-center items-center gap-2 sm:gap-3 lg:gap-4 px-4">
                 {room.status !== 'PLAYING' && renderWhenWaiting()}
                 {room.status === 'PLAYING' && renderWhenPlaying()}
             </div>
