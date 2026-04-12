@@ -101,21 +101,21 @@ export default function LoginPage() {
             landscape:max-w-none landscape:w-auto
             landscape:flex landscape:flex-row landscape:items-stretch landscape:gap-0
             rounded-2xl overflow-hidden
-            bg-gradient-to-b from-zinc-900/95 to-black/95
+            bg-linear-to-b from-zinc-900/95 to-black/95
             border border-red-800/50
             shadow-[0_0_50px_rgba(185,28,28,0.2)]
             backdrop-blur-sm
-            lg:w-[420px] lg:max-w-[420px] lg:flex-col lg:p-8 lg:gap-0 lg:overflow-visible lg:rounded-2xl
-            lg:landscape:flex-col lg:landscape:w-[420px]
+            lg:w-105 lg:max-w-105 lg:flex-col lg:p-8 lg:gap-0 lg:overflow-visible lg:rounded-2xl
+            lg:landscape:flex-col lg:landscape:w-105
           "
         >
           {/* ── Branding (top on portrait / left on landscape) ── */}
           <div className="
             flex flex-col items-center justify-center
             px-5 pt-5 pb-2
-            landscape:px-6 landscape:py-6 landscape:min-w-[148px]
+            landscape:px-6 landscape:py-6 landscape:min-w-37
             landscape:border-r landscape:border-red-900/40
-            landscape:bg-gradient-to-b landscape:from-red-950/30 landscape:to-transparent
+            landscape:bg-linear-to-b landscape:from-red-950/30 landscape:to-transparent
             lg:items-center lg:px-0 lg:pt-0 lg:pb-5
             lg:landscape:border-r-0 lg:landscape:bg-transparent
             lg:landscape:min-w-0
@@ -139,7 +139,7 @@ export default function LoginPage() {
           <div className="
             flex flex-col gap-2
             px-5 pb-5 pt-2
-            landscape:px-5 landscape:py-5 landscape:min-w-[220px] landscape:justify-center
+            landscape:px-5 landscape:py-5 landscape:min-w-55 landscape:justify-center
             lg:px-0 lg:pb-0 lg:pt-0 lg:gap-4
           ">
             <Input

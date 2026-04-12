@@ -54,7 +54,7 @@ export default function BotPlayOfflineModal() {
         className="
           fixed z-50
           top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-          w-[92vw] max-w-[380px]
+          w-[92vw] max-w-95
           bg-zinc-900 border border-blue-700
           rounded-2xl p-4 lg:p-6
           shadow-2xl shadow-blue-900/30

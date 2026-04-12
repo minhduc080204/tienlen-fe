@@ -27,7 +27,7 @@ export default function GameButton({ text, img, isOfflineMode = false, onClick }
         rounded-2xl
         flex flex-col items-center gap-1 lg:gap-2
         backdrop-blur-md
-        bg-gradient-to-br
+        bg-linear-to-br
         ${isOfflineMode ? 'bg-gray-800/60' : 'from-red-900/40 via-red-700/40 to-rose-800/40'}
         border border-red-300/20
         shadow-[0_0_20px_rgba(185,28,28,0.5)]
