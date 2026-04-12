@@ -7,24 +7,21 @@ import { Button } from "../ui/Button";
 import { gameToast } from "../ui/toast";
 import { useNavigate } from "react-router-dom";
 import { ROUTES } from "../../routes/routes";
-import axios from "axios";
-import { gameApi, type BotLevel } from "../../api/game.api";
 
 const BET_OPTIONS = [10, 50, 100, 200, 500, 1000];
 const DIFFICULTY_LEVELS = [
-  { id: 1, name: "Dễ", icon: "🟢", value: "easy" as BotLevel },
-  { id: 2, name: "Trung bình", icon: "🟡", value: "medium" as BotLevel },
-  { id: 3, name: "Khó", icon: "🔴", value: "hard" as BotLevel },
+  { id: 1, name: "Dễ", icon: "🟢" },
+  { id: 2, name: "Trung bình", icon: "🟡" },
+  { id: 3, name: "Khó", icon: "🔴" },
 ];
 
-export default function BotPlayModal() {
+export default function BotPlayOfflineModal() {
   const close = useModalStore((s) => s.close);
   const navigate = useNavigate();
   const [selectedBet, setSelectedBet] = useState<number | null>(null);
   const [difficulty, setDifficulty] = useState<number | null>(null);
-  const [loading, setLoading] = useState(false);
 
-  const handleStart = async () => {
+  const handleStart = () => {
     if (!selectedBet) {
       gameToast.error("Vui lòng chọn mức cược");
       return;
@@ -34,47 +31,10 @@ export default function BotPlayModal() {
       return;
     }
 
-    const botLevel = DIFFICULTY_LEVELS.find((item) => item.id === difficulty)?.value;
-
-    if (!botLevel) {
-      gameToast.error("Mức độ khó không hợp lệ");
-      return;
-    }
-
-    try {
-      setLoading(true);
-      const res = await gameApi.createBotRoom(selectedBet, botLevel);
-      close();
-      navigate(ROUTES.GAME_PLAY_BOT, {
-        state: {
-          betToken: res.betToken,
-          botLevel: res.botLevel,
-        },
-      });
-    } catch (err) {
-      if (axios.isAxiosError(err)) {
-        const status = err.response?.status;
-
-        if (status === 400) {
-          const message =
-            err.response?.data?.message ||
-            err.response?.data?.messages ||
-            "Yêu cầu không hợp lệ";
-          gameToast.error(message);
-          return;
-        }
-
-        if (!err.response) {
-          gameToast.error("Không thể kết nối tới server");
-          return;
-        }
-      }
-
-      gameToast.error("Không thể tạo phòng bot. Hãy đăng nhập lại");
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
+    // Gửi thông báo tính năng chuẩn bị sẵn sàng hoặc route tới GamePlayOffline
+    gameToast.info(`Bắt đầu chơi Bot mức độ: ${difficulty}, cược: ${selectedBet}`);
+    close();
+    navigate(ROUTES.GAME_PLAY_OFFLINE_BOT, { state: { botMode: true, bet: selectedBet, difficulty } });
   };
 
   return (
@@ -101,7 +61,7 @@ export default function BotPlayModal() {
         "
       >
         <h2 className="text-lg lg:text-xl font-bold text-blue-500 text-center mb-2 lg:mb-6">
-          🤖 Chơi Với Bot
+          🤖 Chơi Với Bot Offline
         </h2>
 
         {/* Difficulty Options */}
@@ -159,17 +119,17 @@ export default function BotPlayModal() {
         {/* Start Button */}
         <Button
           onClick={handleStart}
-          disabled={!selectedBet || !difficulty || loading}
+          disabled={!selectedBet || !difficulty}
           className={`
             w-full py-2 text-sm lg:text-base rounded-lg
             font-semibold transition text-white
-            ${selectedBet && difficulty && !loading
+            ${selectedBet && difficulty
               ? "bg-blue-600 hover:bg-blue-500 shadow-[0_0_15px_rgba(37,99,235,0.4)]"
               : "bg-zinc-700 text-gray-400 cursor-not-allowed opacity-70"
             }
           `}
         >
-          {loading ? "Đang tạo..." : "🚀 Bắt Đầu"}
+          🚀 Bắt Đầu
         </Button>
 
         {/* Close */}

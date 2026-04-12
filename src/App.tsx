@@ -13,6 +13,7 @@ import { RoomGuard } from './components/RoomGuard'
 import PWABadge from './components/PWABadge'
 
 import GamePlayBot from './page/GamePlayBot'
+import GamePlayOfflineBot from './page/GamePlayOfflineBot'
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/" element={<Navigate to={ROUTES.LOGIN} replace />} />
           <Route path={ROUTES.LOGIN} element={<LoginPage />} />
           <Route path={ROUTES.REGISTER} element={<RegisterPage />} />
+          <Route path={ROUTES.GAME_PLAY_OFFLINE_BOT} element={<GamePlayOfflineBot />} />
 
           <Route element={<ProtectedRoute />}>
             <Route path={ROUTES.HOME} element={<HomePage />} />

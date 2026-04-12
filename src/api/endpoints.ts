@@ -15,5 +15,10 @@ export const API_ENDPOINTS = {
     JOIN: "/room/join",
     LEAVE: "/room/leave",
     QUICK_JOIN: "/room/quick-join",
+    BOT: {
+      CREATE: "/room/bot/create",
+      START: "/room/bot/start",
+      ATTACK: "/room/bot/attack",
+    },
   },
 };

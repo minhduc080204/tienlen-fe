@@ -76,7 +76,7 @@ export default function MenuActions() {
         <GameButton
           text="Chơi Với Bot"
           img="play-now.png"
-          onClick={() => openModal("BOT_PLAY")}
+          onClick={() => openModal(isOfflineMode ? "BOT_OFFLINE_PLAY" : "BOT_PLAY")}
         />
         <GameButton
           text="Tạo Phòng"
