@@ -1,6 +1,7 @@
 import { create } from "zustand";
 
 export type ModalType = 
+  "PROFILE" | 
   "SETTINGS" | 
   "CREATE_ROOM" | 
   "CHAT_ROOM" |

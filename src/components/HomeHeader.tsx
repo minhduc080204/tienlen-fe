@@ -2,17 +2,20 @@ import { MoneyIcon } from "../assets/icons/MoneyIcon";
 import { PlusIcon } from "../assets/icons/PlusIcon";
 import { TokenIcon } from "../assets/icons/TokenIcon";
 import { useAuthStore } from "../stores/auth.store";
+import { useModalStore } from "../stores/modal.store";
 import { formatNumber } from "../utils/formatNumber";
 import SettingsButton from "./SettingsButton";
+import { Button } from "./ui/Button";
 
 export default function HomeHeader() {
     const user = useAuthStore.getState().user;
+    const openModal = useModalStore((s) => s.open);
     return (
         <div className="w-full flex justify-center px-3 py-2 lg:py-0">
             <div className="w-full lg:w-4/5 flex items-center justify-between lg:justify-around gap-2 lg:gap-0">
 
                 {/* Avatar + Name */}
-                <div className="flex items-center gap-2">
+                <Button className="flex items-center gap-2" onClick={()=>openModal('PROFILE')}>
                     <img
                         src={user?.avatarUrl || import.meta.env.VITE_BASE_AVATAR_URL}
                         className="w-9 h-9 lg:w-12 lg:h-12 rounded-full border-2 border-red-500/80 shrink-0"
@@ -25,7 +28,7 @@ export default function HomeHeader() {
                             🟢<label className="text-white/80">Online</label>
                         </p>
                     </div>
-                </div>
+                </Button>
 
                 {/* Balances */}
                 <div className="flex items-center gap-6">
