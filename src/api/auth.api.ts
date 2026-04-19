@@ -20,6 +20,9 @@ export const authApi = {
     axiosClient.post<LoginResponse>(API_ENDPOINTS.AUTH.LOGIN, data)
     .then(res=>res.data),
 
+  logout: () =>
+    axiosClient.post(API_ENDPOINTS.AUTH.LOGOUT),
+
   register: (data: RegisterPayload) =>
     axiosClient.post(API_ENDPOINTS.AUTH.REGISTER, data),
 

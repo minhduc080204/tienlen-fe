@@ -3,6 +3,7 @@ import { useSoundStore } from "../../stores/sound.store";
 import { useModalStore } from "../../stores/modal.store";
 import { Button } from "../ui/Button";
 import { useAuthStore } from "../../stores/auth.store";
+import { authApi } from "../../api/auth.api";
 
 export default function SettingsModal() {
   const { enabled, volume, toggleSound, setVolume } =
@@ -10,6 +11,12 @@ export default function SettingsModal() {
 
   const close = useModalStore((s) => s.close);
   const logout = useAuthStore((s) => s.logout);
+
+  const handleLogout =async () => {
+    logout();
+    close();
+    await authApi.logout();
+  }
 
   return (
     <>
@@ -81,10 +88,7 @@ export default function SettingsModal() {
 
         {/* Logout */}
         <Button
-          onClick={() => {
-            logout();
-            close();
-          }}
+          onClick={handleLogout}
           className="
             w-full py-2 rounded-lg mb-3
             bg-zinc-700 hover:bg-zinc-600
