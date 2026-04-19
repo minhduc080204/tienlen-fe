@@ -8,9 +8,9 @@ export const API_ENDPOINTS = {
   },
 
   USER: {
-    PROFILE: "/users/me",
-    TRANSACTIONS: "/users/transactions",
-    MATCHES: "/users/matches",
+    PROFILE: "/user/me",
+    TRANSACTIONS: "/user/transactions",
+    MATCHES: "/user/matches",
   },
 
   ROOM: {

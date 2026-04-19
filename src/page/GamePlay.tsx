@@ -95,11 +95,11 @@ export default function GamePlay() {
   };
 
   const renderWhenWaiting = () => {
-    return (
-      <Button
+    return (<div className="flex flex-col gap-3">
+       <Button
         onClick={room.me?.ready ? useSocketStore.getState().sendUnReady : useSocketStore.getState().sendReady}
         className={`px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm lg:px-6 lg:py-3 lg:text-base
-          rounded-lg lg:rounded-xl
+          rounded-lg lg:rounded-xl mx-5
           text-white font-bold
           shadow-lg shadow-red-900/50
           hover:scale-110            
@@ -113,13 +113,17 @@ export default function GamePlay() {
           hover:bg-zinc-600
           `}
       `}>READY</Button>
-    )
+      {renderMyData()}
+    </div>)
   }
 
   const renderWhenPlaying = () => {
     return <div className="w-full flex items-center justify-between shrink-0">
       <div className="flex items-center justify-center shrink-0" >
-        {isMyTurn(room.me?.playerIndex!) && <CustomCountDownCircle duration={DURATION_TURN_TIME} />}
+        {isMyTurn(room.me?.playerIndex!)
+          ? <CustomCountDownCircle duration={DURATION_TURN_TIME}/>
+          : renderMyData()
+        }
       </div>
       <Hand
         className="absolute bottom-0 left-1/2 -translate-x-1/2"
@@ -176,6 +180,23 @@ export default function GamePlay() {
       }
     });
   };
+
+  const renderMyData = () => {
+    return <div className="flex items-center gap-2">
+      <img
+          src={user?.avatarUrl || import.meta.env.VITE_BASE_AVATAR_URL}
+          className="w-9 h-9 lg:w-12 lg:h-12 rounded-full border-2 border-red-500/80 shrink-0"
+      />
+      <div className="text-white bg-stone-700/20 rounded-3xl backdrop-blur-md px-3 pt-1.5 ">
+        <p className="text-sm lg:text-lg font-semibold leading-tight">
+            {user?.name ?? "unknown"}
+        </p>
+        <p className="text-xs lg:text-sm leading-tight">
+          <h1 className="font-bold text-[10px] lg:text-lg text-yellow-500 flex items-center">Ví: {room.me?.user.tokenBalance} <TokenIcon className="w-4 sm:w-5 lg:w-6" /></h1>
+        </p>
+      </div>
+    </div>
+  }
 
   const isMyTurn = (myIndex: number) => {
     return myIndex === room.currentTurn && room.status === 'PLAYING'
