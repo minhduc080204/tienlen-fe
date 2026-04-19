@@ -6,6 +6,7 @@ import JoinRoomModal from "./components/modals/JoinRoomModal";
 import ChatTab from "./components/ChatTab";
 import BotPlayModal from "./components/modals/BotPlayModal";
 import BotPlayOfflineModal from "./components/modals/BotPlayOfflineModal";
+import ProfileModal from "./components/modals/ProfileModal";
 
 export default function ModalRoot() {
   const { modal, close } = useModalStore();
@@ -31,6 +32,7 @@ export default function ModalRoot() {
             exit={{ opacity: 0, scale: 0.8, y: 40 }}
             transition={{ duration: 0.25 }}
           >
+            {modal === "PROFILE" && <ProfileModal />}
             {modal === "SETTINGS" && <SettingsModal />}
             {modal === "CREATE_ROOM" && <CreateRoomModal />}
             {modal === "JOIN_ROOM" && <JoinRoomModal />}
