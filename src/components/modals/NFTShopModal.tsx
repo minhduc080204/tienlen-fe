@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { useModalStore } from "../../stores/modal.store";
 import { NFTItemData } from "../../type/nft";
 import { nftApi } from "../../api/nft.api";
+import { dataApi } from "../../api/data.api";
+import { useAuthStore } from "../../stores/auth.store";
 import { useWeb3 } from "../../hooks/useWeb3";
 import NFTItem from "../gameplay/NFTItem";
 import { gameToast } from "../ui/toast";
@@ -50,6 +52,14 @@ export default function NFTShopModal() {
         itemId: item.id,
         walletAddress: currentAccount!
       });
+
+      // Refresh balance after purchase
+      try {
+        const updatedUser = await dataApi.profile();
+        useAuthStore.getState().setBalanceToken(updatedUser.tokenBalance);
+      } catch (e) {
+        console.error("Failed to refresh balance", e);
+      }
 
       gameToast.success("Mua NFT thành công!");
       close();
