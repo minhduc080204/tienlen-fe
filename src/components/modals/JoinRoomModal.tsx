@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import axios from "axios";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { gameApi } from "../../api/game.api";
@@ -6,8 +6,8 @@ import { ROUTES } from "../../routes/routes";
 import { useModalStore } from "../../stores/modal.store";
 import { useSocketStore } from "../../stores/socket.store";
 import { Button } from "../ui/Button";
-import axios from "axios";
 import { gameToast } from "../ui/toast";
+import { ModalContainer } from "./ModalContainer";
 
 export default function JoinRoomModal() {
   const close = useModalStore((s) => s.close);
@@ -65,45 +65,23 @@ export default function JoinRoomModal() {
   };
 
   return (
-    <>
-      <motion.div
-        className="fixed inset-0 bg-black/70 z-40"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={close}
-      />
-      <motion.div
-        initial={{ opacity: 0, scale: 0.85 }}
-        animate={{ opacity: 1, scale: 1 }}
-        exit={{ opacity: 0, scale: 0.85 }}
-        transition={{ duration: 0.25 }}
-        onClick={close}
-        className="
-          fixed z-50
-          top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2
-          w-[92vw] max-w-[380px]
-          bg-zinc-900 border border-red-700
-          rounded-2xl p-4 lg:p-6
-          shadow-2xl shadow-red-900/30
-        "
-      >
-        <h2 className="text-lg lg:text-xl font-bold text-red-500 text-center mb-4 lg:mb-6">
-          🔑 Tham Gia Phòng
-        </h2>
+    <ModalContainer className="w-[92vw] max-w-95">
+      <h2 className="text-lg lg:text-xl font-bold text-red-500 text-center mb-4 lg:mb-6">
+        🔑 Tham Gia Phòng
+      </h2>
 
-        {/* Input Room ID */}
-        <div className="mb-4 lg:mb-6">
-          <label className="block text-xs lg:text-sm text-gray-400 mb-1.5 lg:mb-2">
-            Nhập ID phòng
-          </label>
+      {/* Input Room ID */}
+      <div className="mb-4 lg:mb-6">
+        <label className="block text-xs lg:text-sm text-gray-400 mb-1.5 lg:mb-2">
+          Nhập ID phòng
+        </label>
 
-          <input
-            type="text"
-            value={roomId}
-            onChange={(e) => setRoomId(e.target.value)}
-            placeholder="Ví dụ: 12345"
-            className="
+        <input
+          type="text"
+          value={roomId}
+          onChange={(e) => setRoomId(e.target.value)}
+          placeholder="Ví dụ: 12345"
+          className="
               w-full px-3 py-2 lg:px-4
               bg-zinc-800 border border-zinc-700
               rounded-lg text-sm lg:text-base
@@ -112,37 +90,36 @@ export default function JoinRoomModal() {
               focus:ring-1 focus:ring-red-600
               transition
             "
-          />
-        </div>
+        />
+      </div>
 
-        {/* Join Button */}
-        <Button
-          onClick={handleJoinRoom}
-          disabled={!roomId || loading}
-          className={`
+      {/* Join Button */}
+      <Button
+        onClick={handleJoinRoom}
+        disabled={!roomId || loading}
+        className={`
             w-full py-2 text-sm lg:text-base rounded-lg
             font-semibold transition
             ${roomId
-              ? "bg-red-600 hover:bg-red-500 text-white"
-              : "bg-zinc-700 text-gray-400 cursor-not-allowed"
-            }
+            ? "bg-red-600 hover:bg-red-500 text-white"
+            : "bg-zinc-700 text-gray-400 cursor-not-allowed"
+          }
           `}
-        >
-          {loading ? "Đang tham gia..." : "🚀 Tham Gia"}
-        </Button>
+      >
+        {loading ? "Đang tham gia..." : "🚀 Tham Gia"}
+      </Button>
 
-        {/* Close */}
-        <Button
-          onClick={close}
-          className="
+      {/* Close */}
+      <Button
+        onClick={close}
+        className="
             w-full mt-2 lg:mt-3 py-2 rounded-lg text-sm lg:text-base
             bg-zinc-800 hover:bg-zinc-700
             text-gray-300 transition
           "
-        >
-          Đóng
-        </Button>
-      </motion.div>
-    </>
+      >
+        Đóng
+      </Button>
+    </ModalContainer>
   );
 }
