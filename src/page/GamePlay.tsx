@@ -1,10 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ChatIcon } from "../assets/icons/Chatcon";
-import { TokenIcon } from "../assets/icons/TokenIcon";
-import { BackButton } from "../components/BackButton";
 import { CustomCountDownCircle } from "../components/CustomCountDownCircle";
 import { ActionBar } from "../components/gameplay/ActionBar";
+import GameLayout, { MyData, RoomInfo } from "../components/gameplay/GameLayout";
 import { Hand } from "../components/gameplay/Hand";
 import { Player } from "../components/gameplay/Player";
 import { Table } from "../components/gameplay/Table";
@@ -113,7 +112,7 @@ export default function GamePlay() {
           hover:bg-zinc-600
           `}
       `}>READY</Button>
-      {renderMyData()}
+      <MyData user={user} tokenBalance={room.me?.user.tokenBalance || 0} />
     </div>)
   }
 
@@ -122,7 +121,7 @@ export default function GamePlay() {
       <div className="flex items-center justify-center shrink-0" >
         {isMyTurn(room.me?.playerIndex!)
           ? <CustomCountDownCircle duration={DURATION_TURN_TIME}/>
-          : renderMyData()
+          : <MyData user={user} tokenBalance={room.me?.user.tokenBalance || 0} />
         }
       </div>
       <Hand
@@ -181,23 +180,6 @@ export default function GamePlay() {
     });
   };
 
-  const renderMyData = () => {
-    return <div className="flex items-center gap-2">
-      <img
-          src={user?.avatarUrl || import.meta.env.VITE_BASE_AVATAR_URL}
-          className="w-9 h-9 lg:w-12 lg:h-12 rounded-full border-2 border-red-500/80 shrink-0"
-      />
-      <div className="text-white bg-stone-700/20 rounded-3xl backdrop-blur-md px-3 pt-1.5 ">
-        <p className="text-sm lg:text-lg font-semibold leading-tight">
-            {user?.name ?? "unknown"}
-        </p>
-        <p className="text-xs lg:text-sm leading-tight">
-          <h1 className="font-bold text-[10px] lg:text-lg text-yellow-500 flex items-center">Ví: {room.me?.user.tokenBalance} <TokenIcon className="w-4 sm:w-5 lg:w-6" /></h1>
-        </p>
-      </div>
-    </div>
-  }
-
   const isMyTurn = (myIndex: number) => {
     return myIndex === room.currentTurn && room.status === 'PLAYING'
   }
@@ -210,56 +192,31 @@ export default function GamePlay() {
   }
 
   return (
-    <div
-      className="w-full h-screen bg-cover bg-center relative overflow-hidden p-1"
-      style={{ backgroundImage: "url(/bg-room.png)" }}
-    >
-      <div className="flex gap-2 sm:gap-3 lg:gap-5">
-        <BackButton onClick={() => handleBackClick()} />
-        <div className="p-1.5 rounded-xl sm:rounded-2xl bg-amber-50/20 shadow-lg shadow-red-900/40">
-          <div className="flex justify-between">
-            <h1 className="font-bold text-[10px] lg:text-lg">Room ID: </h1>
-            <h1 className="font-bold text-[10px] lg:text-lg text-yellow-500">{room.roomId}</h1>
-          </div>
-          <div className="flex justify-between gap-1">
-            <h1 className="font-bold text-[10px] lg:text-lg">Đặt cược:</h1>
-            <h1 className="font-bold text-[10px] lg:text-lg text-yellow-500 flex items-center">{room.betToken} <TokenIcon className="w-4 sm:w-5 lg:w-6" /></h1>
-          </div>
-        </div>
-      </div>
-
-      {roomStore.room && renderPlayer()}
-
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <Table cards={room.table || []} />
-        {room.status === 'READY' && renderCountDown()}
-      </div>
-
-      {/* Actions */}
-      <div className="absolute bottom-2 sm:bottom-4 lg:bottom-6 w-full flex justify-center items-center gap-2 sm:gap-3 lg:gap-4 px-4">
-        {room.status !== 'PLAYING' && renderWhenWaiting()}
-        {room.status === 'PLAYING' && renderWhenPlaying()}
-      </div>
-
-      {!isConnected && (<div className="absolute top-5 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-red-900/80 px-3 py-1 rounded-xl">
-        <h1 className="font-bold text-xs sm:text-base lg:text-lg text-yellow-500">Bạn bị mất kết nối! Hãy thoát Room</h1>
-      </div>)}
-
-      <div className="w-fit max-w-[40%] sm:max-w-[30%] lg:max-w-[15%] h-min bg-gray-700/40 overflow-auto flex justify-between items-center absolute top-0 right-0 rounded-bl-2xl px-2 py-1">
-        <Button onClick={() => openModal("CHAT_ROOM")}>
-          <ChatIcon className="w-6 sm:w-10 lg:w-16" />
-        </Button>
-        {message && (
-          <div
-            className={`max-w-[80%] w-fit px-2 py-0.5 sm:px-3 sm:py-1 rounded-xl text-[10px] sm:text-xs lg:text-sm overflow-hidden 
-              ${message.user.id === user?.id ? "ml-auto bg-blue-600/80 text-white" : "bg-gray-200 text-gray-900"}`}
-          >
-            <div className="font-semibold text-[9px] sm:text-xs opacity-80 mb-0.5 truncate whitespace-nowrap">
-              <b>#{String(message.user.id).slice(0, 4)} - {message.user.name}:</b> {message.content}
+    <GameLayout
+      onBackClick={handleBackClick}
+      roomInfo={<RoomInfo label="Room ID" value={room.roomId} bet={room.betToken} />}
+      players={roomStore.room && renderPlayer()}
+      table={<Table cards={room.table || []} />}
+      countdown={room.status === 'READY' && renderCountDown()}
+      bottom={room.status !== 'PLAYING' ? renderWhenWaiting() : renderWhenPlaying()}
+      isDisconnected={!isConnected}
+      chat={
+        <div className="w-fit max-w-[40%] sm:max-w-[30%] lg:max-w-[15%] h-min bg-gray-700/40 overflow-auto flex justify-between items-center absolute top-0 right-0 rounded-bl-2xl px-2 py-1">
+          <Button onClick={() => openModal("CHAT_ROOM")}>
+            <ChatIcon className="w-6 sm:w-10 lg:w-16" />
+          </Button>
+          {message && (
+            <div
+              className={`max-w-[80%] w-fit px-2 py-0.5 sm:px-3 sm:py-1 rounded-xl text-[10px] sm:text-xs lg:text-sm overflow-hidden 
+                ${message.user.id === user?.id ? "ml-auto bg-blue-600/80 text-white" : "bg-gray-200 text-gray-900"}`}
+            >
+              <div className="font-semibold text-[9px] sm:text-xs opacity-80 mb-0.5 truncate whitespace-nowrap">
+                <b>#{String(message.user.id).slice(0, 4)} - {message.user.name}:</b> {message.content}
+              </div>
             </div>
-          </div>
-        )}
-      </div>
-    </div>
+          )}
+        </div>
+      }
+    />
   );
 }

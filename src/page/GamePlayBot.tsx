@@ -2,10 +2,9 @@ import axios from "axios";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { gameApi, type AttackBotGameResponse, type BotLevel } from "../api/game.api";
-import { TokenIcon } from "../assets/icons/TokenIcon";
-import { BackButton } from "../components/BackButton";
 import { CustomCountDownCircle } from "../components/CustomCountDownCircle";
 import { ActionBar } from "../components/gameplay/ActionBar";
+import GameLayout, { MyData, RoomInfo } from "../components/gameplay/GameLayout";
 import { Hand } from "../components/gameplay/Hand";
 import { Player } from "../components/gameplay/Player";
 import { Table } from "../components/gameplay/Table";
@@ -97,7 +96,7 @@ export default function GamePlayBot() {
     };
 
     return [me, bot];
-  }, [botLevel, user?.avatarUrl, user?.id, user?.name]);
+  }, [botLevel, user?.avatarUrl, user?.id, user?.name, user?.tokenBalance]);
 
   useEffect(() => {
     if (!betToken || !botLevel) {
@@ -106,12 +105,17 @@ export default function GamePlayBot() {
       return;
     }
 
-    setRoom((prev) => ({
-      ...prev,
-      betToken,
-      players,
-      me: players[0],
-    }));
+    setRoom((prev) => {
+      // CRITICAL FIX: Prevent overwriting players if game is already playing
+      if (prev.status !== "WAITING") return prev;
+
+      return {
+        ...prev,
+        betToken,
+        players,
+        me: players[0],
+      };
+    });
   }, [betToken, botLevel, navigate, players]);
 
   const handleBackClick = () => {
@@ -373,7 +377,7 @@ export default function GamePlayBot() {
   };
 
   const renderWhenWaiting = () => {
-    return (
+    const handleReadyButton = (
       <Button
         onClick={handleReady}
         className={`px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm lg:px-6 lg:py-3 lg:text-base
@@ -392,12 +396,20 @@ export default function GamePlayBot() {
           `}
       `}>{isReady ? "CANCEL" : "READY"}</Button>
     );
+
+    return (
+      <div className="flex flex-col gap-3">
+        {handleReadyButton}
+        <MyData user={user} tokenBalance={user?.tokenBalance || 0} />
+      </div>
+    );
   };
 
   const renderWhenPlaying = () => (
     <div className="w-full flex items-center justify-between shrink-0">
       <div className="flex items-center justify-center shrink-0">
         {isMyTurn() && <CustomCountDownCircle duration={DURATION_TURN_TIME} />}
+        {!isMyTurn() && <MyData user={user} tokenBalance={user?.tokenBalance || 0} />}
       </div>
       <Hand
         className="absolute bottom-0 left-1/2 -translate-x-1/2"
@@ -405,10 +417,7 @@ export default function GamePlayBot() {
         selectedIds={selectedIds}
         onSelected={handleSelectedCard}
       />
-      <ActionBar
-        onAttackCard={handleAttack}
-        onPassTurn={handlePassTurn}
-      />
+      <ActionBar onAttackCard={handleAttack} onPassTurn={handlePassTurn} />
     </div>
   );
 
@@ -420,41 +429,23 @@ export default function GamePlayBot() {
   };
 
   return (
-    <div
-      className="w-full h-screen bg-cover bg-center relative overflow-hidden p-1"
-      style={{ backgroundImage: "url(/bg-room.png)" }}
-    >
-      <div className="flex gap-2 sm:gap-3 lg:gap-5">
-        <BackButton onClick={handleBackClick} />
-        <div className="p-1.5 rounded-xl sm:rounded-2xl bg-amber-50/20 shadow-lg shadow-red-900/40">
-          <div className="flex justify-between gap-3">
-            <h1 className="font-bold text-[10px] lg:text-lg">Bot Mode</h1>
-            <h1 className="font-bold text-[10px] lg:text-lg text-yellow-500">
-              {botLevel ? BOT_LEVEL_LABEL[botLevel] : "-"}
-            </h1>
-          </div>
-          <div className="flex justify-between gap-1">
-            <h1 className="font-bold text-[10px] lg:text-lg">Đặt cược:</h1>
-            <h1 className="font-bold text-[10px] lg:text-lg text-yellow-500 flex items-center">
-              {room.betToken || 0} <TokenIcon className="w-4 sm:w-5 lg:w-6" />
-            </h1>
-          </div>
+    <GameLayout
+      onBackClick={handleBackClick}
+      roomInfo={
+        <RoomInfo
+          label="Bot Mode"
+          value={botLevel ? BOT_LEVEL_LABEL[botLevel] : "-"}
+          bet={room.betToken || 0}
+        />
+      }
+      players={
+        <div className="absolute top-2 sm:top-4 left-1/2 -translate-x-1/2">
+          {room.players[1] && <Player player={room.players[1]} isMyTurn={room.currentTurn === 1} />}
         </div>
-      </div>
-
-      <div className="absolute top-2 sm:top-4 left-1/2 -translate-x-1/2">
-        {room.players[1] && <Player player={room.players[1]} isMyTurn={room.currentTurn === 1} />}
-      </div>
-
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-        <Table cards={room.table || []} />
-        {room.status === 'READY' && renderCountDown()}
-      </div>
-
-      <div className="absolute bottom-2 sm:bottom-4 lg:bottom-6 w-full flex justify-center items-center gap-2 sm:gap-3 lg:gap-4 px-4">
-        {room.status !== "PLAYING" && renderWhenWaiting()}
-        {room.status === "PLAYING" && renderWhenPlaying()}
-      </div>
-    </div>
+      }
+      table={<Table cards={room.table || []} />}
+      countdown={room.status === "READY" && renderCountDown()}
+      bottom={room.status !== "PLAYING" ? renderWhenWaiting() : renderWhenPlaying()}
+    />
   );
 }

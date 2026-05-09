@@ -1,7 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { TokenIcon } from "../assets/icons/TokenIcon";
-import { BackButton } from "../components/BackButton";
+import GameLayout, { MyData, RoomInfo } from "../components/gameplay/GameLayout";
 import { CustomCountDownCircle } from "../components/CustomCountDownCircle";
 import { ActionBar } from "../components/gameplay/ActionBar";
 import { Hand } from "../components/gameplay/Hand";
@@ -44,31 +43,35 @@ export default function GamePlayOfflineBot() {
 
     // Initial Setup: Me and Bot
     useEffect(() => {
-        const me: PlayerType = {
-            user: {
-                id: 1000,
-                name: "Stupid Player",
-                avatarUrl: "",
-                tokenBalance: 999999
-            },
-            ready: false,
-            handSize: 0,
-            handCards: [],
-            playerIndex: 0
-        };
-        const bot: PlayerType = {
-            user: {
-                id: 1000,
-                name: "🤖 Bot " + (BOT_DIFFICULTY_MAP[difficulty] || "EASY"),
-                avatarUrl: "",
-                tokenBalance: 999999
-            },
-            ready: true,
-            handSize: 0,
-            handCards: [],
-            playerIndex: 1
-        };
-        setRoom(prev => ({ ...prev, me, players: [me, bot] }));
+        setRoom(prev => {
+            if (prev.status !== "WAITING") return prev;
+
+            const me: PlayerType = {
+                user: {
+                    id: 1000,
+                    name: user?.name || "Stupid Player",
+                    avatarUrl: user?.avatarUrl || "",
+                    tokenBalance: 999999
+                },
+                ready: false,
+                handSize: 0,
+                handCards: [],
+                playerIndex: 0
+            };
+            const bot: PlayerType = {
+                user: {
+                    id: 1001,
+                    name: "🤖 Bot " + (BOT_DIFFICULTY_MAP[difficulty] || "EASY"),
+                    avatarUrl: "",
+                    tokenBalance: 999999
+                },
+                ready: true,
+                handSize: 0,
+                handCards: [],
+                playerIndex: 1
+            };
+            return { ...prev, me, players: [me, bot] };
+        });
     }, [user, difficulty]);
 
     const handleBackClick = () => {
@@ -90,7 +93,7 @@ export default function GamePlayOfflineBot() {
             if (next) {
                 setRoom(prev => ({ ...prev, status: "READY" }));
 
-                timeoutRef.current = setTimeout(() => {
+                timeoutRef.current = window.setTimeout(() => {
                     console.log("START GAME CALLED");
                     startGame();
                     timeoutRef.current = null;
@@ -232,9 +235,10 @@ export default function GamePlayOfflineBot() {
 
     const renderWhenWaiting = () => {
         return (
-            <Button
-                onClick={handleReady}
-                className={`px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm lg:px-6 lg:py-3 lg:text-base
+            <div className="flex flex-col gap-3">
+                <Button
+                    onClick={handleReady}
+                    className={`px-3 py-1.5 text-xs sm:px-4 sm:py-2 sm:text-sm lg:px-6 lg:py-3 lg:text-base
           rounded-lg lg:rounded-xl
           text-white font-bold
           shadow-lg shadow-red-900/50
@@ -249,13 +253,15 @@ export default function GamePlayOfflineBot() {
           hover:bg-zinc-600
           `}
       `}>{isReady ? "CANCEL" : "READY"}</Button>
+                <MyData user={user} tokenBalance={999999} />
+            </div>
         );
     };
 
     const renderWhenPlaying = () => {
         return <div className="w-full flex items-center justify-between shrink-0">
             <div className="flex items-center justify-center shrink-0">
-                {isMyTurn() && <CustomCountDownCircle duration={DURATION_TURN_TIME} />}
+                {isMyTurn() ? <CustomCountDownCircle duration={DURATION_TURN_TIME} /> : <MyData user={user} tokenBalance={999999} />}
             </div>
             <Hand
                 className="absolute bottom-0 left-1/2 -translate-x-1/2"
@@ -278,39 +284,18 @@ export default function GamePlayOfflineBot() {
     };
 
     return (
-        <div
-            className="w-full h-screen bg-cover bg-center relative overflow-hidden p-1"
-            style={{ backgroundImage: "url(/bg-room.png)" }}
-        >
-            <div className="flex gap-2 sm:gap-3 lg:gap-5">
-                <BackButton onClick={handleBackClick} />
-                <div className="p-1.5 rounded-xl sm:rounded-2xl bg-amber-50/20 shadow-lg shadow-red-900/40">
-                    <div className="flex justify-between">
-                        <h1 className="font-bold text-[10px] lg:text-lg">Bot Mode </h1>
-                        <h1 className="font-bold text-[10px] lg:text-lg text-yellow-500">{room.roomId}</h1>
-                    </div>
-                    <div className="flex justify-between gap-1">
-                        <h1 className="font-bold text-[10px] lg:text-lg">Đặt cược:</h1>
-                        <h1 className="font-bold text-[10px] lg:text-lg text-yellow-500 flex items-center">{room.betToken} <TokenIcon className="w-4 sm:w-5 lg:w-6" /></h1>
-                    </div>
+        <GameLayout
+            onBackClick={handleBackClick}
+            roomInfo={<RoomInfo label="Bot Mode" value={room.roomId} bet={room.betToken} />}
+            players={
+                <div className="absolute top-2 sm:top-4 left-1/2 -translate-x-1/2">
+                    {room.players[1] && <Player player={room.players[1]} isMyTurn={room.currentTurn === 1} />}
                 </div>
-            </div>
-
-            {/* Render Bot */}
-            <div className="absolute top-2 sm:top-4 left-1/2 -translate-x-1/2">
-                {room.players[1] && <Player player={room.players[1]} isMyTurn={room.currentTurn === 1} />}
-            </div>
-
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
-                <Table cards={room.table || []} />
-                {room.status === 'READY' && renderCountDown()}
-            </div>
-
-            {/* Actions */}
-            <div className="absolute bottom-2 sm:bottom-4 lg:bottom-6 w-full flex justify-center items-center gap-2 sm:gap-3 lg:gap-4 px-4">
-                {room.status !== 'PLAYING' && renderWhenWaiting()}
-                {room.status === 'PLAYING' && renderWhenPlaying()}
-            </div>
-        </div>
+            }
+            table={<Table cards={room.table || []} />}
+            countdown={room.status === 'READY' ? renderCountDown() : undefined}
+            bottom={room.status !== 'PLAYING' ? renderWhenWaiting() : renderWhenPlaying()}
+        />
     );
 }
+
