@@ -8,7 +8,7 @@ import SettingsButton from "./SettingsButton";
 import { Button } from "./ui/Button";
 
 export default function HomeHeader() {
-    const user = useAuthStore.getState().user;
+    const user = useAuthStore((s) => s.user);
     const openModal = useModalStore((s) => s.open);
     return (
         <div className="w-full flex justify-center px-3 py-2 lg:py-0">
