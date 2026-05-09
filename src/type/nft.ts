@@ -1,11 +1,11 @@
-export interface NFTItemData {
+export type NFTItemData = {
   id: number;
   name: string;
   price: string; // Price in MATIC
   imageUrl: string;
 }
 
-export interface VerifyTxRequest {
+export type VerifyTxRequest = {
   txHash: string;
   itemId: number;
   walletAddress: string;

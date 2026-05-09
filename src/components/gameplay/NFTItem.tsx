@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { NFTItemData } from "../../type/nft";
+import type { NFTItemData } from "../../type/nft";
 import { Button } from "../ui/Button";
 
 interface Props {

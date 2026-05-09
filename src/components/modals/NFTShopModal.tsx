@@ -1,13 +1,13 @@
+import { X } from "lucide-react";
 import { useEffect, useState } from "react";
-import { useModalStore } from "../../stores/modal.store";
-import { NFTItemData } from "../../type/nft";
-import { nftApi } from "../../api/nft.api";
 import { dataApi } from "../../api/data.api";
-import { useAuthStore } from "../../stores/auth.store";
+import { nftApi } from "../../api/nft.api";
 import { useWeb3 } from "../../hooks/useWeb3";
+import { useAuthStore } from "../../stores/auth.store";
+import { useModalStore } from "../../stores/modal.store";
 import NFTItem from "../gameplay/NFTItem";
 import { gameToast } from "../ui/toast";
-import { X } from "lucide-react";
+import type { NFTItemData } from "../../type/nft";
 
 export default function NFTShopModal() {
   const close = useModalStore((s) => s.close);

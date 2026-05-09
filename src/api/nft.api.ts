@@ -1,5 +1,5 @@
+import type { NFTItemData, VerifyTxRequest } from "../type/nft";
 import axiosClient from "./axiosClient";
-import { NFTItemData, VerifyTxRequest } from "../type/nft";
 import { API_ENDPOINTS } from "./endpoints";
 
 export const nftApi = {
