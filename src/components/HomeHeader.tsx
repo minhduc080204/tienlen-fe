@@ -52,7 +52,10 @@ export default function HomeHeader() {
                             <p className="font-semibold ml-9 lg:ml-20 pr-1 lg:pr-0 text-sm lg:text-2xl">
                                 {formatNumber(user?.tokenBalance)}
                             </p>
-                            <PlusIcon className="w-5 h-5 lg:w-7 lg:h-7 cursor-pointer hover:scale-125 transition" />
+                            <PlusIcon 
+                                className="w-5 h-5 lg:w-7 lg:h-7 cursor-pointer hover:scale-125 transition" 
+                                onClick={() => openModal('NFT_SHOP')}
+                            />
                         </div>
                     </div>
 
