@@ -24,4 +24,7 @@ export const API_ENDPOINTS = {
       ATTACK: "/room/bot/attack",
     },
   },
+
+  NFTS: "/nfts",
+  NFT_VERIFY: "/nfts/verify",
 };
