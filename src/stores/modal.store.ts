@@ -8,6 +8,7 @@ export type ModalType =
   "JOIN_ROOM" | 
   "BOT_PLAY" |
   "BOT_OFFLINE_PLAY" |
+  "NFT_SHOP" |
   null;
 
 type ModalStore = {

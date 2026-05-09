@@ -10,6 +10,7 @@ const ChatTab = lazy(() => import("./components/ChatTab"));
 const BotPlayModal = lazy(() => import("./components/modals/BotPlayModal"));
 const BotPlayOfflineModal = lazy(() => import("./components/modals/BotPlayOfflineModal"));
 const ProfileModal = lazy(() => import("./components/modals/ProfileModal"));
+const NFTShopModal = lazy(() => import("./components/modals/NFTShopModal"));
 
 export default function ModalRoot() {
   const { modal, close } = useModalStore();
@@ -44,6 +45,7 @@ export default function ModalRoot() {
                 {modal === "CHAT_ROOM" && <ChatTab />}
                 {modal === "BOT_PLAY" && <BotPlayModal />}
                 {modal === "BOT_OFFLINE_PLAY" && <BotPlayOfflineModal />}
+                {modal === "NFT_SHOP" && <NFTShopModal />}
               </Suspense>
             </div>
           </motion.div>
