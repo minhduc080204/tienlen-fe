@@ -12,9 +12,10 @@ const POLYGON_AMOY_CHAIN_ID = "0x13882"; // 80002 in hex
 // Dummy ABI for minting/purchasing. Replace with actual ABI if needed.
 const NFT_ABI = [
   "function purchase(uint256 itemId) public payable"
+  // "function purchase(uint256 id, uint256 amount) public payable"
 ];
 // Placeholder contract address from guide
-const CONTRACT_ADDRESS = "0x0000000000000000000000000000000000000000";
+const CONTRACT_ADDRESS = import.meta.env.VITE_CONTRACT_ADDRESS;
 
 export function useWeb3() {
   const [account, setAccount] = useState<string | null>(null);
@@ -60,6 +61,7 @@ export function useWeb3() {
 
     const priceInWei = parseEther(priceMatic);
     const tx = await contract.purchase(itemId, { value: priceInWei });
+    // const tx = await contract.purchase(itemId, 1, { value: priceInWei });
     
     // Wait for 1 confirmation
     const receipt = await tx.wait();

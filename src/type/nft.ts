@@ -1,7 +1,7 @@
 export type NFTItemData = {
   id: number;
   name: string;
-  price: string; // Price in MATIC
+  priceMatic: string; // Price in MATIC
   imageUrl: string;
 }
 
