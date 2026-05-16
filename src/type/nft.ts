@@ -3,6 +3,8 @@ export type NFTItemData = {
   name: string;
   priceMatic: string; // Price in MATIC
   imageUrl: string;
+  promoteImageUrl: string;
+  sourceUrl: string;
 }
 
 export type UserNft = {
