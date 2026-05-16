@@ -42,15 +42,8 @@ export default function ProfileModal() {
           const data = await dataApi.transactions();
           setTransactions(data);
         } else if (activeTab === "NFTS_ITEMS" && myNfts.length === 0) {
-          const [allItems, userNfts] = await Promise.all([
-            nftApi.getNFTs(),
-            nftApi.getMyNFTs()
-          ]);
-
-          // Join data to get full info for owned items
-          const ownedIds = new Set(userNfts.map(un => un.nftItemId));
-          const ownedItems = allItems.filter(item => ownedIds.has(item.id));
-          setMyNfts(ownedItems);
+          const data = await nftApi.getMyNFTs();
+          setMyNfts(data);
         }
       } catch (err: any) {
         setError(err.message || "Failed to load data");

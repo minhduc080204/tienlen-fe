@@ -2,12 +2,13 @@ import { authApi } from "../../api/auth.api";
 import { useAuthStore } from "../../stores/auth.store";
 import { useModalStore } from "../../stores/modal.store";
 import { useSoundStore } from "../../stores/sound.store";
+import { useSettingsStore } from "../../stores/settings.store";
 import { Button } from "../ui/Button";
 import { ModalContainer } from "./ModalContainer";
 
 export default function SettingsModal() {
-  const { musicEnabled, effectEnabled, volume, toggleMusicSound, toggleEffectSound, setVolume, playBGM } =
-    useSoundStore();
+  const { musicEnabled, effectEnabled } = useSettingsStore();
+  const { volume, toggleMusicSound, toggleEffectSound, setVolume } = useSoundStore();
 
   const close = useModalStore((s) => s.close);
   const logout = useAuthStore((s) => s.logout);

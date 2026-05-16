@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
     PROFILE: "/user/me",
     TRANSACTIONS: "/user/transactions",
     MATCHES: "/user/matches",
+    SETTINGS: "/user/settings",
   },
 
   ROOM: {

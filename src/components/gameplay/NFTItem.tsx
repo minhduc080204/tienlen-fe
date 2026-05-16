@@ -30,10 +30,10 @@ export default function NFTItem({ item, onBuy }: Props) {
       <img src={item.imageUrl || "/cards/back_card.svg"} alt={item.name} className="w-16 h-24 lg:w-24 lg:h-32 object-contain drop-shadow-md" />
       <div className="text-center w-full">
         <h3 className="text-white font-bold text-sm lg:text-lg truncate">{item.name}</h3>
-        <p className="text-yellow-400 font-semibold text-xs lg:text-base">{item.price} MATIC</p>
+        <p className="text-yellow-400 font-semibold text-xs lg:text-base">{item.priceMatic} MATIC</p>
       </div>
-      <Button 
-        onClick={handleBuy} 
+      <Button
+        onClick={handleBuy}
         disabled={isLoading}
         className="w-full bg-linear-to-r from-yellow-600 to-yellow-500 hover:from-yellow-500 hover:to-yellow-400 text-black font-bold py-1.5 lg:py-2 rounded-lg text-xs lg:text-sm"
       >
