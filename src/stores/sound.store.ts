@@ -43,9 +43,11 @@ const playSequentialBGM = () => {
 };
 
 type SoundStore = {
-  enabled: boolean;
+  musicEnabled: boolean;
+  effectEnabled: boolean;
   volume: number;
-  toggleSound: () => void;
+  toggleMusicSound: () => void;
+  toggleEffectSound: () => void;
   setVolume: (v: number) => void;
   playBGM: () => void;
   stopBGM: () => void;
@@ -58,15 +60,23 @@ type SoundStore = {
 };
 
 export const useSoundStore = create<SoundStore>((set, get) => ({
-  enabled: true,
+  musicEnabled: true,
+  effectEnabled: true,
   volume: BASE_VOLUME,
 
-  toggleSound: () =>
-    set((s) => {
-      const newState = !s.enabled;
-      Howler.mute(!newState);
-      return { enabled: newState };
-    }),
+  toggleMusicSound: () => {
+    const newState = !get().musicEnabled;
+    set({ musicEnabled: newState });
+    if (!newState) {
+      currentBGM?.stop();
+      isBGMPlaying = false;
+    } else {
+      get().playBGM();
+    }
+  },
+
+  toggleEffectSound: () =>
+    set((s) => ({ effectEnabled: !s.effectEnabled })),
 
   setVolume: (v) => {
     Howler.volume(v);
@@ -74,7 +84,7 @@ export const useSoundStore = create<SoundStore>((set, get) => ({
   },
 
   playBGM: () => {
-    if (!get().enabled) return;
+    if (!get().musicEnabled) return;
     if (isBGMPlaying) return;
 
     isBGMPlaying = true;
@@ -87,32 +97,32 @@ export const useSoundStore = create<SoundStore>((set, get) => ({
   },
 
   playClick: () => {
-    if (!get().enabled) return;
+    if (!get().effectEnabled) return;
     clickSound.play();
   },
 
   chattingReceived: () => {
-    if (!get().enabled) return;
+    if (!get().effectEnabled) return;
     chattingSound.play();
   },
 
   playCard: () => {
-    if (!get().enabled) return;
+    if (!get().effectEnabled) return;
     playCardSound.play();
   },
 
   dealingCard: () => {
-    if (!get().enabled) return;
+    if (!get().effectEnabled) return;
     dealingCardSound.play();
   },
 
   joinRoom: () => {
-    if (!get().enabled) return;
+    if (!get().effectEnabled) return;
     joinRoomSound.play();
   },
 
   leftRoom: () => {
-    if (!get().enabled) return;
+    if (!get().effectEnabled) return;
     leftRoomSound.play();
   },
 }));

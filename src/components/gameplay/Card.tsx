@@ -1,3 +1,4 @@
+import { useSettingsStore } from "../../stores/settings.store"
 import type { CardType } from "../../type/card"
 import { Button } from "../ui/Button"
 
@@ -8,6 +9,7 @@ type CardProps = {
 }
 
 export const Card = ({ card, isSelected, onSelected }: CardProps) => {
+    const { selectedCardSkinUrl } = useSettingsStore();
     const isRed = card.suit >= 3
 
     const SUITS = ["spade", "club", "diamond", "heart"] as const;
@@ -44,13 +46,19 @@ export const Card = ({ card, isSelected, onSelected }: CardProps) => {
             md:w-[75px] md:h-[110px] md:-ml-[30px]
             xl:w-[120px] xl:h-[180px] xl:-ml-[35px]
             first:ml-0
-            bg-white rounded-md lg:rounded-lg
+            rounded-md lg:rounded-lg
             p-[2px] sm:p-1 lg:p-1.5 xl:p-2
             border border-black/70 lg:border-2
-            flex flex-col overflow-hidden
+            flex flex-col overflow-hidden relative
             ${isRed ? 'text-[#EC2000]' : 'text-black'}
             ${isSelected && 'mb-2 sm:mb-3 lg:mb-4'}
+            ${selectedCardSkinUrl ? 'bg-transparent' : 'bg-white'}
         `}
+            style={selectedCardSkinUrl ? {
+                backgroundImage: `url(${selectedCardSkinUrl})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center'
+            } : {}}
             onClick={() => onSelected(card)}
         >
             <div className="text-xl lg:text-2xl xl:text-3xl flex flex-col items-start leading-none">

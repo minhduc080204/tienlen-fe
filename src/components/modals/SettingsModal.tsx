@@ -6,7 +6,7 @@ import { Button } from "../ui/Button";
 import { ModalContainer } from "./ModalContainer";
 
 export default function SettingsModal() {
-  const { enabled, volume, toggleSound, setVolume } =
+  const { musicEnabled, effectEnabled, volume, toggleMusicSound, toggleEffectSound, setVolume, playBGM } =
     useSoundStore();
 
   const close = useModalStore((s) => s.close);
@@ -24,22 +24,43 @@ export default function SettingsModal() {
         ⚙️ Cài đặt
       </h2>
 
-      {/* Toggle sound */}
+      {/* Toggle Music sound */}
       <div className="flex items-center justify-between mb-4">
         <span className="text-gray-300">Âm thanh</span>
         <Button
           onClick={() => {
-            toggleSound();
+            toggleMusicSound();
           }}
           className={`
               w-11 h-6 rounded-full transition
-              ${enabled ? "bg-red-600" : "bg-zinc-600"}
+              ${musicEnabled ? "bg-red-600" : "bg-zinc-600"}
             `}
         >
           <div
             className={`
                 w-5 h-5 bg-white rounded-full m-0.5 transition
-                ${enabled ? "translate-x-5" : ""}
+                ${musicEnabled ? "translate-x-5" : ""}
+              `}
+          />
+        </Button>
+      </div>
+
+      {/* Toggle Effect sound */}
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-gray-300">Hiệu ứng</span>
+        <Button
+          onClick={() => {
+            toggleEffectSound();
+          }}
+          className={`
+              w-11 h-6 rounded-full transition
+              ${effectEnabled ? "bg-red-600" : "bg-zinc-600"}
+            `}
+        >
+          <div
+            className={`
+                w-5 h-5 bg-white rounded-full m-0.5 transition
+                ${effectEnabled ? "translate-x-5" : ""}
               `}
           />
         </Button>

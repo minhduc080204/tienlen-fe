@@ -5,6 +5,15 @@ export type NFTItemData = {
   imageUrl: string;
 }
 
+export type UserNft = {
+  id: number;
+  userId: number;
+  nftItemId: number;
+  walletAddress: string;
+  txHash: string;
+  createdAt: string;
+}
+
 export type VerifyTxRequest = {
   txHash: string;
   itemId: number;

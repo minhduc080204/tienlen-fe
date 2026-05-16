@@ -25,6 +25,9 @@ export const API_ENDPOINTS = {
     },
   },
 
-  NFTS: "/nfts",
-  NFT_VERIFY: "/nfts/verify",
+  NFT: {
+    GET: "/nfts",
+    MY: "/nfts/my",
+    VERIFY_TRANSFER: "/nfts/verify-transfer",
+  }
 };
