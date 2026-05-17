@@ -4,10 +4,10 @@ import { lazy, Suspense } from 'react'
 import { ROUTES } from './routes/routes'
 import ModalRoot from './ModalRoot'
 import DeviceOrientationWarning from './components/DeviceOrientationWarning'
-
 import { ProtectedRoute } from './components/ProtectedRoute'
 import { RoomGuard } from './components/RoomGuard'
 import PWABadge from './components/PWABadge'
+import { useSyncSettings } from './hooks/useSyncSettings'
 
 // Lazy load pages
 const HomePage = lazy(() => import('./page/Home'))
@@ -18,6 +18,8 @@ const GamePlayBot = lazy(() => import('./page/GamePlayBot'))
 const GamePlayOfflineBot = lazy(() => import('./page/GamePlayOfflineBot'))
 
 function App() {
+  useSyncSettings();
+
   return (
     <>
       <PWABadge />

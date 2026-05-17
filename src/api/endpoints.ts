@@ -11,6 +11,7 @@ export const API_ENDPOINTS = {
     PROFILE: "/user/me",
     TRANSACTIONS: "/user/transactions",
     MATCHES: "/user/matches",
+    SETTINGS: "/user/settings",
   },
 
   ROOM: {
@@ -24,4 +25,10 @@ export const API_ENDPOINTS = {
       ATTACK: "/room/bot/attack",
     },
   },
+
+  NFT: {
+    GET: "/nfts",
+    MY: "/nfts/my",
+    VERIFY_TRANSFER: "/nfts/verify-transfer",
+  }
 };

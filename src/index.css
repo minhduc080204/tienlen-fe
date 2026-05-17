@@ -39,60 +39,22 @@ img {
   /* optional: tránh drag + click ảnh */
 }
 
-.initial-loader-container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  height: 100dvh;
-  width: 100vw;
-  color: white;
-  font-family: system-ui, -apple-system, sans-serif;
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
 }
 
-.initial-loader-logo {
-  width: 120px;
-  height: 120px;
-  border-radius: 20px;
-  margin-bottom: 24px;
-  animation: pulse 1.5s infinite ease-in-out;
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(24, 24, 27, 0.5); /* zinc-900 with opacity */
+  border-radius: 10px;
 }
 
-.initial-loader-text {
-  font-size: 20px;
-  font-weight: 500;
-  letter-spacing: 1px;
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(161, 161, 170, 0.3); /* zinc-400 with opacity */
+  border-radius: 10px;
 }
 
-.initial-loader-spinner {
-  margin-top: 16px;
-  width: 40px;
-  height: 40px;
-  border: 4px solid rgba(255, 255, 255, 0.1);
-  border-radius: 50%;
-  border-top-color: #fff;
-  animation: spin 1s ease-in-out infinite;
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(239, 68, 68, 0.5); /* red-500 with opacity */
 }
 
-@keyframes pulse {
-  0% {
-    transform: scale(1);
-    opacity: 1;
-  }
-
-  50% {
-    transform: scale(1.05);
-    opacity: 0.8;
-  }
-
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
