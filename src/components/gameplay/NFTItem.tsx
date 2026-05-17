@@ -28,7 +28,7 @@ export default function NFTItem({ item, onBuy }: Props) {
       hover:border-yellow-400 transition-colors
       w-40 lg:w-56
     ">
-      <img src={imageUrl} alt={item.name} className="w-16 h-24 lg:w-24 lg:h-32 object-contain drop-shadow-md" />
+      <img src={imageUrl} alt={item.name} className="w-24 h-24 lg:w-32 lg:h-32 object-contain drop-shadow-md" />
       <div className="text-center w-full">
         <h3 className="text-white font-bold text-sm lg:text-lg truncate">{item.name}</h3>
         <p className="text-yellow-400 font-semibold text-xs lg:text-base">{item.priceMatic} MATIC</p>

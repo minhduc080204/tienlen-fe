@@ -63,7 +63,7 @@ export default function ProfileModal() {
   };
 
   return (
-    <ModalContainer className="w-[92vw] max-w-112.5 h-[80vh] p-0! overflow-hidden flex flex-col">
+    <ModalContainer className="w-130 h-[80vh] p-0! overflow-hidden flex flex-col">
       {/* Tabs Header */}
       <div className="flex justify-around border-b border-zinc-800 bg-zinc-950">
         <Button
