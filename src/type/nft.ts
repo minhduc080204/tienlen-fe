@@ -2,9 +2,6 @@ export type NFTItemData = {
   id: number;
   name: string;
   priceMatic: string; // Price in MATIC
-  imageUrl: string;
-  promoteImageUrl: string;
-  sourceUrl: string;
 }
 
 export type UserNft = {
@@ -21,3 +18,5 @@ export type VerifyTxRequest = {
   itemId: number;
   walletAddress: string;
 }
+
+export const R2_BASE_URL = import.meta.env.VITE_R2_URL;

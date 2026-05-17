@@ -7,7 +7,7 @@ interface SettingsState extends UserSettings {
   isSynced: boolean;
 
   // Actions
-  setSelectedCardSkin: (id: number | null, url: string | null) => void;
+  setSelectedCardSkin: (id: number | null) => void;
   setMusicEnabled: (enabled: boolean) => void;
   setEffectEnabled: (enabled: boolean) => void;
 
@@ -33,12 +33,11 @@ export const useSettingsStore = create<SettingsState>()(
       musicEnabled: true,
       effectEnabled: true,
       selectedCardSkinId: null,
-      selectedCardSkinUrl: null,
       isSyncing: false,
       isSynced: false,
 
-      setSelectedCardSkin: (id, url) => {
-        set({ selectedCardSkinId: id, selectedCardSkinUrl: url });
+      setSelectedCardSkin: (id) => {
+        set({ selectedCardSkinId: id });
         scheduleSave(get);
       },
 
@@ -54,14 +53,15 @@ export const useSettingsStore = create<SettingsState>()(
 
       loadFromServer: async () => {
         try {
+          
           set({ isSyncing: true });
           const data = await settingsApi.get();
+          console.log(data);
           // Server data takes priority over localStorage
           set({
             musicEnabled: data.musicEnabled,
             effectEnabled: data.effectEnabled,
             selectedCardSkinId: data.selectedCardSkinId,
-            selectedCardSkinUrl: data.selectedCardSkinUrl,
             isSynced: true,
           });
         } catch {
@@ -73,9 +73,9 @@ export const useSettingsStore = create<SettingsState>()(
       },
 
       saveToServer: async () => {
-        const { musicEnabled, effectEnabled, selectedCardSkinId, selectedCardSkinUrl } = get();
+        const { musicEnabled, effectEnabled, selectedCardSkinId } = get();
         try {
-          await settingsApi.save({ musicEnabled, effectEnabled, selectedCardSkinId, selectedCardSkinUrl });
+          await settingsApi.save({ musicEnabled, effectEnabled, selectedCardSkinId });
           set({ isSynced: true });
         } catch {
           set({ isSynced: false });
@@ -89,7 +89,6 @@ export const useSettingsStore = create<SettingsState>()(
         musicEnabled: s.musicEnabled,
         effectEnabled: s.effectEnabled,
         selectedCardSkinId: s.selectedCardSkinId,
-        selectedCardSkinUrl: s.selectedCardSkinUrl,
       }),
     }
   )

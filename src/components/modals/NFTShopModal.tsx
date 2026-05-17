@@ -40,19 +40,19 @@ export default function NFTShopModal() {
       }
 
       gameToast.success("Vui lòng xác nhận trên MetaMask...");
-      // const txHash = await transferMatic(item.priceMatic.toString());
+      const txHash = await transferMatic(item.priceMatic.toString());
 
       gameToast.success("Đang xác thực giao dịch...");
-      // await nftApi.verifyTransaction({
-      //   txHash,
-      //   itemId: item.id,
-      //   walletAddress: currentAccount!
-      // });
       await nftApi.verifyTransaction({
-        txHash: '0x748e2fa5b4c588e1b6dfd802cf89bab37c35a5e76251fc8fdcd5995116fea34d',
+        txHash,
         itemId: item.id,
-        walletAddress: '0x859e6De4a2bF39258afE00f7F740D713022eF8e1'
+        walletAddress: currentAccount!
       });
+      // await nftApi.verifyTransaction({
+      //   txHash: '0x748e2fa5b4c588e1b6dfd802cf89bab37c35a5e76251fc8fdcd5995116fea34d',
+      //   itemId: item.id,
+      //   walletAddress: '0x859e6De4a2bF39258afE00f7F740D713022eF8e1'
+      // });
 
       // Refresh balance after purchase
       try {

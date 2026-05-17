@@ -5,7 +5,6 @@ export interface UserSettings {
   musicEnabled: boolean;
   effectEnabled: boolean;
   selectedCardSkinId: number | null;
-  selectedCardSkinUrl: string | null;
 }
 
 export const settingsApi = {

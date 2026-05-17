@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { NFTItemData } from "../../type/nft";
+import { R2_BASE_URL, type NFTItemData } from "../../type/nft";
 import { Button } from "../ui/Button";
 
 interface Props {
@@ -9,6 +9,7 @@ interface Props {
 
 export default function NFTItem({ item, onBuy }: Props) {
   const [isLoading, setIsLoading] = useState(false);
+  const imageUrl = `${R2_BASE_URL}/${item.id}/promote_ic.png`;
 
   const handleBuy = async () => {
     setIsLoading(true);
@@ -27,7 +28,7 @@ export default function NFTItem({ item, onBuy }: Props) {
       hover:border-yellow-400 transition-colors
       w-40 lg:w-56
     ">
-      <img src={item.imageUrl || "/cards/back_card.svg"} alt={item.name} className="w-16 h-24 lg:w-24 lg:h-32 object-contain drop-shadow-md" />
+      <img src={imageUrl} alt={item.name} className="w-16 h-24 lg:w-24 lg:h-32 object-contain drop-shadow-md" />
       <div className="text-center w-full">
         <h3 className="text-white font-bold text-sm lg:text-lg truncate">{item.name}</h3>
         <p className="text-yellow-400 font-semibold text-xs lg:text-base">{item.priceMatic} MATIC</p>
