@@ -87,7 +87,7 @@ export default function NFTManagement() {
   };
 
   // Form Submit Handler
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!formData.name || !formData.sourceKey) {
@@ -97,10 +97,10 @@ export default function NFTManagement() {
 
     try {
       if (editingNft) {
-        updateNFT(editingNft.id, formData);
+        await updateNFT(editingNft.id, formData);
         gameToast.success(`Cập nhật skin "${formData.name}" thành công!`);
       } else {
-        addNFT(formData);
+        await addNFT(formData);
         gameToast.success(`Thêm mới skin "${formData.name}" thành công!`);
       }
       setIsModalOpen(false);
@@ -110,21 +110,29 @@ export default function NFTManagement() {
   };
 
   // Toggle Default status quickly
-  const handleToggleDefault = (nft: AdminNFT) => {
+  const handleToggleDefault = async (nft: AdminNFT) => {
     const nextDefault = !nft.isDefault;
-    updateNFT(nft.id, { isDefault: nextDefault });
-    gameToast.success(
-      nextDefault 
-        ? `Đã cài đặt "${nft.name}" thành skin mặc định miễn phí!`
-        : `Đã hủy thuộc tính mặc định của "${nft.name}"!`
-    );
+    try {
+      await updateNFT(nft.id, { isDefault: nextDefault });
+      gameToast.success(
+        nextDefault 
+          ? `Đã cài đặt "${nft.name}" thành skin mặc định miễn phí!`
+          : `Đã hủy thuộc tính mặc định của "${nft.name}"!`
+      );
+    } catch (err) {
+      gameToast.error("Thay đổi thuộc tính mặc định thất bại!");
+    }
   };
 
   // Delete skin
-  const handleDeleteNft = (nft: AdminNFT) => {
+  const handleDeleteNft = async (nft: AdminNFT) => {
     if (window.confirm(`Bạn có chắc muốn xóa vĩnh viễn Card Skin "${nft.name}" khỏi cửa hàng?`)) {
-      deleteNFT(nft.id);
-      gameToast.success(`Đã gỡ bỏ skin "${nft.name}"!`);
+      try {
+        await deleteNFT(nft.id);
+        gameToast.success(`Đã gỡ bỏ skin "${nft.name}"!`);
+      } catch (err) {
+        gameToast.error("Gỡ bỏ skin thất bại!");
+      }
     }
   };
 

@@ -51,7 +51,7 @@ export default function TransactionManagement() {
   };
 
   // Form Submit Handler
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!formData.userName || !formData.walletAddress) {
@@ -61,7 +61,7 @@ export default function TransactionManagement() {
 
     try {
       const generatedTxHash = formData.txHash || `0x${Math.random().toString(36).substring(2)}${Math.random().toString(36).substring(2)}1234abcd`;
-      addTransaction({
+      await addTransaction({
         ...formData,
         txHash: generatedTxHash
       });
@@ -73,22 +73,34 @@ export default function TransactionManagement() {
   };
 
   // Action: Approve Pending transaction
-  const handleApproveTx = (tx: AdminTransaction) => {
-    updateTransaction(tx.id, { status: 'SUCCESS' });
-    gameToast.success(`Đã PHÊ DUYỆT thành công giao dịch số ${tx.id}!`);
+  const handleApproveTx = async (tx: AdminTransaction) => {
+    try {
+      await updateTransaction(tx.id, { status: 'SUCCESS' });
+      gameToast.success(`Đã PHÊ DUYỆT thành công giao dịch số ${tx.id}!`);
+    } catch (err) {
+      gameToast.error("Duyệt giao dịch thất bại!");
+    }
   };
 
   // Action: Reject Pending transaction
-  const handleRejectTx = (tx: AdminTransaction) => {
-    updateTransaction(tx.id, { status: 'FAILED' });
-    gameToast.error(`Đã TỪ CHỐI giao dịch số ${tx.id}!`);
+  const handleRejectTx = async (tx: AdminTransaction) => {
+    try {
+      await updateTransaction(tx.id, { status: 'FAILED' });
+      gameToast.error(`Đã TỪ CHỐI giao dịch số ${tx.id}!`);
+    } catch (err) {
+      gameToast.error("Từ chối giao dịch thất bại!");
+    }
   };
 
   // Delete transaction record
-  const handleDeleteTx = (tx: AdminTransaction) => {
+  const handleDeleteTx = async (tx: AdminTransaction) => {
     if (window.confirm(`Bạn muốn xóa vĩnh viễn log giao dịch số "${tx.id}"?`)) {
-      deleteTransaction(tx.id);
-      gameToast.success("Đã xóa bản ghi giao dịch!");
+      try {
+        await deleteTransaction(tx.id);
+        gameToast.success("Đã xóa bản ghi giao dịch!");
+      } catch (err) {
+        gameToast.error("Xóa bản ghi thất bại!");
+      }
     }
   };
 

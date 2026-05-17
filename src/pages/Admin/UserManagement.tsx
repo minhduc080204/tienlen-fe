@@ -84,7 +84,7 @@ export default function UserManagement() {
   };
 
   // Form Submit Handler
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!formData.name || !formData.email) {
@@ -95,11 +95,11 @@ export default function UserManagement() {
     try {
       if (editingUser) {
         // Edit flow
-        updateUser(editingUser.id, formData);
+        await updateUser(editingUser.id, formData);
         gameToast.success(`Cập nhật người dùng "${formData.name}" thành công!`);
       } else {
         // Create flow
-        addUser(formData);
+        await addUser(formData);
         gameToast.success(`Tạo tài khoản "${formData.name}" thành công!`);
       }
       setIsModalOpen(false);
@@ -109,21 +109,29 @@ export default function UserManagement() {
   };
 
   // Toggle user active status directly
-  const handleToggleStatus = (user: AdminUser) => {
+  const handleToggleStatus = async (user: AdminUser) => {
     const nextStatus = user.status === 'ACTIVE' ? 'SUSPENDED' : 'ACTIVE';
-    updateUser(user.id, { status: nextStatus });
-    if (nextStatus === 'SUSPENDED') {
-      gameToast.error(`Tài khoản "${user.name}" đã bị đình chỉ hoạt động!`);
-    } else {
-      gameToast.success(`Tài khoản "${user.name}" đã được mở khóa!`);
+    try {
+      await updateUser(user.id, { status: nextStatus });
+      if (nextStatus === 'SUSPENDED') {
+        gameToast.error(`Tài khoản "${user.name}" đã bị đình chỉ hoạt động!`);
+      } else {
+        gameToast.success(`Tài khoản "${user.name}" đã được mở khóa!`);
+      }
+    } catch (err) {
+      gameToast.error("Thay đổi trạng thái thất bại!");
     }
   };
 
   // Handle Delete
-  const handleDeleteUser = (user: AdminUser) => {
+  const handleDeleteUser = async (user: AdminUser) => {
     if (window.confirm(`Bạn có chắc chắn muốn xóa vĩnh viễn tài khoản "${user.name}" khỏi hệ thống?`)) {
-      deleteUser(user.id);
-      gameToast.success(`Đã xóa tài khoản "${user.name}"!`);
+      try {
+        await deleteUser(user.id);
+        gameToast.success(`Đã xóa tài khoản "${user.name}"!`);
+      } catch (err) {
+        gameToast.error("Xóa tài khoản thất bại!");
+      }
     }
   };
 

@@ -83,7 +83,7 @@ export default function MatchManagement() {
   };
 
   // Form Submit Handler
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     if (!formData.roomName) {
@@ -93,10 +93,10 @@ export default function MatchManagement() {
 
     try {
       if (editingMatch) {
-        updateMatch(editingMatch.id, formData);
+        await updateMatch(editingMatch.id, formData);
         gameToast.success(`Cập nhật phòng "${formData.roomName}" thành công!`);
       } else {
-        addMatch(formData);
+        await addMatch(formData);
         gameToast.success(`Khởi tạo phòng chơi "${formData.roomName}" thành công!`);
       }
       setIsModalOpen(false);
@@ -106,21 +106,29 @@ export default function MatchManagement() {
   };
 
   // Terminate match (Force status update to Finished or delete)
-  const handleTerminateMatch = (match: AdminMatch) => {
+  const handleTerminateMatch = async (match: AdminMatch) => {
     if (match.status === 'FINISHED') {
       if (window.confirm("Bạn muốn xóa bản ghi lịch sử trận đấu này?")) {
-        deleteMatch(match.id);
-        gameToast.success("Đã xóa bản ghi lịch sử!");
+        try {
+          await deleteMatch(match.id);
+          gameToast.success("Đã xóa bản ghi lịch sử!");
+        } catch (err) {
+          gameToast.error("Xóa bản ghi thất bại!");
+        }
       }
       return;
     }
 
     if (window.confirm(`CẢNH BÁO: Bạn có muốn CƯỠNG CHẾ DỪNG trận đấu đang diễn ra tại phòng "${match.roomName}"? Các đấu thủ sẽ bị đẩy ra sảnh.`)) {
-      updateMatch(match.id, { 
-        status: 'FINISHED', 
-        winnerName: 'Cưỡng chế hủy (Hòa)' 
-      });
-      gameToast.error(`Trận đấu "${match.roomName}" đã bị cưỡng chế dừng hoạt động!`);
+      try {
+        await updateMatch(match.id, { 
+          status: 'FINISHED', 
+          winnerName: 'Cưỡng chế hủy (Hòa)' 
+        });
+        gameToast.error(`Trận đấu "${match.roomName}" đã bị cưỡng chế dừng hoạt động!`);
+      } catch (err) {
+        gameToast.error("Dừng trận đấu thất bại!");
+      }
     }
   };
 
