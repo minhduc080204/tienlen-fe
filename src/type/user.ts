@@ -3,4 +3,5 @@ export type UserType = {
   name: string;
   avatarUrl?: string;
   tokenBalance: number ; //money
+  role?: 'ADMIN' | 'USER';
 };

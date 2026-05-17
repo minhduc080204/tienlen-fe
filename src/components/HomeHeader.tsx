@@ -8,6 +8,8 @@ import { useModalStore } from "../stores/modal.store";
 import { formatNumber } from "../utils/formatNumber";
 import SettingsButton from "./SettingsButton";
 import { Button } from "./ui/Button";
+import { Shield } from "lucide-react";
+import { Link } from "react-router-dom";
 
 export default function HomeHeader() {
     const user = useAuthStore((s) => s.user);
@@ -116,7 +118,26 @@ export default function HomeHeader() {
                     </div>
                 </div>
 
-                <SettingsButton />
+                <div className="flex items-center gap-2">
+                    {user?.role === 'ADMIN' && (
+                        <Link
+                            to="/admin"
+                            className="
+                                w-9 h-9 lg:w-11 lg:h-11 rounded-full
+                                backdrop-blur-md bg-yellow-500/20 hover:bg-yellow-500/30
+                                border border-yellow-500/60 hover:border-yellow-400
+                                shadow-lg shadow-yellow-500/10 hover:shadow-yellow-500/30
+                                flex justify-center items-center
+                                transition duration-300
+                                cursor-pointer text-yellow-500 hover:text-yellow-400
+                            "
+                            title="Admin Control Panel"
+                        >
+                            <Shield className="w-5 h-5 lg:w-6 lg:h-6" />
+                        </Link>
+                    )}
+                    <SettingsButton />
+                </div>
             </div>
         </div>
     );

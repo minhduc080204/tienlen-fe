@@ -1,5 +1,5 @@
 import { AnimatePresence } from 'framer-motion'
-import { Navigate, Route, Routes } from 'react-router-dom'
+import { Navigate, Route, Routes, Outlet } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 import { ROUTES } from './routes/routes'
 import ModalRoot from './ModalRoot'
@@ -8,6 +8,9 @@ import { ProtectedRoute } from './components/ProtectedRoute'
 import { RoomGuard } from './components/RoomGuard'
 import PWABadge from './components/PWABadge'
 import { useSyncSettings } from './hooks/useSyncSettings'
+import { AdminRoute } from './components/AdminRoute'
+import { AdminProvider } from './hooks/useAdmin'
+import { AdminLayout } from './components/AdminLayout'
 
 // Lazy load pages
 const HomePage = lazy(() => import('./page/Home'))
@@ -16,6 +19,13 @@ const RegisterPage = lazy(() => import('./page/Register'))
 const GamePlay = lazy(() => import('./page/GamePlay'))
 const GamePlayBot = lazy(() => import('./page/GamePlayBot'))
 const GamePlayOfflineBot = lazy(() => import('./page/GamePlayOfflineBot'))
+
+// Lazy load admin pages
+const AdminDashboard = lazy(() => import('./pages/Admin/Dashboard'))
+const AdminUserManagement = lazy(() => import('./pages/Admin/UserManagement'))
+const AdminNFTManagement = lazy(() => import('./pages/Admin/NFTManagement'))
+const AdminMatchManagement = lazy(() => import('./pages/Admin/MatchManagement'))
+const AdminTransactionManagement = lazy(() => import('./pages/Admin/TransactionManagement'))
 
 function App() {
   useSyncSettings();
@@ -38,6 +48,23 @@ function App() {
 
               <Route element={<RoomGuard />}>
                 <Route path={ROUTES.ROOM} element={<GamePlay />} />
+              </Route>
+
+              {/* Admin Panel Routes */}
+              <Route element={<AdminRoute />}>
+                <Route element={
+                  <AdminProvider>
+                    <AdminLayout>
+                      <Outlet />
+                    </AdminLayout>
+                  </AdminProvider>
+                }>
+                  <Route path="/admin" element={<AdminDashboard />} />
+                  <Route path="/admin/users" element={<AdminUserManagement />} />
+                  <Route path="/admin/nfts" element={<AdminNFTManagement />} />
+                  <Route path="/admin/matches" element={<AdminMatchManagement />} />
+                  <Route path="/admin/transactions" element={<AdminTransactionManagement />} />
+                </Route>
               </Route>
             </Route>
           </Routes>
