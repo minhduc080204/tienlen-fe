@@ -13,7 +13,8 @@ import {
   Home, 
   Menu, 
   X, 
-  ShieldCheck 
+  ShieldCheck,
+  Smile
 } from 'lucide-react';
 
 interface AdminLayoutProps {
@@ -31,6 +32,7 @@ export function AdminLayout({ children }: AdminLayoutProps) {
     { name: 'Dashboard', path: '/admin', icon: LayoutDashboard },
     { name: 'Người Dùng', path: '/admin/users', icon: Users },
     { name: 'NFTs Card Skin', path: '/admin/nfts', icon: Layers },
+    { name: 'Ảnh Đại Diện', path: '/admin/avatars', icon: Smile },
     { name: 'Trận Đấu', path: '/admin/matches', icon: Swords },
     { name: 'Giao Dịch', path: '/admin/transactions', icon: History },
   ];

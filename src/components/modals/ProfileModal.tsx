@@ -106,7 +106,9 @@ export default function ProfileModal() {
 
         {!loading && !error && (
           <div className="flex-1 min-h-0">
-            {activeTab === "PROFILE" && user && <ProfileTab user={user} />}
+            {activeTab === "PROFILE" && user && (
+              <ProfileTab user={user} onUpdateUser={(updatedUser) => setUser(updatedUser)} />
+            )}
             {activeTab === "MATCHES" && <MatchesTab matches={matches} formatDate={formatDate} />}
             {activeTab === "TRANSACTIONS" && <TransactionsTab transactions={transactions} formatDate={formatDate} />}
             {activeTab === "NFTS_ITEMS" && (

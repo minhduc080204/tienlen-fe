@@ -30,5 +30,14 @@ export const API_ENDPOINTS = {
     GET: "/nfts",
     MY: "/nfts/my",
     VERIFY_TRANSFER: "/nfts/verify-transfer",
+  },
+
+  AVATAR: {
+    GET: "/avatars",
+    BUY: "/avatars/buy",
+    VERIFY_TRANSFER: "/avatars/verify-transfer",
+    SELECT: "/avatars/select",
+    SELECT_CUSTOM: "/avatars/select-custom",
+    ADMIN: "/admin/avatars",
   }
 };
