@@ -86,6 +86,7 @@ export default function HomeHeader() {
                             shadow-lg border border-yellow-500/60
                         ">
                             <p className="font-semibold ml-9 lg:ml-20 pr-1 lg:pr-0 text-sm lg:text-2xl leading-none flex items-center">
+
                                 {formatNumber(user?.tokenBalance)}
                             </p>
                             <PlusIcon className="w-5 h-5 lg:w-7 lg:h-7 cursor-pointer hover:scale-125 transition shrink-0" />

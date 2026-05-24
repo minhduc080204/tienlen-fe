@@ -4,13 +4,13 @@ import { useAdmin } from '../../hooks/useAdmin';
 import { AdminTable } from '../../components/AdminTable';
 import type { TableColumn } from '../../components/AdminTable';
 import type { AdminUser } from '../../type/admin';
-import { 
-  Search, 
-  UserPlus, 
-  X, 
-  Trash2, 
-  Edit, 
-  UserCheck, 
+import {
+  Search,
+  UserPlus,
+  X,
+  Trash2,
+  Edit,
+  UserCheck,
   UserX,
   Coins
 } from 'lucide-react';
@@ -139,10 +139,10 @@ export default function UserManagement() {
   const filteredUsers = useMemo(() => {
     return users
       .filter((user) => {
-        const matchesSearch = 
-          user.name.toLowerCase().includes(searchTerm.toLowerCase()) || 
+        const matchesSearch =
+          user.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
           user.email.toLowerCase().includes(searchTerm.toLowerCase());
-        
+
         const matchesRole = roleFilter === 'ALL' || user.role === roleFilter;
         const matchesStatus = statusFilter === 'ALL' || user.status === statusFilter;
 
@@ -152,9 +152,9 @@ export default function UserManagement() {
         let aVal = a[sortField as keyof AdminUser] ?? '';
         let bVal = b[sortField as keyof AdminUser] ?? '';
 
-        if (typeof aVal === 'string') {
-          aVal = aVal.toLowerCase();
-          bVal = (bVal as string).toLowerCase();
+        if (typeof aVal === 'string' || typeof bVal === 'string') {
+          aVal = String(aVal).toLowerCase();
+          bVal = String(bVal).toLowerCase();
         }
 
         if (aVal < bVal) return sortOrder === 'asc' ? -1 : 1;
@@ -197,10 +197,10 @@ export default function UserManagement() {
       sortable: true,
       render: (user) => (
         <div className="flex items-center gap-3">
-          <img 
-            src={user.avatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.name}`} 
-            alt={user.name} 
-            className="w-8 h-8 rounded-lg bg-stone-900 border border-stone-800 p-0.5 object-cover" 
+          <img
+            src={user.avatarUrl || `https://api.dicebear.com/7.x/bottts/svg?seed=${user.name}`}
+            alt={user.name}
+            className="w-8 h-8 rounded-lg bg-stone-900 border border-stone-800 p-0.5 object-cover"
           />
           <div className="flex flex-col">
             <span className="text-white font-bold text-sm leading-tight">{user.name}</span>
@@ -219,8 +219,8 @@ export default function UserManagement() {
         return (
           <span className={`
             px-2.5 py-0.5 rounded-full text-[10px] font-black tracking-wider uppercase border
-            ${isAdmin 
-              ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20' 
+            ${isAdmin
+              ? 'bg-yellow-500/10 text-yellow-500 border-yellow-500/20'
               : 'bg-blue-500/10 text-blue-400 border-blue-500/20'
             }
           `}>
@@ -254,8 +254,8 @@ export default function UserManagement() {
             title="Nhấp để đổi trạng thái"
             className={`
               px-2.5 py-0.5 rounded-full text-[10px] font-extrabold uppercase border cursor-pointer select-none transition-all hover:scale-105 active:scale-95
-              ${isActive 
-                ? 'bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20' 
+              ${isActive
+                ? 'bg-green-500/10 text-green-400 border-green-500/20 hover:bg-green-500/20'
                 : 'bg-red-500/10 text-red-400 border-red-500/20 hover:bg-red-500/20'
               }
             `}
@@ -288,13 +288,13 @@ export default function UserManagement() {
           >
             <Edit size={14} />
           </button>
-          
+
           <button
             onClick={() => handleToggleStatus(user)}
             className={`
               p-1.5 rounded-lg border bg-stone-900 border-stone-800 transition-all cursor-pointer
-              ${user.status === 'ACTIVE' 
-                ? 'text-amber-500 hover:text-amber-400 hover:border-amber-700' 
+              ${user.status === 'ACTIVE'
+                ? 'text-amber-500 hover:text-amber-400 hover:border-amber-700'
                 : 'text-green-500 hover:text-green-400 hover:border-green-700'
               }
             `}
@@ -403,7 +403,7 @@ export default function UserManagement() {
       {isModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
           <div className="fixed inset-0 bg-black/80 backdrop-blur-xs" onClick={() => setIsModalOpen(false)} />
-          
+
           <div className="relative w-full max-w-md bg-stone-900 border border-stone-800 rounded-2xl shadow-2xl p-6 overflow-hidden animate-zoom-in">
             {/* Background Blur Sparkle */}
             <div className="absolute right-0 top-0 w-32 h-32 bg-yellow-500/5 rounded-full blur-2xl pointer-events-none" />
@@ -412,7 +412,7 @@ export default function UserManagement() {
               <h3 className="text-base font-extrabold text-yellow-500 uppercase tracking-wider">
                 {editingUser ? 'Cập nhật tài khoản' : 'Đăng ký tài khoản mới'}
               </h3>
-              <button 
+              <button
                 onClick={() => setIsModalOpen(false)}
                 className="text-stone-400 hover:text-white transition-colors p-1 rounded-md hover:bg-stone-800"
               >
@@ -434,9 +434,9 @@ export default function UserManagement() {
               </div>
 
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-bold text-stone-400 uppercase tracking-wider">Địa chỉ Email</label>
+                <label className="text-xs font-bold text-stone-400 uppercase tracking-wider">User name</label>
                 <input
-                  type="email"
+                  type="text"
                   required
                   value={formData.email}
                   onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}

@@ -51,3 +51,14 @@ export interface DashboardStats {
   totalMatchesPlayed: number;
   activeMatches: number;
 }
+
+export interface AdminAvatar {
+  id: number;
+  name: string;
+  srcUrl: string;
+  priceMatic: number;
+  priceTokens: number;
+  style: string;
+  active: boolean;
+  createdAt: string;
+}

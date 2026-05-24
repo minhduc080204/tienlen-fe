@@ -51,7 +51,8 @@ export default function GamePlayOfflineBot() {
                     id: 1000,
                     name: user?.name || "Stupid Player",
                     avatarUrl: user?.avatarUrl || "",
-                    tokenBalance: 999999
+                    tokenBalance: 999999,
+                    account: user?.account || "guest",
                 },
                 ready: false,
                 handSize: 0,
@@ -63,7 +64,8 @@ export default function GamePlayOfflineBot() {
                     id: 1001,
                     name: "🤖 Bot " + (BOT_DIFFICULTY_MAP[difficulty] || "EASY"),
                     avatarUrl: "",
-                    tokenBalance: 999999
+                    tokenBalance: 999999,
+                    account: "bot",
                 },
                 ready: true,
                 handSize: 0,

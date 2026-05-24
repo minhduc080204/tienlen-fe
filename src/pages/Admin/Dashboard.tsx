@@ -9,7 +9,8 @@ import {
   PlusCircle, 
   Sparkles, 
   TrendingUp, 
-  ChevronRight
+  ChevronRight,
+  Smile
 } from 'lucide-react';
 
 export default function Dashboard() {
@@ -202,7 +203,7 @@ export default function Dashboard() {
               Lối tắt tác vụ nhanh
             </h3>
             
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <button
                 onClick={() => navigate('/admin/users?action=create')}
                 className="flex items-center justify-between p-3.5 rounded-xl border border-stone-850 hover:border-stone-750 bg-stone-900/40 hover:bg-stone-900/80 transition-all text-left cursor-pointer group"
@@ -230,6 +231,22 @@ export default function Dashboard() {
                   <div>
                     <h4 className="text-xs font-bold text-stone-200">Đăng bán Card Skin</h4>
                     <p className="text-[10px] text-stone-500">Tạo NFT mới cho cửa hàng</p>
+                  </div>
+                </div>
+                <ChevronRight size={14} className="text-stone-500 group-hover:text-white transition-transform group-hover:translate-x-0.5" />
+              </button>
+
+              <button
+                onClick={() => navigate('/admin/avatars?action=create')}
+                className="flex items-center justify-between p-3.5 rounded-xl border border-stone-850 hover:border-stone-750 bg-stone-900/40 hover:bg-stone-900/80 transition-all text-left cursor-pointer group"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="p-2 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
+                    <Smile size={16} />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-stone-200">Cấu hình Avatar mẫu</h4>
+                    <p className="text-[10px] text-stone-500">Thêm mới bộ Avatar</p>
                   </div>
                 </div>
                 <ChevronRight size={14} className="text-stone-500 group-hover:text-white transition-transform group-hover:translate-x-0.5" />

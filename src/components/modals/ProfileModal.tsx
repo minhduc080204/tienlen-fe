@@ -9,12 +9,13 @@ import { ModalContainer } from "./ModalContainer";
 import { nftApi } from "../../api/nft.api";
 import { useSettingsStore } from "../../stores/settings.store";
 import type { NFTItemData } from "../../type/nft";
+import { AvatarTab } from "../profile/AvatarTab";
 import { MatchesTab } from "../profile/MatchesTab";
 import { NftsTab } from "../profile/NftsTab";
 import { ProfileTab } from "../profile/ProfileTab";
 import { TransactionsTab } from "../profile/TransactionsTab";
 
-type TabType = "PROFILE" | "MATCHES" | "TRANSACTIONS" | "NFTS_ITEMS";
+type TabType = "PROFILE" | "AVATAR" | "MATCHES" | "TRANSACTIONS" | "NFTS_ITEMS";
 
 export default function ProfileModal() {
   const [activeTab, setActiveTab] = useState<TabType>("PROFILE");
@@ -63,37 +64,43 @@ export default function ProfileModal() {
   };
 
   return (
-    <ModalContainer className="w-130 h-[80vh] p-0! overflow-hidden flex flex-col">
+    <ModalContainer className="w-130 h-[85vh] p-0! overflow-hidden flex flex-col">
       {/* Tabs Header */}
-      <div className="flex justify-around border-b border-zinc-800 bg-zinc-950">
+      <div className="flex justify-start sm:justify-around border-b border-zinc-800 bg-zinc-950 overflow-x-auto custom-scrollbar shrink-0">
         <Button
           onClick={() => setActiveTab("PROFILE")}
-          className={`text-center py-3 px-3 text-sm font-bold transition ${activeTab === "PROFILE" ? "border-b-2 border-red-500 text-red-500" : "text-zinc-400 hover:text-zinc-200"}`}
+          className={`text-center py-3 px-3 text-sm font-bold transition whitespace-nowrap shrink-0 ${activeTab === "PROFILE" ? "border-b-2 border-red-500 text-red-500" : "text-zinc-400 hover:text-zinc-200"}`}
         >
           PROFILE
         </Button>
         <Button
-          onClick={() => setActiveTab("NFTS_ITEMS")}
-          className={`text-center py-3 px-3 text-sm font-bold transition ${activeTab === "NFTS_ITEMS" ? "border-b-2 border-red-500 text-red-500" : "text-zinc-400 hover:text-zinc-200"}`}
+          onClick={() => setActiveTab("AVATAR")}
+          className={`text-center py-3 px-3 text-sm font-bold transition whitespace-nowrap shrink-0 ${activeTab === "AVATAR" ? "border-b-2 border-red-500 text-red-500" : "text-zinc-400 hover:text-zinc-200"}`}
         >
-          NFTS ITEMS
+          AVATAR
+        </Button>
+        <Button
+          onClick={() => setActiveTab("NFTS_ITEMS")}
+          className={`text-center py-3 px-3 text-sm font-bold transition whitespace-nowrap shrink-0 ${activeTab === "NFTS_ITEMS" ? "border-b-2 border-red-500 text-red-500" : "text-zinc-400 hover:text-zinc-200"}`}
+        >
+          SKIN CARD
         </Button>
         <Button
           onClick={() => setActiveTab("MATCHES")}
-          className={`text-center py-3 px-3 text-sm font-bold transition ${activeTab === "MATCHES" ? "border-b-2 border-red-500 text-red-500" : "text-zinc-400 hover:text-zinc-200"}`}
+          className={`text-center py-3 px-3 text-sm font-bold transition whitespace-nowrap shrink-0 ${activeTab === "MATCHES" ? "border-b-2 border-red-500 text-red-500" : "text-zinc-400 hover:text-zinc-200"}`}
         >
           MATCHES
         </Button>
         <Button
           onClick={() => setActiveTab("TRANSACTIONS")}
-          className={`text-center py-3 px-3 text-sm font-bold transition ${activeTab === "TRANSACTIONS" ? "border-b-2 border-red-500 text-red-500" : "text-zinc-400 hover:text-zinc-200"}`}
+          className={`text-center py-3 px-3 text-sm font-bold transition whitespace-nowrap shrink-0 ${activeTab === "TRANSACTIONS" ? "border-b-2 border-red-500 text-red-500" : "text-zinc-400 hover:text-zinc-200"}`}
         >
           TRANSACTIONS
         </Button>
       </div>
 
       {/* Content Body */}
-      <div className="p-4 lg:p-6 flex-1 overflow-hidden min-h-0 flex flex-col">
+      <div className="p-2 lg:p-4 flex-1 overflow-hidden min-h-0 flex flex-col">
         {loading && (
           <div className="flex justify-center items-center h-full">
             <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-red-500"></div>
@@ -106,7 +113,12 @@ export default function ProfileModal() {
 
         {!loading && !error && (
           <div className="flex-1 min-h-0">
-            {activeTab === "PROFILE" && user && <ProfileTab user={user} />}
+            {activeTab === "PROFILE" && user && (
+              <ProfileTab user={user} onUpdateUser={(updatedUser) => setUser(updatedUser)} />
+            )}
+            {activeTab === "AVATAR" && user && (
+              <AvatarTab user={user} onUpdateUser={(updatedUser) => setUser(updatedUser)} />
+            )}
             {activeTab === "MATCHES" && <MatchesTab matches={matches} formatDate={formatDate} />}
             {activeTab === "TRANSACTIONS" && <TransactionsTab transactions={transactions} formatDate={formatDate} />}
             {activeTab === "NFTS_ITEMS" && (
