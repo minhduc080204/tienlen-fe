@@ -9,6 +9,10 @@ export const dataApi = {
     axiosClient.get<UserType>(API_ENDPOINTS.USER.PROFILE)
     .then(res=>res.data),
 
+  updateProfile: (data: { name: string }) =>
+    axiosClient.put<UserType>(API_ENDPOINTS.USER.PROFILE, data)
+    .then(res=>res.data),
+
   transactions: () =>
     axiosClient.get<Transaction[]>(API_ENDPOINTS.USER.TRANSACTIONS)
     .then(res=>res.data),

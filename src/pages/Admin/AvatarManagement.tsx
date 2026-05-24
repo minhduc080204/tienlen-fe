@@ -202,9 +202,9 @@ export default function AvatarManagement() {
         let aVal = a[sortField as keyof AdminAvatar] ?? '';
         let bVal = b[sortField as keyof AdminAvatar] ?? '';
 
-        if (typeof aVal === 'string') {
-          aVal = aVal.toLowerCase();
-          bVal = (bVal as string).toLowerCase();
+        if (typeof aVal === 'string' || typeof bVal === 'string') {
+          aVal = String(aVal).toLowerCase();
+          bVal = String(bVal).toLowerCase();
         }
 
         if (aVal < bVal) return sortOrder === 'asc' ? -1 : 1;
@@ -432,6 +432,7 @@ export default function AvatarManagement() {
       <AdminTable
         columns={columns}
         data={paginatedAvatars}
+        loading={loading}
         currentPage={currentPage}
         totalPages={totalPages}
         onPageChange={setCurrentPage}
