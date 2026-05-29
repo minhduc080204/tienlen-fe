@@ -1,13 +1,15 @@
-import { Coins } from "lucide-react";
+import { Coins, Wallet, Zap } from "lucide-react";
 import { useEffect, useState } from "react";
 import { avatarApi } from "../../api/avatar.api";
 import { dataApi } from "../../api/data.api";
 import { nftApi } from "../../api/nft.api";
+import { tokenApi } from "../../api/token.api";
 import { useWeb3 } from "../../hooks/useWeb3";
 import { useAuthStore } from "../../stores/auth.store";
 import { useModalStore } from "../../stores/modal.store";
 import type { AvatarItemData } from "../../type/avatar";
 import type { NFTItemData } from "../../type/nft";
+import type { TokenPackage } from "../../type/token";
 import { formatNumber } from "../../utils/formatNumber";
 import NFTItem from "../gameplay/NFTItem";
 import { gameToast } from "../ui/toast";
@@ -18,7 +20,7 @@ export default function NFTShopModal() {
   const { account, connectWallet, transferMatic } = useWeb3();
 
   // Tab State
-  const [activeTab, setActiveTab] = useState<"nfts" | "avatars">("nfts");
+  const [activeTab, setActiveTab] = useState<"nfts" | "avatars" | "deposit">("nfts");
 
   // NFT State
   const [items, setItems] = useState<NFTItemData[]>([]);
@@ -27,6 +29,11 @@ export default function NFTShopModal() {
   // Avatar State
   const [avatars, setAvatars] = useState<AvatarItemData[]>([]);
   const [avatarLoading, setAvatarLoading] = useState(false);
+
+  // Token Deposit State
+  const [tokenPackages, setTokenPackages] = useState<TokenPackage[]>([]);
+  const [tokenPackagesLoading, setTokenPackagesLoading] = useState(false);
+  const [depositingId, setDepositingId] = useState<number | null>(null);
 
   const updateUserStore = useAuthStore((s) => s.updateUser);
 
@@ -39,6 +46,18 @@ export default function NFTShopModal() {
       console.error("Failed to fetch avatars", error);
     } finally {
       setAvatarLoading(false);
+    }
+  };
+
+  const fetchTokenPackages = async () => {
+    setTokenPackagesLoading(true);
+    try {
+      const data = await tokenApi.getDepositPackages();
+      setTokenPackages(data);
+    } catch (error) {
+      console.error("Failed to fetch token packages", error);
+    } finally {
+      setTokenPackagesLoading(false);
     }
   };
 
@@ -58,8 +77,53 @@ export default function NFTShopModal() {
       fetchNFTs();
     } else if (activeTab === "avatars" && avatars.length === 0) {
       fetchAvatars();
+    } else if (activeTab === "deposit" && tokenPackages.length === 0) {
+      fetchTokenPackages();
     }
   }, [activeTab]);
+
+  const handleDeposit = async (pkg: TokenPackage) => {
+    setDepositingId(pkg.id);
+    try {
+      let currentAccount = account;
+      if (!currentAccount) {
+        const { address } = await connectWallet();
+        currentAccount = address;
+      }
+
+      gameToast.success("Vui lòng xác nhận trên MetaMask...");
+      const txHash = await transferMatic(pkg.priceMatic.toString());
+
+      gameToast.success("Đang xác thực giao dịch...");
+      const result = await tokenApi.verifyDeposit({
+        txHash,
+        packageId: pkg.id,
+        walletAddress: currentAccount!,
+      });
+
+      // Refresh user balance
+      try {
+        const updatedUser = await dataApi.profile();
+        updateUserStore(updatedUser);
+      } catch (e) {
+        console.error("Failed to refresh balance", e);
+      }
+
+      const awarded = result?.tokensAwarded ?? pkg.tokenAmount;
+      gameToast.success(`Nạp thành công! +${formatNumber(awarded)} Xu`);
+    } catch (error: any) {
+      console.error("Deposit error:", error);
+      if (error.message?.includes("rejected")) {
+        gameToast.error("Giao dịch đã bị hủy");
+      } else if (error.message?.includes("insufficient funds")) {
+        gameToast.error("Số dư MATIC không đủ");
+      } else {
+        gameToast.error(error?.response?.data?.message || "Có lỗi xảy ra khi nạp xu");
+      }
+    } finally {
+      setDepositingId(null);
+    }
+  };
 
   const handleBuy = async (item: NFTItemData) => {
     try {
@@ -245,6 +309,17 @@ export default function NFTShopModal() {
             <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-yellow-500 rounded-full" />
           )}
         </button>
+        <button
+          onClick={() => setActiveTab("deposit")}
+          className={`py-3 text-sm font-bold uppercase transition-colors relative flex items-center gap-2 cursor-pointer ${activeTab === "deposit" ? "text-yellow-500" : "text-stone-400 hover:text-stone-200"
+            }`}
+        >
+          <Coins size={14} />
+          Nạp Xu
+          {activeTab === "deposit" && (
+            <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-yellow-500 rounded-full" />
+          )}
+        </button>
       </div>
 
       {/* Content */}
@@ -264,6 +339,94 @@ export default function NFTShopModal() {
                     <NFTItem item={item} onBuy={handleBuy} />
                   </div>
                 ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* DEPOSIT TAB */}
+        {activeTab === "deposit" && (
+          <div className="flex flex-col flex-1 min-h-0">
+            {tokenPackagesLoading ? (
+              <div className="flex-1 flex justify-center items-center">
+                <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-yellow-500" />
+              </div>
+            ) : tokenPackages.length === 0 ? (
+              <div className="flex-1 flex flex-col items-center justify-center gap-3 text-stone-500">
+                <Coins size={40} className="opacity-30" />
+                <p className="text-sm">Chưa có gói nạp nào khả dụng</p>
+              </div>
+            ) : (
+              <div className="overflow-auto custom-scrollbar pb-4 flex-1 pr-1 min-h-0">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {tokenPackages.map((pkg) => {
+                    const isDepositing = depositingId === pkg.id;
+                    return (
+                      <div
+                        key={pkg.id}
+                        className="relative bg-stone-900/60 border border-stone-700/60 hover:border-yellow-600/40 rounded-xl p-4 flex flex-col gap-3 transition-all duration-300 shadow-md group overflow-hidden"
+                      >
+                        {/* Decorative glow */}
+                        <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none rounded-xl" />
+
+                        {/* Package name */}
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 rounded-lg bg-yellow-500/10 border border-yellow-500/20 flex items-center justify-center shrink-0">
+                            <Zap size={16} className="text-yellow-400" />
+                          </div>
+                          <span className="text-yellow-400 font-extrabold text-sm uppercase tracking-wide leading-tight">
+                            {pkg.name}
+                          </span>
+                        </div>
+
+                        {/* Token amount */}
+                        <div className="flex items-baseline gap-1.5">
+                          <Coins size={18} className="text-yellow-500 shrink-0 mb-0.5" />
+                          <span className="text-2xl font-black text-white">{formatNumber(pkg.tokenAmount)}</span>
+                          <span className="text-stone-400 text-xs font-semibold">Xu</span>
+                        </div>
+
+                        {/* Description */}
+                        {pkg.description && (
+                          <p className="text-stone-400 text-xs leading-relaxed">{pkg.description}</p>
+                        )}
+
+                        {/* Price & CTA */}
+                        <div className="mt-auto pt-2 border-t border-stone-700/50 flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-1 text-purple-300 font-bold text-sm">
+                            <span>💎</span>
+                            <span>{pkg.priceMatic} MATIC</span>
+                          </div>
+                          <button
+                            onClick={() => handleDeposit(pkg)}
+                            disabled={isDepositing}
+                            className="bg-gradient-to-r from-yellow-600 to-amber-500 hover:from-yellow-500 hover:to-amber-400 disabled:from-stone-600 disabled:to-stone-700 disabled:cursor-not-allowed text-stone-950 disabled:text-stone-400 font-bold text-xs px-4 py-2 rounded-lg transition-all cursor-pointer shadow-md shadow-yellow-950/20 flex items-center gap-1.5"
+                          >
+                            {isDepositing ? (
+                              <>
+                                <div className="w-3.5 h-3.5 rounded-full border-2 border-stone-400 border-t-transparent animate-spin" />
+                                Đang xử lý...
+                              </>
+                            ) : (
+                              <>
+                                <Wallet size={13} />
+                                Nạp ngay
+                              </>
+                            )}
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Info note */}
+                <div className="mt-4 p-3 bg-stone-800/40 border border-stone-700/40 rounded-lg flex items-start gap-2">
+                  <span className="text-blue-400 text-base shrink-0">ℹ️</span>
+                  <p className="text-stone-400 text-xs leading-relaxed">
+                    Giao dịch sử dụng mạng <span className="text-purple-300 font-semibold">Polygon Amoy (testnet)</span>. Xu sẽ được cộng ngay sau khi blockchain xác nhận giao dịch. Vui lòng không đóng cửa sổ trong lúc xử lý.
+                  </p>
+                </div>
               </div>
             )}
           </div>
