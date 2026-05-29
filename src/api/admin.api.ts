@@ -1,5 +1,5 @@
 import axiosClient from './axiosClient';
-import type { AdminUser, AdminNFT, AdminMatch, AdminTransaction, DashboardStats, AdminAvatar } from '../type/admin';
+import type { AdminUser, AdminNFT, AdminMatch, AdminTransaction, DashboardStats, AdminAvatar, AdminTokenPackage } from '../type/admin';
 
 export const adminApi = {
   // Stats
@@ -31,4 +31,10 @@ export const adminApi = {
     axiosClient.post<AdminAvatar>('/admin/avatars', data),
   updateAdminAvatar: (id: number, data: Partial<AdminAvatar>) => axiosClient.put<AdminAvatar>(`/admin/avatars/${id}`, data),
   deleteAdminAvatar: (id: number) => axiosClient.delete(`/admin/avatars/${id}`),
+
+  // Token Packages
+  getTokenPackages: () => axiosClient.get<AdminTokenPackage[]>('/admin/token-packages'),
+  createTokenPackage: (data: Omit<AdminTokenPackage, 'id' | 'createdAt'>) => axiosClient.post<AdminTokenPackage>('/admin/token-packages', data),
+  updateTokenPackage: (id: number, data: Partial<AdminTokenPackage>) => axiosClient.put<AdminTokenPackage>(`/admin/token-packages/${id}`, data),
+  deleteTokenPackage: (id: number) => axiosClient.delete(`/admin/token-packages/${id}`),
 };

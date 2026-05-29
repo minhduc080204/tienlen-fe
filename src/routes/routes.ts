@@ -14,5 +14,6 @@ export const ROUTES = {
     NFTS: "/admin/nfts",
     MATCHES: "/admin/matches",
     TRANSACTIONS: "/admin/transactions",
+    TOKEN_PACKAGES: "/admin/token-packages",
   }
 };

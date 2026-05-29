@@ -1,6 +1,6 @@
 import { createContext, useState, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import type { AdminUser, AdminNFT, AdminMatch, AdminTransaction, DashboardStats } from '../../type/admin';
+import type { AdminUser, AdminNFT, AdminMatch, AdminTransaction, DashboardStats, AdminTokenPackage } from '../../type/admin';
 import { adminApi } from '../../api/admin.api';
 import { gameToast } from '../../components/ui/toast';
 
@@ -9,7 +9,13 @@ interface AdminContextProps {
   nfts: AdminNFT[];
   matches: AdminMatch[];
   transactions: AdminTransaction[];
+  tokenPackages: AdminTokenPackage[];
   stats: DashboardStats;
+
+  // Token Packages CRUD
+  addTokenPackage: (pkg: Omit<AdminTokenPackage, 'id' | 'createdAt'>) => Promise<void>;
+  updateTokenPackage: (id: number, updates: Partial<AdminTokenPackage>) => Promise<void>;
+  deleteTokenPackage: (id: number) => Promise<void>;
 
   // Users CRUD
   addUser: (user: Omit<AdminUser, 'id' | 'createdAt'>) => Promise<void>;
@@ -39,6 +45,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   const [nfts, setNfts] = useState<AdminNFT[]>([]);
   const [matches, setMatches] = useState<AdminMatch[]>([]);
   const [transactions, setTransactions] = useState<AdminTransaction[]>([]);
+  const [tokenPackages, setTokenPackages] = useState<AdminTokenPackage[]>([]);
   const [stats, setStats] = useState<DashboardStats>({
     totalUsers: 0,
     activeUsers: 0,
@@ -51,12 +58,13 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
   // Fetch initial data
   const fetchAllData = async () => {
     try {
-      const [statsRes, usersRes, nftsRes, matchesRes, txRes] = await Promise.all([
+      const [statsRes, usersRes, nftsRes, matchesRes, txRes, pkgRes] = await Promise.all([
         adminApi.getStats().catch(() => ({ data: stats })), // Fallback if not ready
         adminApi.getUsers().catch(() => ({ data: [] })),
         adminApi.getNfts().catch(() => ({ data: [] })),
         adminApi.getMatches().catch(() => ({ data: [] })),
         adminApi.getTransactions().catch(() => ({ data: [] })),
+        adminApi.getTokenPackages().catch(() => ({ data: [] })),
       ]);
 
       setStats(statsRes.data);
@@ -64,6 +72,7 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
       setNfts(nftsRes.data);
       setMatches(matchesRes.data);
       setTransactions(txRes.data);
+      setTokenPackages(pkgRes.data);
     } catch (error) {
       console.error("Lỗi khi tải dữ liệu Admin", error);
       gameToast.error("Không thể tải dữ liệu Admin. Vui lòng kiểm tra quyền truy cập.");
@@ -146,6 +155,26 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
     setTransactions(prev => prev.filter(tx => tx.id !== id));
   };
 
+  // --- Token Packages CRUD ---
+  const addTokenPackage = async (newPkg: Omit<AdminTokenPackage, 'id' | 'createdAt'>) => {
+    const response = await adminApi.createTokenPackage(newPkg);
+    setTokenPackages(prev => [...prev, response.data]);
+  };
+
+  const updateTokenPackage = async (id: number, updates: Partial<AdminTokenPackage>) => {
+    const response = await adminApi.updateTokenPackage(id, updates);
+    if (response.data) {
+      setTokenPackages(prev => prev.map(pkg => pkg.id === id ? { ...pkg, ...response.data } : pkg));
+    } else {
+      setTokenPackages(prev => prev.map(pkg => pkg.id === id ? { ...pkg, ...updates } : pkg));
+    }
+  };
+
+  const deleteTokenPackage = async (id: number) => {
+    await adminApi.deleteTokenPackage(id);
+    setTokenPackages(prev => prev.filter(pkg => pkg.id !== id));
+  };
+
   return (
     <AdminContext.Provider value={{
       users,
@@ -164,7 +193,11 @@ export const AdminProvider = ({ children }: { children: ReactNode }) => {
       deleteMatch,
       addTransaction,
       updateTransaction,
-      deleteTransaction
+      deleteTransaction,
+      tokenPackages,
+      addTokenPackage,
+      updateTokenPackage,
+      deleteTokenPackage
     }}>
       {children}
     </AdminContext.Provider>

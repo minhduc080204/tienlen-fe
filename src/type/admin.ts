@@ -62,3 +62,13 @@ export interface AdminAvatar {
   active: boolean;
   createdAt: string;
 }
+
+export interface AdminTokenPackage {
+  id: number;
+  name: string;
+  description: string;
+  priceMatic: number;
+  tokenAmount: number;
+  active: boolean;
+  createdAt: string;
+}
