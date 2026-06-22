@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { gameToast } from '../../components/ui/toast';
 import { useSearchParams } from 'react-router-dom';
+import { formatMatic } from '../../utils/formatNumber';
 
 export default function TokenPackageManagement() {
   const { tokenPackages, addTokenPackage, updateTokenPackage, deleteTokenPackage } = useAdmin();
@@ -228,7 +229,7 @@ export default function TokenPackageManagement() {
       align: "center",
       render: (pkg) => (
         <span className="font-black text-xs tracking-wider text-purple-400">
-          {pkg.priceMatic} MATIC
+          {formatMatic(pkg.priceMatic)} MATIC
         </span>
       )
     },
@@ -396,7 +397,7 @@ export default function TokenPackageManagement() {
                  <div className="mt-auto pt-2 border-t border-stone-700/50 flex flex-col items-center justify-between gap-1">
                    <div className="flex items-center gap-1 text-purple-300 font-bold text-[10px]">
                      <span>💎</span>
-                     <span>{formData.priceMatic || '0'} MATIC</span>
+                     <span>{formatMatic(formData.priceMatic || '0')} MATIC</span>
                    </div>
                  </div>
                </div>

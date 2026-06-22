@@ -10,7 +10,7 @@ import { useModalStore } from "../../stores/modal.store";
 import type { AvatarItemData } from "../../type/avatar";
 import type { NFTItemData } from "../../type/nft";
 import type { TokenPackage } from "../../type/token";
-import { formatNumber } from "../../utils/formatNumber";
+import { formatNumber, formatMatic } from "../../utils/formatNumber";
 import NFTItem from "../gameplay/NFTItem";
 import { gameToast } from "../ui/toast";
 import { ModalContainer } from "./ModalContainer";
@@ -395,7 +395,7 @@ export default function NFTShopModal() {
                         <div className="mt-auto pt-2 border-t border-stone-700/50 flex items-center justify-between gap-2">
                           <div className="flex items-center gap-1 text-purple-300 font-bold text-sm">
                             <span>💎</span>
-                            <span>{pkg.priceMatic} MATIC</span>
+                            <span>{formatMatic(pkg.priceMatic)} MATIC</span>
                           </div>
                           <button
                             onClick={() => handleDeposit(pkg)}
@@ -503,7 +503,7 @@ export default function NFTShopModal() {
                               onClick={() => handleBuyAvatarMatic(pack.style, pack.sample)}
                               className="flex-1 bg-gradient-to-r from-blue-700 to-indigo-700 hover:from-blue-600 hover:to-indigo-600 text-white text-xs font-bold py-2.5 px-3 rounded-lg flex items-center justify-center gap-1.5 transition-all cursor-pointer shadow-md shadow-indigo-950/20"
                             >
-                              💎 {pack.priceMatic} MATIC
+                              💎 {formatMatic(pack.priceMatic)} MATIC
                             </button>
                           </div>
                         )}

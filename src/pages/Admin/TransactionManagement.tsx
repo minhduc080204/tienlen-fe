@@ -14,6 +14,7 @@ import {
   Copy
 } from 'lucide-react';
 import { gameToast } from '../../components/ui/toast';
+import { formatMatic } from '../../utils/formatNumber';
 
 export default function TransactionManagement() {
   const { transactions, updateTransaction, deleteTransaction, addTransaction } = useAdmin();
@@ -191,7 +192,7 @@ export default function TransactionManagement() {
       align: "right",
       render: (tx) => (
         <div className="inline-flex items-center gap-1 font-mono text-xs font-black text-purple-400">
-          <span>{tx.amount} MATIC</span>
+          <span>{formatMatic(tx.amount)} MATIC</span>
         </div>
       )
     },

@@ -81,7 +81,7 @@ export const Card = ({ card, isSelected, onSelected }: CardProps) => {
             <div className="text-xl lg:text-2xl xl:text-3xl flex flex-col items-start leading-none">
                 <div>
                     <b className="font-card ">{rankMapping(card.rank)}</b>
-                    <img className="w-4 lg:w-5 xl:w-6" src={getSuitIcon(card.suit - 1)} />
+                    {!(selectedCardSkinId == 2 && card.rank > 10) && <img className="w-4 lg:w-5 xl:w-6" src={getSuitIcon(card.suit - 1)} />}
                 </div>
             </div>
             <div className="flex justify-center flex-1 items-center">
