@@ -1,14 +1,15 @@
 import { useMemo } from 'react';
 import { useAdmin } from '../../hooks/useAdmin';
 import { useNavigate } from 'react-router-dom';
-import { 
-  Users, 
-  Layers, 
-  Coins, 
-  Swords, 
-  PlusCircle, 
-  Sparkles, 
-  TrendingUp, 
+import { formatMatic } from '../../utils/formatNumber';
+import {
+  Users,
+  Layers,
+  Coins,
+  Swords,
+  PlusCircle,
+  Sparkles,
+  TrendingUp,
   ChevronRight,
   Smile
 } from 'lucide-react';
@@ -59,7 +60,7 @@ export default function Dashboard() {
     },
     {
       title: "Khối lượng giao dịch",
-      value: `${stats.totalVolumeMatic} MATIC`,
+      value: `${formatMatic(stats.totalVolumeMatic)} MATIC`,
       subtext: "Doanh thu xác thực trên chuỗi",
       icon: Coins,
       color: "from-emerald-600/20 to-teal-600/10 border-emerald-500/30 text-emerald-400",
@@ -89,7 +90,7 @@ export default function Dashboard() {
           </p>
         </div>
         <div className="flex gap-2 shrink-0 z-10">
-          <button 
+          <button
             onClick={() => navigate('/admin/nfts')}
             className="flex items-center gap-1.5 px-4 py-2 text-xs font-bold bg-yellow-500 text-stone-950 hover:bg-yellow-400 rounded-xl transition-all cursor-pointer shadow-md"
           >
@@ -138,7 +139,7 @@ export default function Dashboard() {
           <div className="bg-stone-950/80 border border-stone-850 rounded-2xl p-5 flex flex-col gap-6 backdrop-blur-md">
             <div>
               <h3 className="text-sm font-extrabold text-stone-200 uppercase tracking-wider flex items-center gap-2">
-                 Phân bổ Chế độ chơi
+                Phân bổ Chế độ chơi
               </h3>
               <p className="text-xs text-stone-500 font-semibold mt-1">
                 Tỉ lệ các loại phòng đang được tạo và vận hành trên hệ thống
@@ -148,17 +149,17 @@ export default function Dashboard() {
             {/* Distribution CSS Bar Chart */}
             <div className="flex flex-col gap-4">
               <div className="h-4 w-full bg-stone-900 rounded-full overflow-hidden flex border border-stone-850">
-                <div 
+                <div
                   style={{ width: `${modeStats.multiPercent}%` }}
                   className="bg-yellow-500 hover:brightness-110 transition-all duration-300"
                   title={`Multiplayer: ${modeStats.multiPercent}%`}
                 />
-                <div 
+                <div
                   style={{ width: `${modeStats.botPercent}%` }}
                   className="bg-blue-500 hover:brightness-110 transition-all duration-300"
                   title={`AI Bot: ${modeStats.botPercent}%`}
                 />
-                <div 
+                <div
                   style={{ width: `${modeStats.offlinePercent}%` }}
                   className="bg-stone-600 hover:brightness-110 transition-all duration-300"
                   title={`Offline: ${modeStats.offlinePercent}%`}
@@ -202,7 +203,7 @@ export default function Dashboard() {
             <h3 className="text-sm font-extrabold text-stone-200 uppercase tracking-wider">
               Lối tắt tác vụ nhanh
             </h3>
-            
+
             <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
               <button
                 onClick={() => navigate('/admin/users?action=create')}
@@ -280,36 +281,33 @@ export default function Dashboard() {
                   className="flex items-center justify-between p-3 rounded-xl border border-stone-900 bg-stone-900/30 hover:bg-stone-900/50 transition-colors"
                 >
                   <div className="flex items-center gap-3 min-w-0">
-                    <div className={`p-2 rounded-lg shrink-0 border ${
-                      isDeposit 
-                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' 
-                        : isPurchase 
+                    <div className={`p-2 rounded-lg shrink-0 border ${isDeposit
+                        ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20'
+                        : isPurchase
                           ? 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20'
                           : 'bg-rose-500/10 text-rose-400 border-rose-500/20'
-                    }`}>
+                      }`}>
                       {isDeposit ? <TrendingUp size={14} /> : <Coins size={14} />}
                     </div>
                     <div className="min-w-0">
                       <h4 className="text-xs font-bold text-stone-200 truncate">{tx.userName}</h4>
                       <p className="text-[9px] text-stone-500 font-semibold uppercase tracking-wider truncate mt-0.5">
-                        {isDeposit ? 'Nạp tiền' : isPurchase ? 'Mua NFT' : 'Rút tiền'} • {new Date(tx.createdAt).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}
+                        {isDeposit ? 'Nạp tiền' : isPurchase ? 'Mua NFT' : 'Rút tiền'} • {new Date(tx.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                       </p>
                     </div>
                   </div>
 
                   <div className="text-right shrink-0">
-                    <span className={`text-xs font-black block ${
-                      isDeposit ? 'text-emerald-400' : 'text-yellow-400'
-                    }`}>
-                      {isDeposit ? '+' : '-'}{tx.amount} MATIC
+                    <span className={`text-xs font-black block ${isDeposit ? 'text-emerald-400' : 'text-yellow-400'
+                      }`}>
+                      {formatMatic(tx.amount)} MATIC
                     </span>
-                    <span className={`text-[8px] font-extrabold uppercase px-1.5 py-0.5 rounded-full border inline-block mt-1 ${
-                      isSuccess 
-                        ? 'bg-green-500/10 text-green-400 border-green-500/20' 
+                    <span className={`text-[8px] font-extrabold uppercase px-1.5 py-0.5 rounded-full border inline-block mt-1 ${isSuccess
+                        ? 'bg-green-500/10 text-green-400 border-green-500/20'
                         : tx.status === 'PENDING'
                           ? 'bg-amber-500/10 text-amber-400 border-amber-500/20 animate-pulse'
                           : 'bg-red-500/10 text-red-400 border-red-500/20'
-                    }`}>
+                      }`}>
                       {tx.status}
                     </span>
                   </div>

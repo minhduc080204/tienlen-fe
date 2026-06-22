@@ -19,6 +19,7 @@ import {
 } from 'lucide-react';
 import { gameToast } from '../../components/ui/toast';
 import { useSearchParams } from 'react-router-dom';
+import { formatMatic } from '../../utils/formatNumber';
 
 export default function NFTManagement() {
   const { nfts, addNFT, updateNFT, deleteNFT } = useAdmin();
@@ -290,7 +291,7 @@ export default function NFTManagement() {
         const isFree = parseFloat(nft.priceMatic) === 0;
         return (
           <span className={`font-black text-xs tracking-wider ${isFree ? 'text-stone-500' : 'text-purple-400'}`}>
-            {isFree ? 'Miễn phí' : `${nft.priceMatic} MATIC`}
+            {isFree ? 'Miễn phí' : `${formatMatic(nft.priceMatic)} MATIC`}
           </span>
         );
       }
@@ -482,7 +483,7 @@ export default function NFTManagement() {
                     {formData.name || 'Tên Card Skin'}
                   </h4>
                   <p className="text-[8px] text-yellow-400 font-extrabold mt-0.5 drop-shadow-md">
-                    {formData.isDefault ? 'MẶC ĐỊNH' : `${formData.priceMatic} MATIC`}
+                    {formData.isDefault ? 'MẶC ĐỊNH' : `${formatMatic(formData.priceMatic)} MATIC`}
                   </p>
                 </div>
               </div>

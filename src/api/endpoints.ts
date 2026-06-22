@@ -39,5 +39,15 @@ export const API_ENDPOINTS = {
     SELECT: "/avatars/select",
     SELECT_CUSTOM: "/avatars/select-custom",
     ADMIN: "/admin/avatars",
-  }
+  },
+
+  TOKEN: {
+    DEPOSIT_PACKAGES: "/tokens/deposit/packages",
+    DEPOSIT_VERIFY: "/tokens/deposit/verify",
+  },
+
+  ADMIN_TOKEN: {
+    PACKAGES: "/admin/token-packages",
+    PACKAGE_BY_ID: (id: number) => `/admin/token-packages/${id}`,
+  },
 };

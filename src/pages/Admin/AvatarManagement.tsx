@@ -19,7 +19,7 @@ import {
 } from 'lucide-react';
 import { gameToast } from '../../components/ui/toast';
 import { useSearchParams } from 'react-router-dom';
-import { formatNumber } from '../../utils/formatNumber';
+import { formatNumber, formatMatic } from '../../utils/formatNumber';
 
 export default function AvatarManagement() {
   const [searchParams] = useSearchParams();
@@ -307,7 +307,7 @@ export default function AvatarManagement() {
         const isFree = avatar.priceMatic === 0;
         return (
           <span className={`font-black text-xs ${isFree ? 'text-stone-500' : 'text-purple-400'}`}>
-            {isFree ? 'Miễn phí' : `💎 ${avatar.priceMatic}`}
+            {isFree ? 'Miễn phí' : `💎 ${formatMatic(avatar.priceMatic)}`}
           </span>
         );
       }
@@ -487,7 +487,7 @@ export default function AvatarManagement() {
                   <p className="text-[8px] text-yellow-400 font-extrabold mt-1 drop-shadow-md truncate">
                     {formData.isFree
                       ? 'MIỄN PHÍ'
-                      : `${formatNumber(parseInt(formData.priceTokens || '0'))} xu / ${formData.priceMatic || '0'} MATIC`
+                      : `${formatNumber(parseInt(formData.priceTokens || '0'))} xu / ${formatMatic(formData.priceMatic || '0')} MATIC`
                     }
                   </p>
                 </div>

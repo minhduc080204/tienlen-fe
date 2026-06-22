@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { R2_BASE_URL, type NFTItemData } from "../../type/nft";
 import { Button } from "../ui/Button";
+import { formatMatic } from "../../utils/formatNumber";
 
 interface Props {
   item: NFTItemData;
@@ -31,7 +32,7 @@ export default function NFTItem({ item, onBuy }: Props) {
       <img src={imageUrl} alt={item.name} className="w-24 h-24 lg:w-32 lg:h-32 object-contain drop-shadow-md" />
       <div className="text-center w-full">
         <h3 className="text-white font-bold text-sm lg:text-lg truncate">{item.name}</h3>
-        <p className="text-yellow-400 font-semibold text-xs lg:text-base">{item.priceMatic} MATIC</p>
+        <p className="text-yellow-400 font-semibold text-xs lg:text-base">{formatMatic(item.priceMatic)} MATIC</p>
       </div>
       <Button
         onClick={handleBuy}

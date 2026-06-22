@@ -27,6 +27,7 @@ const AdminNFTManagement = lazy(() => import('./pages/Admin/NFTManagement'))
 const AdminMatchManagement = lazy(() => import('./pages/Admin/MatchManagement'))
 const AdminTransactionManagement = lazy(() => import('./pages/Admin/TransactionManagement'))
 const AdminAvatarManagement = lazy(() => import('./pages/Admin/AvatarManagement'))
+const AdminTokenPackageManagement = lazy(() => import('./pages/Admin/TokenPackageManagement'))
 
 function App() {
   useSyncSettings();
@@ -66,6 +67,7 @@ function App() {
                   <Route path="/admin/matches" element={<AdminMatchManagement />} />
                   <Route path="/admin/transactions" element={<AdminTransactionManagement />} />
                   <Route path="/admin/avatars" element={<AdminAvatarManagement />} />
+                  <Route path="/admin/token-packages" element={<AdminTokenPackageManagement />} />
                 </Route>
               </Route>
             </Route>
