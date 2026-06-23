@@ -4,8 +4,8 @@ import { useSettingsStore } from "./settings.store";
 
 const BASE_VOLUME = 0.5;
 const BASE_BG_URL = [
-  "/sounds/giao_huong_thank_do.mp3",
-  "/sounds/cam_on_anh_do.mp3",
+  "/sounds/jazz1.mp3",
+  // "/sounds/cam_on_anh_do.mp3",
 ];
 
 const clickSound = new Howl({ src: ["/sounds/click.mp3"], volume: BASE_VOLUME, preload: true });
